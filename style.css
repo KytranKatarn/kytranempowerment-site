@@ -103,7 +103,7 @@ ul li::before {
 
 /* Header Section */
 header {
-    background: url('header-bg.png') no-repeat center center/cover; /* <<< UPDATED FOR PNG IMAGE */
+    background: url('header-bg.png') no-repeat center center/cover; /* Background image */
     min-height: 400px; /* Ensure enough height for the image to be visible */
     padding: 20px 0;
     text-align: center;
@@ -135,9 +135,14 @@ header::before {
     text-shadow: 2px 2px 4px rgba(0,0,0,0.5); /* Add subtle text shadow for readability */
 }
 
-/* Style for the logo image to make it pop */
+/* Style for the logo image to make it pop AND control its size */
 header .logo {
-    filter: drop-shadow(0 0 5px rgba(0,0,0,0.5)); /* Add shadow to logo for visibility */
+    max-width: 180px; /* Increased slightly for desktop presence */
+    height: auto;
+    width: 30%; /* Set a responsive width based on parent container */
+    min-width: 100px; /* Minimum size to prevent it from becoming too small */
+    margin-bottom: 10px;
+    filter: drop-shadow(0 0 5px rgba(0,0,0,0.5));
 }
 
 
@@ -703,6 +708,8 @@ footer a:hover {
     }
     header .logo {
         order: 1; /* Put logo on top */
+        max-width: 120px; /* Smaller max-width on mobile for better fit */
+        width: 40%; /* Adjust responsive width for mobile */
     }
 
     /* Hide the main navigation on small screens */
