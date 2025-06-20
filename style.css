@@ -422,7 +422,7 @@ section:nth-of-type(even) { /* Alternate background for readability */
     color: #e67e22; /* Keep orange accent for tier names */
     font-family: 'Oswald', sans-serif;
     font-size: 1.8em;
-    margin-top: 0;
+    margin-top: 0; /* Remove default top margin */
     margin-bottom: 1em;
 }
 
@@ -459,15 +459,15 @@ section:nth-of-type(even) { /* Alternate background for readability */
     margin: 20px auto 0;
     text-align: center;
     /* Force to primary button style */
-    background-color: #e67e22; /* Primary button color */
-    color: #fff; /* White text */
-    border: 2px solid #e67e22; /* Matching border */
+    background-color: #e67e22 !important; /* Primary button color, !important to ensure override */
+    color: #fff !important; /* White text, !important to ensure override */
+    border: 2px solid #e67e22 !important; /* Matching border, !important to ensure override */
     transition: background-color 0.3s ease, transform 0.2s ease, border-color 0.3s ease;
 }
 
 .tier-card .btn:hover, .tier-card-full .btn:hover {
-    background-color: #d35400;
-    border-color: #d35400;
+    background-color: #d35400 !important;
+    border-color: #d35400 !important;
     transform: translateY(-2px);
 }
 
