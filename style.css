@@ -171,14 +171,15 @@ header .logo {
 }
 
 .btn-secondary {
-    background-color: transparent;
-    color: #ecf0f1;
-    border: 2px solid #ecf0f1;
+    /* Updated styles for better visibility on light backgrounds */
+    background-color: #34495e; /* Dark background to contrast with light page */
+    color: #ecf0f1; /* Light text */
+    border: 2px solid #34495e; /* Dark border */
 }
 
 .btn-secondary:hover {
-    background-color: rgba(236, 240, 241, 0.1);
-    border-color: rgba(236, 240, 241, 0.5);
+    background-color: #2c3e50; /* Slightly darker on hover */
+    border-color: #2c3e50;
     transform: translateY(-2px);
 }
 
@@ -288,6 +289,791 @@ section:nth-of-type(even) { /* Alternate background for readability */
     min-width: 300px;
     max-width: 500px;
 }
+
+/* Adjustments for Mission/Vision body text */
+.about .body-text {
+    font-size: 1.1em; /* Slightly larger for emphasis */
+    line-height: 1.8; /* Increased line height for readability */
+    color: #34495e; /* Darker text for stronger presence */
+    font-weight: 600; /* Made bolder for "wow" factor */
+}
+
+
+/* Services Section (Overview on index.html) */
+.service-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.service-item {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    text-align: left;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.service-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+/* Services Detail Page (services.html) */
+.services-detail .container { /* Specific container for services detail page */
+    text-align: left; /* Align text left for detailed content */
+}
+
+.service-category {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+    margin-top: 40px;
+    text-align: left;
+}
+
+.service-category h3 {
+    text-align: center;
+    margin-bottom: 2em;
+    color: #e67e22; /* Highlight category headers */
+}
+
+.service-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.service-item-detail {
+    background-color: #f9f9f9;
+    padding: 25px;
+    border-radius: 5px;
+    border: 1px solid #eee;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); /* Inner shadow */
+    transition: all 0.3s ease;
+    height: 100%; /* Ensure uniform height for grid items */
+    box-sizing: border-box; /* Include padding/border in height */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.service-item-detail:hover {
+    background-color: #fff;
+    border-color: #e67e22;
+    box-shadow: 0 0 10px rgba(230, 126, 34, 0.1);
+}
+
+.service-item-detail h4 {
+    color: #2c3e50;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.service-item-detail .caption {
+    font-size: 0.8em;
+    margin-top: auto; /* Push to bottom */
+    text-align: left;
+    color: #7f8c8d;
+}
+.service-item-detail .caption a {
+    color: #e67e22; /* Link color within caption */
+}
+
+
+/* Membership Section (Overview on index.html and Detail on membership.html) */
+.membership {
+    background-color: #34495e;
+    color: #ecf0f1;
+}
+
+.membership h2.section-header, .membership .body-text {
+    color: #ecf0f1;
+}
+
+.tiers-grid, .tiers-grid-full {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.tier-card, .tier-card-full {
+    background-color: #2c3e50; /* Darker neutral */
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    text-align: left;
+    display: flex; /* Use flexbox for layout within card */
+    flex-direction: column;
+}
+
+.tier-card h3, .tier-card-full h3 {
+    color: #e67e22; /* Earth tone accent */
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.8em;
+    margin-top: 0; /* Remove default top margin */
+    margin-bottom: 1em;
+}
+
+.tier-card ul, .tier-card-full ul {
+    flex-grow: 1; /* Allow ul to take up available space */
+}
+
+.tier-badge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.8em;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+.tier-badge.free {
+    background-color: #27ae60;
+    color: #fff;
+}
+
+.tier-badge.paid {
+    background-color: #e67e22;
+    color: #fff;
+}
+
+.tier-cta {
+    margin-top: auto; /* Push button to the bottom */
+    padding-top: 20px; /* Space above button */
+}
+
+
+/* Store & Books Section */
+.store-books .resource-item {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.store-books .resource-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.resources-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+}
+
+/* Merch Store Specifics */
+.merch-options {
+    margin-top: 40px;
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.merch-options .btn-primary {
+    margin-top: 25px;
+}
+
+/* Books Page Specifics */
+.book-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.book-item {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Push content apart */
+}
+
+.book-item a {
+    text-decoration: none;
+    color: inherit; /* Inherit text color from parent */
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Ensure link takes full height */
+}
+
+.book-item img.book-cover {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+
+.book-item h3.subheading {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.3em;
+    color: #2c3e50;
+}
+
+.book-item .body-text {
+    font-size: 0.9em;
+    color: #666;
+    flex-grow: 1; /* Allow text to take up space */
+    margin-bottom: 15px;
+}
+
+.book-item .btn-small {
+    margin-top: auto; /* Push button to the bottom */
+    display: inline-block; /* Keep button styling */
+    align-self: center; /* Center the button within the flex item */
+    text-decoration: none; /* Remove underline from button text */
+}
+
+/* Submit Story Form */
+.story-form {
+    background-color: #fff; /* Light background for the form */
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    max-width: 700px;
+    margin: 40px auto;
+    text-align: left; /* Align form elements to the left */
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 500;
+    color: #34495e;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group textarea {
+    width: calc(100% - 20px); /* Adjust for padding */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1em;
+    box-sizing: border-box; /* Include padding in width calculation */
+}
+
+.form-group textarea {
+    resize: vertical; /* Allow vertical resizing */
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.checkbox-group input[type="checkbox"] {
+    margin-right: 10px;
+    width: auto; /* Override general input width */
+}
+
+.story-form .btn-primary {
+    width: auto;
+    min-width: 150px;
+    text-align: center;
+    display: block;
+    margin-top: 30px;
+}
+
+
+/* Footer Styles */
+footer {
+    background-color: #2c3e50; /* Darkest neutral */
+    color: #bdc3c7; /* Lighter grey for footer text */
+    text-align: center;
+    padding: 30px 0;
+    font-size: 0.9em;
+}
+
+footer a {
+    color: #e67e22;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+
+/* Mobile Navigation Specifics */
+/* Hide the desktop nav by default on small screens */
+.main-nav {
+    display: flex; /* Kept flex for desktop alignment */
+}
+
+.mobile-menu-icon {
+    display: none; /* Hidden on desktop */
+    background: none;
+    border: none;
+    font-size: 2em;
+    color: #ecf0f1;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 1001; /* Ensure it's on top */
+    position: absolute; /* Positioning relative to header */
+    right: 20px;
+    top: 20px;
+}
+
+.mobile-menu-overlay {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(44, 62, 80, 0.95); /* Semi-transparent dark background */
+    z-index: 1000;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow-y: auto; /* Enable scrolling for many links */
+    backdrop-filter: blur(5px); /* Modern blur effect */
+    -webkit-backdrop-filter: blur(5px); /* Safari support */
+}
+
+/* Mobile menu items as buttons */
+.mobile-menu-overlay a {
+    background-color: rgba(236, 240, 241, 0.15); /* Slightly more prominent background for mobile buttons */
+    color: #ecf0f1;
+    text-decoration: none;
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.8em; /* Larger for touch */
+    padding: 15px 25px; /* Button-like padding */
+    margin: 10px 0; /* Space between mobile buttons */
+    width: 80%; /* Make buttons wider for easier tapping */
+    text-align: center;
+    border-radius: 8px; /* Rounded corners for mobile buttons */
+    transition: background-color 0.3s ease, color 0.3s ease;
+    border: 1px solid rgba(236, 240, 241, 0.3); /* Subtle border */
+}
+
+.mobile-menu-overlay a:hover {
+    background-color: rgba(230, 126, 34, 0.6); /* Orange tint on hover */
+    color: #fff;
+    border-color: #e67e22;
+}
+
+/* Utility Class for JS toggle */
+.active-menu {
+    display: flex !important; /* Forces display for mobile menu */
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2.5em;
+    }
+    .subtitle {
+        font-size: 1em;
+    }
+    h2.section-header {
+        font-size: 2em;
+    }
+    h3.subheading {
+        font-size: 1.4em;
+    }
+    .btn {
+        padding: 10px 20px;
+        font-size: 1em;
+    }
+
+    /* Adjust header layout for mobile */
+    .header-content {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        position: relative; /* For positioning mobile menu icon */
+        padding: 15px 20px; /* Adjust padding for mobile header */
+    }
+    .header-text {
+        order: 2; /* Put text below logo on mobile */
+        margin-top: 10px;
+    }
+    header .logo {
+        order: 1; /* Put logo on top */
+        max-width: 120px; /* Smaller max-width on mobile for better fit */
+        width: 40%; /* Adjust responsive width for mobile */
+    }
+
+    /* Hide the main navigation on small screens */
+    nav.main-nav {
+        display: none; 
+    }
+
+    /* Show hamburger icon on mobile */
+    .mobile-menu-icon {
+        display: block; 
+    }
+
+    /* General mobile layout adjustments */
+    .about .container, .service-grid, .tiers-grid, .resources-grid, .service-list, .book-grid, .tiers-grid-full {
+        grid-template-columns: 1fr;
+    }
+    .about .container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .tier-card .btn, .tier-card-full .btn {
+        width: auto; /* Allow button to size naturally on smaller screens */
+    }
+    .tier-card, .tier-card-full {
+        align-items: center; /* Center content in tier cards on mobile */
+        text-align: center;
+    }
+    .tier-card ul, .tier-card-full ul {
+        width: 100%;
+        text-align: left; /* Keep list items left-aligned */
+    }
+}
+
+/* Mobile-specific adjustments for horizontal rule on larger mobile menu buttons */
+.mobile-menu-overlay a:not(:last-child) {
+    border-bottom: 1px solid rgba(236, 240, 241, 0.2); /* Horizontal separator */
+}
+```
+I understand you're pointing to the selected code in the `style.css (All Updates Integrated)` Canvas. You're asking to adjust two things on the homepage:
+
+1.  Make the "Explore Services" button more visible as it currently appears white on white.
+2.  Make the "Our Mission" and "Our Vision" text (from the second screenshot) bolder and more impactful ("more wow!") without negatively affecting the mobile experience.
+
+I will update the `style.css` Canvas to incorporate these changes.
+
+**Here are the specific changes I'll make in the Canvas:**
+
+1.  **For the "Explore Services" button visibility:** I'll modify the `.btn-secondary` style to give it a solid, contrasting background color so it stands out against the light hero section.
+2.  **For the "Our Mission" and "Our Vision" text:** I'll target the `body-text` within the `.about` section to increase its `font-weight` and potentially `line-height` for better visual impact and readability.
+
+---
+
+
+```css
+/* General Body Styles */
+body {
+    font-family: 'Open Sans', sans-serif; /* Body font */
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5; /* Light neutral */
+    color: #333; /* Dark neutral for text */
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+/* Typography based on Brand Identity */
+h1 {
+    font-family: 'League Spartan', sans-serif; /* Title font */
+    font-size: 3.5em;
+    color: #2c3e50; /* Strong neutral/dark earth tone */
+    margin-bottom: 0.2em;
+}
+
+.subtitle {
+    font-family: 'Montserrat Alternates', sans-serif; /* Subtitle font */
+    font-size: 1.2em;
+    color: #7f8c8d; /* Muted neutral */
+    font-weight: 600;
+}
+
+.tagline {
+    font-family: 'Montserrat Alternates', sans-serif; /* Similar to subtitle for consistency in impactful statements */
+    font-size: 1.8em;
+    color: #e67e22; /* Earth tone accent (orange/brown) */
+    text-align: center;
+    margin-bottom: 1em;
+}
+
+h2.section-header {
+    font-family: 'Bebas Neue', sans-serif; /* Section Header font */
+    font-size: 2.8em;
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 1em;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+h3.subheading {
+    font-family: 'Raleway', sans-serif; /* Subheading font */
+    font-size: 1.6em;
+    color: #34495e; /* Slightly softer dark neutral */
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+    font-weight: 500;
+}
+
+h4.subheading { /* For service items */
+    font-family: 'Raleway', sans-serif;
+    font-size: 1.3em;
+    color: #34495e;
+    margin-bottom: 0.5em;
+}
+
+.body-text {
+    font-family: 'Open Sans', sans-serif; /* Body font */
+    font-size: 1em;
+    color: #555;
+    margin-bottom: 1em;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+ul li {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1em;
+    color: #555;
+    margin-bottom: 0.5em;
+    position: relative;
+    padding-left: 1.5em;
+}
+
+ul li::before {
+    content: '✅'; /* Simple checkmark for list items */
+    position: absolute;
+    left: 0;
+    color: #27ae60; /* Green accent */
+}
+
+.caption {
+    font-family: 'Lato', sans-serif; /* Caption font */
+    font-size: 0.9em;
+    color: #7f8c8d;
+    font-weight: 300;
+    text-align: center;
+    margin-top: 1.5em;
+}
+
+/* Header Section */
+header {
+    background: url('header-bg.png') no-repeat center center/cover; /* Background image */
+    min-height: 400px; /* Ensure enough height for the image to be visible */
+    padding: 20px 0;
+    text-align: center;
+    position: relative; /* Needed for overlay and z-index */
+    color: #ecf0f1; /* Light text color for better contrast over background */
+}
+
+/* Overlay for header background image to improve text readability */
+header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(44, 62, 80, 0.6); /* Dark semi-transparent overlay */
+    z-index: 0; /* Behind content, above background image */
+}
+
+/* Ensure header content (logo, text, nav) is above the overlay */
+.header-content {
+    position: relative;
+    z-index: 1; /* Place content above the overlay */
+}
+
+/* Styles for the text within the header (logo/title/subtitle) */
+.header-text h1, .header-text .subtitle {
+    color: #ecf0f1; /* Ensure text is light for contrast against dark overlay */
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5); /* Add subtle text shadow for readability */
+}
+
+/* Style for the logo image to make it pop AND control its size */
+header .logo {
+    max-width: 180px; /* Increased slightly for desktop presence */
+    height: auto;
+    width: 30%; /* Set a responsive width based on parent container */
+    min-width: 100px; /* Minimum size to prevent it from becoming too small */
+    margin-bottom: 10px;
+    filter: drop-shadow(0 0 5px rgba(0,0,0,0.5));
+}
+
+
+/* Main Call-to-Action Buttons (Hero Section) */
+.btn {
+    display: inline-block;
+    padding: 12px 25px;
+    margin: 10px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-family: 'Oswald', sans-serif; /* Heading font for buttons */
+    font-size: 1.1em;
+    transition: background-color 0.3s ease, transform 0.2s ease, border-color 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #e67e22; /* Earth tone accent */
+    color: #fff;
+    border: 2px solid #e67e22;
+}
+
+.btn-primary:hover {
+    background-color: #d35400;
+    border-color: #d35400;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    /* Updated styles for better visibility on light backgrounds */
+    background-color: #34495e; /* Dark background to contrast with light page */
+    color: #ecf0f1; /* Light text */
+    border: 2px solid #34495e; /* Dark border */
+}
+
+.btn-secondary:hover {
+    background-color: #2c3e50; /* Slightly darker on hover */
+    border-color: #2c3e50;
+    transform: translateY(-2px);
+}
+
+/* Smaller button variation for books */
+.btn-small {
+    padding: 8px 15px;
+    font-size: 0.9em;
+}
+
+/* Navigation Bar Styling (Buttons) */
+nav.main-nav {
+    background-color: transparent; /* Changed to transparent so background image is fully visible */
+    display: flex;
+    justify-content: center; /* Center items on desktop */
+    padding: 10px 0; /* Reduced padding as links will have their own padding */
+    box-shadow: none; /* Remove shadow from nav bar itself, as overlay handles it */
+    border-radius: 8px; /* Slightly rounded corners for the nav bar itself */
+    margin-top: 20px; /* Space below header content */
+    flex-wrap: wrap; /* Allow items to wrap on smaller desktop screens before full mobile menu */
+}
+
+nav.main-nav a {
+    /* Style for menu items as buttons */
+    background-color: rgba(236, 240, 241, 0.08); /* Very subtle light background */
+    color: #ecf0f1; /* Light text */
+    text-decoration: none;
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.05em; /* Slightly smaller than main CTA buttons */
+    font-weight: 400;
+    padding: 8px 18px; /* Button-like padding */
+    margin: 5px 8px; /* Space between nav buttons */
+    border-radius: 5px; /* Rounded corners for buttons */
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+    border: 1px solid rgba(236, 240, 241, 0.2); /* Subtle border */
+}
+
+nav.main-nav a:hover {
+    background-color: rgba(230, 126, 34, 0.3); /* Orange tint on hover */
+    color: #fff; /* White text on hover */
+    transform: translateY(-2px); /* Slight lift effect */
+    border-color: #e67e22; /* Match border to hover color */
+}
+
+/* Specific style for the 'Member Login' button in the nav */
+nav.main-nav .btn-nav {
+    background-color: #e67e22; /* Primary button color */
+    color: #fff;
+    padding: 8px 20px; /* Adjusted padding to fit with other buttons */
+    border-radius: 5px;
+    margin-left: 15px; /* More space to the left */
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    border: none; /* Ensure no default button border */
+    font-weight: 700; /* Make it bold */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Add shadow for more pop */
+}
+
+nav.main-nav .btn-nav:hover {
+    background-color: #d35400;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+
+/* Hero Section */
+.hero {
+    /* REMOVED background gradient here as the main header now has the image */
+    background-color: #f5f5f5; /* Set to a light neutral to blend with body */
+    color: #333; /* Dark text for contrast */
+    text-align: center;
+    padding: 80px 0;
+}
+
+.hero h2 { /* Override section-header for hero */
+    color: #2c3e50; /* Darker text for readability */
+    font-size: 3.2em;
+    margin-top: 0.5em;
+}
+
+.cta-buttons {
+    margin-top: 40px;
+}
+
+
+/* Section Styles */
+section {
+    padding: 60px 0;
+    text-align: center;
+    position: relative; /* Ensure sections respect z-index if elements overlap */
+    z-index: 2; /* Put sections above potential footer overlap if necessary */
+}
+
+section:nth-of-type(even) { /* Alternate background for readability */
+    background-color: #ecf0f1; /* Lighter neutral */
+}
+
+/* About Section */
+.about .container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 40px;
+    text-align: left;
+}
+
+.mission-vision, .core-values {
+    flex: 1;
+    min-width: 300px;
+    max-width: 500px;
+}
+
+/* Adjustments for Mission/Vision body text */
+.about .body-text {
+    font-size: 1.1em; /* Slightly larger for emphasis */
+    line-height: 1.8; /* Increased line height for readability */
+    color: #34495e; /* Darker text for stronger presence */
+    font-weight: 600; /* Made bolder for "wow" factor */
+}
+
 
 /* Services Section (Overview on index.html) */
 .service-grid {
