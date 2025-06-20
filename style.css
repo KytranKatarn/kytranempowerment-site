@@ -885,7 +885,24 @@ footer a:hover {
         display: block; 
     }
 
-    /* General mobile layout adjustments */
+    /* Mission/Vision Mobile Layout */
+    .mission-vision-container {
+        flex-direction: column; /* Stack columns on mobile */
+        gap: 0; /* Remove gap */
+    }
+    .vertical-divider {
+        display: none; /* Hide vertical divider on mobile */
+    }
+    .mission-vision-block {
+        padding: 20px 0; /* Adjust padding for stacked blocks */
+    }
+
+    /* Core Values Mobile Layout */
+    .core-values-grid {
+        grid-template-columns: 1fr; /* Stack cards on mobile */
+    }
+
+    /* General mobile layout adjustments for other sections */
     .about .container, .service-grid, .tiers-grid, .resources-grid, .service-list, .book-grid, .tiers-grid-full {
         grid-template-columns: 1fr;
     }
