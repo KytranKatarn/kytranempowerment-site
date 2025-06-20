@@ -1,31 +1,333 @@
-
+/* General Body Styles */
 body {
-    background-color: #111;
-    color: #f0f0f0;
-    font-family: 'Open Sans', sans-serif;
+    font-family: 'Open Sans', sans-serif; /* Body font  */
+    line-height: 1.6;
     margin: 0;
     padding: 0;
+    background-color: #f5f5f5; /* Light neutral */
+    color: #333; /* Dark neutral for text */
 }
-header, footer {
-    background-color: #222;
-    padding: 1em;
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+/* Typography based on Brand Identity  */
+h1 {
+    font-family: 'League Spartan', sans-serif; /* Title font */
+    font-size: 3.5em;
+    color: #2c3e50; /* Strong neutral/dark earth tone */
+    margin-bottom: 0.2em;
+}
+
+.subtitle {
+    font-family: 'Montserrat Alternates', sans-serif; /* Subtitle font */
+    font-size: 1.2em;
+    color: #7f8c8d; /* Muted neutral */
+    font-weight: 600;
+}
+
+.tagline {
+    font-family: 'Montserrat Alternates', sans-serif; /* Similar to subtitle for consistency in impactful statements */
+    font-size: 1.8em;
+    color: #e67e22; /* Earth tone accent (orange/brown) */
+    text-align: center;
+    margin-bottom: 1em;
+}
+
+h2.section-header {
+    font-family: 'Bebas Neue', sans-serif; /* Section Header font  */
+    font-size: 2.8em;
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 1em;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+h3.subheading {
+    font-family: 'Raleway', sans-serif; /* Subheading font  */
+    font-size: 1.6em;
+    color: #34495e; /* Slightly softer dark neutral */
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+    font-weight: 500;
+}
+
+h4.subheading { /* For service items */
+    font-family: 'Raleway', sans-serif;
+    font-size: 1.3em;
+    color: #34495e;
+    margin-bottom: 0.5em;
+}
+
+.body-text {
+    font-family: 'Open Sans', sans-serif; /* Body font  */
+    font-size: 1em;
+    color: #555;
+    margin-bottom: 1em;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+ul li {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1em;
+    color: #555;
+    margin-bottom: 0.5em;
+    position: relative;
+    padding-left: 1.5em;
+}
+
+ul li::before {
+    content: '✅'; /* Simple checkmark for list items */
+    position: absolute;
+    left: 0;
+    color: #27ae60; /* Green accent */
+}
+
+.caption {
+    font-family: 'Lato', sans-serif; /* Caption font  */
+    font-size: 0.9em;
+    color: #7f8c8d;
+    font-weight: 300;
+    text-align: center;
+    margin-top: 1.5em;
+}
+
+/* Header Section */
+header {
+    background-color: #34495e; /* Dark blue/grey - strong neutral */
+    color: #ecf0f1; /* Light text for contrast */
+    padding: 20px 0;
     text-align: center;
 }
-a {
-    color: #66ccff;
+
+header .logo {
+    max-width: 150px; /* Adjust size as needed */
+    height: auto;
+    margin-bottom: 10px;
+}
+
+.header-content h1, .header-content .subtitle {
+    color: #ecf0f1;
+}
+
+/* Hero Section */
+.hero {
+    background: linear-gradient(to right, #2c3e50, #34495e); /* Minimal gradient  */
+    color: #ecf0f1;
+    text-align: center;
+    padding: 80px 0;
+}
+
+.hero h2 { /* Override section-header for hero */
+    color: #ecf0f1;
+    font-size: 3.2em;
+    margin-top: 0.5em;
+}
+
+.cta-buttons {
+    margin-top: 40px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 12px 25px;
+    margin: 10px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-family: 'Oswald', sans-serif; /* Heading font for buttons  */
+    font-size: 1.1em;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-primary {
+    background-color: #e67e22; /* Earth tone accent */
+    color: #fff;
+    border: 2px solid #e67e22;
+}
+
+.btn-primary:hover {
+    background-color: #d35400;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: #ecf0f1;
+    border: 2px solid #ecf0f1;
+}
+
+.btn-secondary:hover {
+    background-color: rgba(236, 240, 241, 0.1);
+    transform: translateY(-2px);
+}
+
+
+/* Section Styles */
+section {
+    padding: 60px 0;
+    text-align: center;
+}
+
+section:nth-of-type(even) { /* Alternate background for readability */
+    background-color: #ecf0f1; /* Lighter neutral */
+}
+
+/* About Section */
+.about .container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 40px;
+    text-align: left;
+}
+
+.mission-vision, .core-values {
+    flex: 1;
+    min-width: 300px;
+    max-width: 500px;
+}
+
+/* Services Section */
+.service-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.service-item {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    text-align: left;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.service-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+/* Membership Section */
+.membership {
+    background-color: #34495e;
+    color: #ecf0f1;
+}
+
+.membership h2.section-header, .membership .body-text {
+    color: #ecf0f1;
+}
+
+.tiers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.tier-card {
+    background-color: #2c3e50; /* Darker neutral */
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    text-align: left;
+}
+
+.tier-card h3 {
+    color: #e67e22; /* Earth tone accent */
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.8em;
+    margin-bottom: 1em;
+}
+
+.tier-card ul li::before {
+    color: #27ae60; /* Green accent */
+}
+
+.tier-card .btn {
+    display: block;
+    width: calc(100% - 40px); /* Adjust for padding */
+    margin: 20px auto 0;
+    text-align: center;
+}
+
+/* Store & Books Section */
+.store-books .resource-item {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.store-books .resource-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.resources-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+}
+
+
+/* Footer Styles */
+footer {
+    background-color: #2c3e50; /* Darkest neutral */
+    color: #bdc3c7; /* Lighter grey for footer text */
+    text-align: center;
+    padding: 30px 0;
+    font-size: 0.9em;
+}
+
+footer a {
+    color: #e67e22;
     text-decoration: none;
 }
-a:hover {
+
+footer a:hover {
     text-decoration: underline;
 }
-.container {
-    padding: 2em;
-    max-width: 900px;
-    margin: auto;
-}
-.logo {
-    max-height: 80px;
-}
-nav a {
-    margin: 0 1em;
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2.5em;
+    }
+    .subtitle {
+        font-size: 1em;
+    }
+    h2.section-header {
+        font-size: 2em;
+    }
+    h3.subheading {
+        font-size: 1.4em;
+    }
+    .btn {
+        padding: 10px 20px;
+        font-size: 1em;
+    }
+    .about .container, .service-grid, .tiers-grid, .resources-grid {
+        grid-template-columns: 1fr;
+    }
+    .about .container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .tier-card .btn {
+        width: auto; /* Allow button to size naturally on smaller screens */
+    }
 }
