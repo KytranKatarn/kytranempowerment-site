@@ -14,9 +14,16 @@
     <header>
         <div class="container header-content">
             <img src="logo.png" alt="Kytran Empowerment Logo" class="logo">
-            <h1>KYTRAN EMPOWERMENT INC.</h1>
-            <p class="subtitle">Strength through Strategy. Brotherhood through Purpose.</p>
-            <nav>
+            <div class="header-text"> <!-- New container for text -->
+                <h1>KYTRAN EMPOWERMENT INC.</h1>
+                <p class="subtitle">Strength through Strategy. Brotherhood through Purpose.</p>
+            </div>
+            
+            <!-- Mobile Menu Icon (Hamburger) -->
+            <button class="mobile-menu-icon" aria-label="Toggle navigation">☰</button>
+
+            <!-- Main Navigation (Desktop) -->
+            <nav class="main-nav">
                 <a href="index.html">Home</a>
                 <a href="services.html">Services</a>
                 <a href="membership.html">Membership</a>
@@ -25,6 +32,17 @@
                 <a href="submit_story.html">Submit Story</a>
                 <a href="K1Terminal.KytranEmpowerment.com/login" class="btn-nav">Member Login</a>
             </nav>
+        </div>
+
+        <!-- Mobile Menu Overlay (Initially hidden) -->
+        <div class="mobile-menu-overlay" id="mobileMenu">
+            <a href="index.html">Home</a>
+            <a href="services.html">Services</a>
+            <a href="membership.html">Membership</a>
+            <a href="merch_store.html">Shop</a>
+            <a href="books.html">Books</a>
+            <a href="submit_story.html">Submit Story</a>
+            <a href="K1Terminal.KytranEmpowerment.com/login">Member Login</a>
         </div>
     </header>
 
@@ -92,5 +110,6 @@
             <p class="caption">"Strength through Strategy. Brotherhood through Purpose."</p>
         </div>
     </footer>
+    <script src="script.js"></script>
 </body>
 </html>

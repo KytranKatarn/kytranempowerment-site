@@ -14,9 +14,16 @@
     <header>
         <div class="container header-content">
             <img src="logo.png" alt="Kytran Empowerment Logo" class="logo">
-            <h1>KYTRAN EMPOWERMENT INC.</h1>
-            <p class="subtitle">Strength through Strategy. Brotherhood through Purpose.</p>
-            <nav>
+            <div class="header-text"> <!-- New container for text -->
+                <h1>KYTRAN EMPOWERMENT INC.</h1>
+                <p class="subtitle">Strength through Strategy. Brotherhood through Purpose.</p>
+            </div>
+            
+            <!-- Mobile Menu Icon (Hamburger) -->
+            <button class="mobile-menu-icon" aria-label="Toggle navigation">☰</button>
+
+            <!-- Main Navigation (Desktop) -->
+            <nav class="main-nav">
                 <a href="index.html">Home</a>
                 <a href="services.html">Services</a>
                 <a href="membership.html">Membership</a>
@@ -25,6 +32,17 @@
                 <a href="submit_story.html">Submit Story</a>
                 <a href="K1Terminal.KytranEmpowerment.com/login" class="btn-nav">Member Login</a>
             </nav>
+        </div>
+
+        <!-- Mobile Menu Overlay (Initially hidden) -->
+        <div class="mobile-menu-overlay" id="mobileMenu">
+            <a href="index.html">Home</a>
+            <a href="services.html">Services</a>
+            <a href="membership.html">Membership</a>
+            <a href="merch_store.html">Shop</a>
+            <a href="books.html">Books</a>
+            <a href="submit_story.html">Submit Story</a>
+            <a href="K1Terminal.KytranEmpowerment.com/login">Member Login</a>
         </div>
     </header>
 
@@ -68,63 +86,6 @@
             <p class="caption">"Strength through Strategy. Brotherhood through Purpose."</p>
         </div>
     </footer>
-    <style>
-        /* Add specific styles for the form if needed, or integrate into style.css */
-        .story-form {
-            background-color: #f9f9f9;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            max-width: 700px;
-            margin: 40px auto;
-            text-align: left; /* Align form elements to the left */
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-family: 'Raleway', sans-serif;
-            font-weight: 500;
-            color: #34495e;
-        }
-
-        .form-group input[type="text"],
-        .form-group input[type="email"],
-        .form-group textarea {
-            width: calc(100% - 20px); /* Adjust for padding */
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-family: 'Open Sans', sans-serif;
-            font-size: 1em;
-        }
-
-        .form-group textarea {
-            resize: vertical; /* Allow vertical resizing */
-        }
-
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            margin-top: 15px;
-        }
-
-        .checkbox-group input[type="checkbox"] {
-            margin-right: 10px;
-            width: auto; /* Override general input width */
-        }
-
-        .story-form .btn-primary {
-            width: auto;
-            min-width: 150px;
-            text-align: center;
-            display: block;
-            margin-top: 30px;
-        }
-    </style>
+    <script src="script.js"></script>
 </body>
 </html>

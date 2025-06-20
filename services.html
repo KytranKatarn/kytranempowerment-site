@@ -14,9 +14,16 @@
     <header>
         <div class="container header-content">
             <img src="logo.png" alt="Kytran Empowerment Logo" class="logo">
-            <h1>KYTRAN EMPOWERMENT INC.</h1>
-            <p class="subtitle">Strength through Strategy. Brotherhood through Purpose.</p>
-            <nav>
+            <div class="header-text"> <!-- New container for text -->
+                <h1>KYTRAN EMPOWERMENT INC.</h1>
+                <p class="subtitle">Strength through Strategy. Brotherhood through Purpose.</p>
+            </div>
+            
+            <!-- Mobile Menu Icon (Hamburger) -->
+            <button class="mobile-menu-icon" aria-label="Toggle navigation">☰</button>
+
+            <!-- Main Navigation (Desktop) -->
+            <nav class="main-nav">
                 <a href="index.html">Home</a>
                 <a href="services.html">Services</a>
                 <a href="membership.html">Membership</a>
@@ -25,6 +32,17 @@
                 <a href="submit_story.html">Submit Story</a>
                 <a href="K1Terminal.KytranEmpowerment.com/login" class="btn-nav">Member Login</a>
             </nav>
+        </div>
+
+        <!-- Mobile Menu Overlay (Initially hidden) -->
+        <div class="mobile-menu-overlay" id="mobileMenu">
+            <a href="index.html">Home</a>
+            <a href="services.html">Services</a>
+            <a href="membership.html">Membership</a>
+            <a href="merch_store.html">Shop</a>
+            <a href="books.html">Books</a>
+            <a href="submit_story.html">Submit Story</a>
+            <a href="K1Terminal.KytranEmpowerment.com/login">Member Login</a>
         </div>
     </header>
 
@@ -51,6 +69,7 @@
                     <div class="service-item-detail">
                         <h4>Stock Market Analysis</h4>
                         <p>Leverage our KBOT Stock Screener insights for informed investment decisions in TSX, NYSE, and NASDAQ markets.</p>
+                    <p class="caption">**Note:** Access to specific StockBot features may require a <a href="membership.html">Silver or Gold Membership</a>.</p>
                     </div>
                 </div>
             </div>
@@ -65,10 +84,12 @@
                     <div class="service-item-detail">
                         <h4>Content Automation (Shorts Studio)</h4>
                         <p>Automate the creation of motivational video content for social media, saving time and scaling your message.</p>
+                    <p class="caption">**Note:** Full access to Shorts Studio requires a <a href="membership.html">Gold Membership</a>.</p>
                     </div>
                     <div class="service-item-detail">
                         <h4>GPT Scripting & Prompt Engineering</h4>
                         <p>Learn to harness the full power of local LLMs like GPT4All for script generation, content creation, and more.</p>
+                    <p class="caption">**Note:** Full access to GPT Script Lab requires a <a href="membership.html">Gold Membership</a>.</p>
                     </div>
                     <div class="service-item-detail">
                         <h4>Workflow Automation (n8n Integration)</h4>
@@ -99,6 +120,7 @@
                     <div class="service-item-detail">
                         <h4>Mindset Coaching (NLP)</h4>
                         <p>Reframe beliefs, manage focus (e.g., ADHD), and build mental resilience through neuro-linguistic programming techniques.</p>
+                    <p class="caption">**Note:** NLP Coach is a planned feature, available with <a href="membership.html">Gold Membership</a> upon launch.</p>
                     </div>
                     <div class="service-item-detail">
                         <h4>Physical & Vitality Routines</h4>
@@ -117,5 +139,6 @@
             <p class="caption">"Strength through Strategy. Brotherhood through Purpose."</p>
         </div>
     </footer>
+    <script src="script.js"></script>
 </body>
 </html>
