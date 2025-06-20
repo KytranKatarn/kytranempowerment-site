@@ -1,0 +1,31 @@
+
+body {
+    background-color: #111;
+    color: #f0f0f0;
+    font-family: 'Open Sans', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+header, footer {
+    background-color: #222;
+    padding: 1em;
+    text-align: center;
+}
+a {
+    color: #66ccff;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+.container {
+    padding: 2em;
+    max-width: 900px;
+    margin: auto;
+}
+.logo {
+    max-height: 80px;
+}
+nav a {
+    margin: 0 1em;
+}
