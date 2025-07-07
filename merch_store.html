@@ -107,28 +107,34 @@
             color: #e74c3c;
         }
 
-        /* Styles for the cart link (now a text button) */
-        /* Using the btn-nav styling from style.css for consistency */
-        /* Custom styling for cart link to make it a button-like element */
+        /* --- Custom Styling for Shopping Cart Button within main-nav --- */
+        /* These styles override general nav link styles to make it look like btn-nav */
         .main-nav #cart-link { 
-            margin-left: 20px; /* Space from Member Login button */
-            padding: 10px 15px; /* Button-like padding */
-            background-color: #e67e22; /* Accent color */
+            /* Properties from .btn-nav in your style.css for buttons */
+            background-color: #e67e22; /* Primary brand color */
+            color: #fff;
+            padding: 10px 20px; /* Adjust padding to match Member Login button */
             border-radius: 5px;
-            color: white;
-            font-weight: bold;
             text-decoration: none;
-            transition: background-color 0.3s ease;
-            font-family: 'Oswald', sans-serif; /* Consistent font */
-            font-size: 1em; /* Consistent size */
-            display: inline-block; /* Essential for padding/margin */
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.1em;
+            font-weight: 400; /* As seen in index.html for btn-nav */
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            
+            /* Specific positioning for cart button */
+            display: inline-block; /* Crucial for padding/margin */
             box-sizing: border-box; /* Include padding in element's total width/height */
+            margin-left: 20px; /* Space from Member Login button */
+            text-align: center; /* Center text within button */
+            min-width: 120px; /* Give it a minimum width like other buttons */
         }
 
         .main-nav #cart-link:hover {
             background-color: #d35400;
+            transform: translateY(-2px);
         }
-
 
         /* Responsive adjustments */
         @media (max-width: 768px) {
@@ -136,14 +142,23 @@
                 grid-template-columns: 1fr;
                 gap: 20px;
             }
+            /* Ensure cart link on mobile menu doesn't try to be a button unless explicitly wanted */
+            .mobile-menu-overlay #cart-link { /* Target if it exists in mobile overlay */
+                background-color: transparent;
+                color: #fff; /* Or whatever default mobile menu link color is */
+                padding: 0;
+                margin: 0;
+                min-width: auto;
+                text-align: left;
+                font-size: 1em; /* Reset font size if needed */
+            }
         }
     </style>
 </head>
 <body>
     <header>
         <div class="container header-content">
-            <img src="logo.png" alt="Kytran Empowerment Logo" class="logo">
-            <div class="header-text">
+            <img src="logo.png" alt="Kytran Empowerment Logo" class="logo"> <div class="header-text">
                 <h1>KYTRAN EMPOWERMENT INC.</h1>
                 <p class="subtitle">Strength through Strategy. Brotherhood through Purpose.</p>
             </div>
@@ -287,7 +302,7 @@
                         if (product.vendor_name === 'Kytran Local Goods') {
                             // Local products from Kytran Local Goods
                             // Assume product.image_url is just a filename like "image.png"
-                            imageUrl = `assets/${imageUrl}`; // Corrected: relative path to assets/
+                            imageUrl = `assets/${imageUrl}`; // CORRECTED: relative path to assets/
                         }
                         // For Printful products, product.image_url should already be a full URL (e.g., from Printful's CDN)
                         imageUrl = imageUrl || 'https://via.placeholder.com/250?text=No+Image';
