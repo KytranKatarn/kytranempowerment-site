@@ -107,34 +107,22 @@
             color: #e74c3c;
         }
 
-        /* Styles for the cart icon */
-        .cart-icon {
-            position: relative;
+        /* Styles for the cart link (now a text button) */
+        .main-nav .btn-nav#cart-link {
             margin-left: 20px; /* Space from Member Login button */
-            cursor: pointer;
-        }
-
-        .cart-icon img {
-            width: 30px; /* Adjust size as needed */
-            height: 30px;
-            filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg) brightness(102%) contrast(102%); /* White color */
-        }
-
-        .cart-count {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background-color: #e67e22; /* Accent color */
+            padding: 10px 15px; /* Adjust padding to match other buttons */
+            background-color: #e67e22; /* Example accent color */
+            border-radius: 5px;
             color: white;
-            border-radius: 50%;
-            padding: 2px 6px;
-            font-size: 0.7em;
             font-weight: bold;
-            min-width: 15px; /* Ensure it's round even with single digit */
-            text-align: center;
-            line-height: 1.2;
-            pointer-events: none; /* Make sure clicks go through to the icon */
+            text-decoration: none;
+            transition: background-color 0.3s ease;
         }
+
+        .main-nav .btn-nav#cart-link:hover {
+            background-color: #d35400;
+        }
+
 
         /* Responsive adjustments */
         @media (max-width: 768px) {
@@ -162,9 +150,9 @@
                 <a href="merch_store.html">Shop</a>
                 <a href="books.html">Books</a>
                 <a href="submit_story.html">Submit Story</a>
-                <a href="https://k1.kytranempowerment.com/login">Member Login</a>
-                <a href="cart.html" class="cart-icon" id="cart-link">
-                    <img src="assets/cart-icon.png" alt="Shopping Cart"> <span class="cart-count" id="cart-count">0</span>
+                <a href="https://k1.kytranempowerment.com/login" class="btn-nav">Member Login</a>
+                <a href="cart.html" class="btn-nav" id="cart-link">
+                    Shopping Cart (<span id="cart-count">0</span>)
                 </a>
             </nav>
         </div>
@@ -176,7 +164,7 @@
             <a href="merch_store.html">Shop</a>
             <a href="books.html">Books</a>
             <a href="submit_story.html">Submit Story</a>
-            <a href="https://k1.kytranempowerment.com/login">Member Login</a>
+            <a href="https://k1.kytranempowerment.com/login" class="btn-nav">Member Login</a>
             <a href="cart.html">Shopping Cart (<span id="mobile-cart-count">0</span>)</a>
         </div>
     </header>
@@ -293,7 +281,7 @@
                         // Distinguish between backend-served static paths for local products and full Printful URLs
                         if (product.vendor_name === 'Kytran Local Goods') {
                             // Local products from Kytran Local Goods
-                            // Assume product.image_url will be something like "image.png" (filename only)
+                            // Assume product.image_url is just a filename like "image.png"
                             // which are expected to be in the /assets/ folder on GitHub Pages
                             imageUrl = `assets/${imageUrl}`; // CORRECTED: relative path to assets/
                         }
