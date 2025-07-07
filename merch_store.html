@@ -119,7 +119,8 @@
 <body>
     <header>
         <div class="container header-content">
-            <img src="logo.png" alt="Kytran Empowerment Logo" class="logo"> <div class="header-text">
+            <img src="logo.png" alt="Kytran Empowerment Logo" class="logo">
+            <div class="header-text">
                 <h1>KYTRAN EMPOWERMENT INC.</h1>
                 <p class="subtitle">Strength through Strategy. Brotherhood through Purpose.</p>
             </div>
@@ -133,7 +134,11 @@
                 <a href="merch_store.html">Shop</a>
                 <a href="books.html">Books</a>
                 <a href="submit_story.html">Submit Story</a>
-                <a href="https://k1.kytranempowerment.com/login">Member Login</a>
+                <a href="https://k1.kytranempowerment.com/login" class="btn-nav">Member Login</a>
+                <a href="cart.html" class="cart-icon" id="cart-link">
+                    <img src="assets/cart-icon.png" alt="Shopping Cart">
+                    <span class="cart-count" id="cart-count">0</span>
+                </a>
             </nav>
         </div>
 
@@ -145,6 +150,7 @@
             <a href="books.html">Books</a>
             <a href="submit_story.html">Submit Story</a>
             <a href="https://k1.kytranempowerment.com/login" class="btn-nav">Member Login</a>
+            <a href="cart.html">Shopping Cart (<span id="mobile-cart-count">0</span>)</a>
         </div>
     </header>
 
@@ -171,8 +177,9 @@
         }
     </script>
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-    <script src="script.js"></script> <script>
-        // Mobile menu toggle (copied from script.js, or ensure script.js is loaded)
+    <script src="script.js"></script>
+    <script>
+        // Mobile menu toggle logic - ensures it's attached after DOMContentLoaded
         document.addEventListener('DOMContentLoaded', () => {
             const mobileMenuIcon = document.querySelector('.mobile-menu-icon');
             const mobileMenuOverlay = document.getElementById('mobileMenu');
@@ -192,8 +199,52 @@
             }
         });
 
-        // Dynamic Product Loading Script
-        document.addEventListener('DOMContentLoaded', fetchProducts);
+        // --- Shopping Cart Logic ---
+        function getCart() {
+            const cart = localStorage.getItem('shoppingCart');
+            return cart ? JSON.parse(cart) : [];
+        }
+
+        function saveCart(cart) {
+            localStorage.setItem('shoppingCart', JSON.stringify(cart));
+            updateCartCount();
+        }
+
+        function updateCartCount() {
+            const cart = getCart();
+            const count = cart.reduce((total, item) => total + item.quantity, 0);
+            document.getElementById('cart-count').innerText = count;
+            document.getElementById('mobile-cart-count').innerText = count; // Update mobile cart count
+        }
+
+        function addToCart(productId, productName, price, imageUrl, description, vendorName, printfulProductId, printfulVariantIds) {
+            const cart = getCart();
+            const existingItem = cart.find(item => item.id === productId);
+
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    id: productId,
+                    name: productName,
+                    price: price,
+                    image_url: imageUrl, // Store the resolved image URL
+                    description: description,
+                    vendor_name: vendorName,
+                    printful_product_id: printfulProductId,
+                    printful_variant_ids: printfulVariantIds,
+                    quantity: 1
+                });
+            }
+            saveCart(cart);
+            alert(`${productName} added to cart! Quantity: ${existingItem ? existingItem.quantity : 1}`);
+        }
+
+        // --- Dynamic Product Loading Script ---
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchProducts();
+            updateCartCount(); // Initialize cart count on page load
+        });
 
         async function fetchProducts() {
             const productListDiv = document.getElementById('product-list');
@@ -213,16 +264,12 @@
                     products.forEach(product => {
                         let imageUrl = product.image_url;
 
-                        // Distinguish between backend-served static paths and full Printful URLs
+                        // Distinguish between backend-served static paths for local products and full Printful URLs
                         if (product.vendor_name === 'Kytran Local Goods') {
                             // Local products from Kytran Local Goods
-                            // Assume product.image_url will be something like "/static/image.png" or just "image.png"
-                            // If it's "/static/...", use that. Otherwise, assume it's directly in /assets.
-                            if (imageUrl.startsWith('/static/')) {
-                                imageUrl = `https://www.kytranempowerment.com${imageUrl}`;
-                            } else { // Assume it's a simple filename like "under-armour-mens-polo-shirt-navy-front.png" meant for /assets
-                                imageUrl = `https://www.kytranempowerment.com/assets/${imageUrl}`;
-                            }
+                            // Assume product.image_url will be something like "image.png" (filename only)
+                            // which are expected to be in the /assets/ folder on GitHub Pages
+                            imageUrl = `https://www.kytranempowerment.com/assets/${imageUrl}`;
                         }
                         // For Printful products, product.image_url should already be a full URL (e.g., from Printful's CDN)
                         // If image_url is still empty or null, use a generic placeholder
@@ -235,12 +282,30 @@
                                     <h3>${product.name}</h3>
                                     <p class="description">${product.description || 'No description available.'}</p>
                                     <p class="price">$${product.price.toFixed(2)}</p>
-                                    <a href="#" class="btn-primary">View Details</a>
+                                    <a href="product_detail.html?id=${product.id}" class="btn-primary">View Details</a>
                                 </div>
                             </div>
                         `;
                         productListDiv.innerHTML += productCard;
                     });
+
+                    // Attach event listeners to "Add to Cart" buttons AFTER products are rendered
+                    document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+                        button.addEventListener('click', (event) => {
+                            const btn = event.target;
+                            addToCart(
+                                btn.dataset.productId,
+                                btn.dataset.productName,
+                                parseFloat(btn.dataset.productPrice),
+                                btn.dataset.productImage,
+                                btn.dataset.productDescription,
+                                btn.dataset.vendorName,
+                                btn.dataset.printfulProductId,
+                                btn.dataset.printfulVariantIds // Pass as string, parse later if needed
+                            );
+                        });
+                    });
+
                 } else {
                     productListDiv.innerHTML = '<p class="merch-loading">No products found at this time.</p>';
                 }
