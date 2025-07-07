@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart - Kytran Empowerment</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lato:wght@300;700&family=League+Spartan:wght@700&family=Montserrat+Alternates:wght@600;700&family=Open+Sans&family=Oswald:wght@400;700&family=Playfair+Display+SC:ital,wght@1,400&family=Raleway:wght@500&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="logo.png">
+    <style>
+        /* Specific styles for the Shopping Cart section */
+        .cart-section {
+            padding: 60px 0;
+            background-color: #f5f5f5; /* Light neutral to match body */
+            min-height: calc(100vh - 100px - 100px); /* Adjust based on header/footer height */
+        }
+        .cart-container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 40px;
+        }
+        .cart-container h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.5em;
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 0.8em;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-align: center;
+        }
+        .cart-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        .cart-table th, .cart-table td {
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+            text-align: left;
+            font-family: 'Open Sans', sans-serif;
+            color: #555;
+        }
+        .cart-table th {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.1em;
+            color: #2c3e50;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+        .cart-item-image {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            margin-right: 15px;
+            vertical-align: middle;
+        }
+        .cart-item-name {
+            font-weight: bold;
+            color: #333;
+        }
+        .cart-item-price {
+            font-family: 'Oswald', sans-serif;
+            font-weight: 700;
+            color: #e67e22; /* Accent color for price */
+        }
+        .cart-item-quantity input {
+            width: 60px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            text-align: center;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 1em;
+        }
+        .cart-item-remove button {
+            background: none;
+            border: none;
+            color: #e74c3c; /* Red for remove */
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        .cart-item-remove button:hover {
+            color: #c0392b;
+        }
+        .cart-summary {
+            text-align: right;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 1.1em;
+            color: #333;
+        }
+        .cart-summary p {
+            margin-bottom: 10px;
+        }
+        .cart-summary .total-price {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+        .cart-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        .cart-actions .btn-secondary,
+        .cart-actions .btn-primary {
+            display: inline-block;
+            padding: 12px 25px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+        }
+        .cart-actions .btn-secondary {
+            background-color: #95a5a6; /* Grey for continue shopping */
+            color: #fff;
+        }
+        .cart-actions .btn-secondary:hover {
+            background-color: #7f8c8d;
+            transform: translateY(-2px);
+        }
+        .cart-actions .btn-primary {
+            background-color: #3498db; /* Blue for checkout */
+            color: #fff;
+        }
+        .cart-actions .btn-primary:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        .empty-cart-message {
+            text-align: center;
+            font-family: 'Open Sans', sans-serif;
+            color: #777;
+            padding: 40px;
+            font-size: 1.1em;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .cart-container {
+                padding: 20px;
+                margin-top: 20px;
+            }
+            .cart-table th, .cart-table td {
+                padding: 10px 0;
+                font-size: 0.9em;
+            }
+            .cart-item-image {
+                width: 60px;
+                height: 60px;
+            }
+            .cart-item-quantity input {
+                width: 45px;
+                padding: 5px;
+            }
+            .cart-item-remove button {
+                font-size: 1em;
+            }
+            .cart-summary {
+                font-size: 1em;
+            }
+            .cart-summary .total-price {
+                font-size: 1.3em;
+            }
+            .cart-actions {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .cart-actions .btn-secondary,
+            .cart-actions .btn-primary {
+                width: 100%;
+                padding: 10px 20px;
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <img src="logo.png" alt="Kytran Empowerment Logo" class="logo">
+            <div class="header-text">
+                <h1>KYTRAN EMPOWERMENT INC.</h1>
+                <p class="subtitle">Strength through Strategy. Brotherhood through Purpose.</p>
+            </div>
+
+            <button class="mobile-menu-icon" aria-label="Toggle navigation">☰</button>
+
+            <nav class="main-nav">
+                <a href="index.html">Home</a>
+                <a href="services.html">Services</a>
+                <a href="membership.html">Membership</a>
+                <a href="merch_store.html">Shop</a>
+                <a href="books.html">Books</a>
+                <a href="submit_story.html">Submit Story</a>
+                <a href="https://k1.kytranempowerment.com/login">Member Login</a>
+                <a href="cart.html">
+                    Shopping Cart (<span id="cart-count">0</span>)
+                </a>
+            </nav>
+        </div>
+
+        <div class="mobile-menu-overlay" id="mobileMenu">
+            <a href="index.html">Home</a>
+            <a href="services.html">Services</a>
+            <a href="membership.html">Membership</a>
+            <a href="merch_store.html">Shop</a>
+            <a href="books.html">Books</a>
+            <a href="submit_story.html">Submit Story</a>
+            <a href="https://k1.kytranempowerment.com/login">Member Login</a>
+            <a href="cart.html">Shopping Cart (<span id="mobile-cart-count">0</span>)</a>
+        </div>
+    </header>
+
+    <section class="cart-section">
+        <div class="container">
+            <div class="cart-container">
+                <h2>Your Shopping Cart</h2>
+                <div id="cart-items-display">
+                    <p class="empty-cart-message" style="display: none;">Your cart is empty. <a href="merch_store.html">Start shopping!</a></p>
+                </div>
+                <div id="cart-summary-display" style="display: none;">
+                    <div class="cart-summary">
+                        <p>Subtotal: $<span id="cart-subtotal">0.00</span></p>
+                        <p class="total-price">Total: $<span id="cart-total">0.00</span></p>
+                    </div>
+                    <div class="cart-actions">
+                        <a href="merch_store.html" class="btn-secondary">Continue Shopping</a>
+                        <button class="btn-primary" onclick="proceedToCheckout()">Proceed to Checkout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Kytran Empowerment Inc. All rights reserved.</p>
+            <p class="caption">"Strength through Strategy. Brotherhood through Purpose."</p>
+        </div>
+    </footer>
+
+    <div id="google_translate_element" style="text-align: center; margin-top: 20px;"></div>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script src="script.js"></script>
+    <script>
+        // Mobile menu toggle logic (copied from script.js, or ensure script.js is loaded)
+        document.addEventListener('DOMContentLoaded', () => {
+            const mobileMenuIcon = document.querySelector('.mobile-menu-icon');
+            const mobileMenuOverlay = document.getElementById('mobileMenu');
+
+            if (mobileMenuIcon && mobileMenuOverlay) {
+                mobileMenuIcon.addEventListener('click', () => {
+                    mobileMenuOverlay.classList.toggle('active-menu');
+                    document.body.style.overflow = mobileMenuOverlay.classList.contains('active-menu') ? 'hidden' : '';
+                });
+
+                mobileMenuOverlay.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        mobileMenuOverlay.classList.remove('active-menu');
+                        document.body.style.overflow = '';
+                    });
+                });
+            }
+        });
+
+        // --- Shopping Cart Logic (Re-used from other pages, expanded for cart.html) ---
+        function getCart() {
+            const cart = localStorage.getItem('shoppingCart');
+            return cart ? JSON.parse(cart) : [];
+        }
+
+        function saveCart(cart) {
+            localStorage.setItem('shoppingCart', JSON.stringify(cart));
+            updateCartCount();
+            renderCartItems(); // Re-render cart items whenever the cart is saved
+        }
+
+        function updateCartCount() {
+            const cart = getCart();
+            const count = cart.reduce((total, item) => total + item.quantity, 0);
+            document.getElementById('cart-count').innerText = count;
+            document.getElementById('mobile-cart-count').innerText = count; // Update mobile cart count
+        }
+
+        function addToCart(productId, productName, price, imageUrl, description, vendorName, printfulProductId, printfulVariantIds) {
+            const cart = getCart();
+            const existingItem = cart.find(item => item.id === productId);
+
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    id: productId,
+                    name: productName,
+                    price: price,
+                    image_url: imageUrl,
+                    description: description,
+                    vendor_name: vendorName,
+                    printful_product_id: printfulProductId,
+                    printful_variant_ids: printfulVariantIds,
+                    quantity: 1
+                });
+            }
+            saveCart(cart);
+            alert(`${productName} added to cart! Quantity: ${existingItem ? existingItem.quantity : 1}`);
+        }
+
+        function updateQuantity(productId, newQuantity) {
+            let cart = getCart();
+            const itemIndex = cart.findIndex(item => item.id === productId);
+
+            if (itemIndex > -1) {
+                newQuantity = parseInt(newQuantity);
+                if (newQuantity > 0) {
+                    cart[itemIndex].quantity = newQuantity;
+                } else {
+                    // If quantity is 0 or less, remove the item
+                    cart.splice(itemIndex, 1);
+                }
+                saveCart(cart);
+            }
+        }
+
+        function removeItem(productId) {
+            if (confirm("Are you sure you want to remove this item from your cart?")) {
+                let cart = getCart();
+                cart = cart.filter(item => item.id !== productId);
+                saveCart(cart);
+            }
+        }
+
+        function renderCartItems() {
+            const cart = getCart();
+            const cartItemsDisplay = document.getElementById('cart-items-display');
+            const cartSummaryDisplay = document.getElementById('cart-summary-display');
+            const emptyCartMessage = document.querySelector('.empty-cart-message');
+            let subtotal = 0;
+
+            if (cart.length === 0) {
+                cartItemsDisplay.innerHTML = ''; // Clear any existing table
+                emptyCartMessage.style.display = 'block';
+                cartSummaryDisplay.style.display = 'none';
+                return;
+            }
+
+            emptyCartMessage.style.display = 'none';
+            cartSummaryDisplay.style.display = 'block';
+
+            let cartHtml = `
+                <table class="cart-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Subtotal</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            cart.forEach(item => {
+                const itemSubtotal = item.price * item.quantity;
+                subtotal += itemSubtotal;
+
+                cartHtml += `
+                    <tr>
+                        <td>
+                            <img src="${item.image_url}" alt="${item.name}" class="cart-item-image">
+                            <span class="cart-item-name">${item.name}</span>
+                        </td>
+                        <td class="cart-item-price">$${item.price.toFixed(2)}</td>
+                        <td class="cart-item-quantity">
+                            <input type="number" value="${item.quantity}" min="1"
+                                onchange="updateQuantity('${item.id}', this.value)">
+                        </td>
+                        <td class="cart-item-price">$${itemSubtotal.toFixed(2)}</td>
+                        <td class="cart-item-remove">
+                            <button onclick="removeItem('${item.id}')">✖</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            cartHtml += `
+                    </tbody>
+                </table>
+            `;
+
+            document.getElementById('cart-subtotal').innerText = subtotal.toFixed(2);
+            // For now, total is same as subtotal. Add shipping/tax logic here later if needed.
+            document.getElementById('cart-total').innerText = subtotal.toFixed(2);
+
+            cartItemsDisplay.innerHTML = cartHtml;
+        }
+
+        function proceedToCheckout() {
+            // This function will be expanded later to handle the actual checkout process
+            alert("Proceeding to checkout! (Functionality to be implemented)");
+            // You would typically redirect to a checkout page or initiate a payment flow here
+            // window.location.href = "checkout.html";
+        }
+
+        // Initialize cart on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCartCount();
+            renderCartItems();
+        });
+    </script>
+</body>
+</html>
