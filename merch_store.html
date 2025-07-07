@@ -261,7 +261,7 @@
                         if (product.vendor_name === 'Kytran Local Goods') {
                             // Local products from Kytran Local Goods
                             // Assume product.image_url is just a filename like "image.png"
-                            imageUrl = `assets/${imageUrl}`; // CORRECTED: relative path to assets/
+                            [cite_start]imageUrl = `assets/${imageUrl}`; // CORRECTED: relative path to assets/ [cite: 1]
                         }
                         // For Printful products, product.image_url should already be a full URL (e.g., from Printful's CDN)
                         imageUrl = imageUrl || 'https://via.placeholder.com/250?text=No+Image';
@@ -271,7 +271,6 @@
                                 <img src="${imageUrl}" alt="${product.name}">
                                 <div class="product-card-content">
                                     <h3>${product.name}</h3>
-                                    <p class="description">${product.description || 'No description available.'}</p>
                                     <p class="price">$${product.price.toFixed(2)}</p>
                                     <a href="product_detail.html?id=${product.id}" class="btn-primary">View Details</a>
                                 </div>
@@ -292,7 +291,7 @@
                                 btn.dataset.productDescription,
                                 btn.dataset.vendorName,
                                 btn.dataset.printfulProductId,
-                                btn.dataset.printfulVariantIds // Pass as string, parse later if needed
+                                btn.dataset.printfulVariantIds // Pass as string from data-attribute
                             );
                         });
                     });
