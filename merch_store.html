@@ -4,10 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shop - Kytran Empowerment</title>
-    <link rel="stylesheet" href="style.css"> <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lato:wght@300;700&family=League+Spartan:wght@700&family=Montserrat+Alternates:wght@600;700&family=Open+Sans&family=Oswald:wght@400;700&family=Playfair+Display+SC:ital,wght@1,400&family=Raleway:wght@500&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="logo.png"> <style>
+    <link rel="icon" type="image/png" href="logo.png">
+    <style>
         /* Specific styles for the Merch Store section */
         .merch-section {
             padding: 60px 0;
@@ -106,63 +108,17 @@
         .merch-error {
             color: #e74c3c;
         }
-
-        /* --- Custom Styling for Shopping Cart Button within main-nav --- */
-        /* These styles override general nav link styles to make it look like btn-nav */
-        .main-nav #cart-link { 
-            /* Properties from .btn-nav in your style.css for buttons */
-            background-color: #e67e22; /* Primary brand color */
-            color: #fff;
-            padding: 10px 20px; /* Adjust padding to match Member Login button */
-            border-radius: 5px;
-            text-decoration: none;
-            font-family: 'Oswald', sans-serif;
-            font-size: 1.1em;
-            font-weight: 400; /* As seen in index.html for btn-nav */
-            border: none;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            
-            /* Specific positioning for cart button */
-            display: inline-block; /* Crucial for padding/margin */
-            box-sizing: border-box; /* Include padding in element's total width/height */
-            margin-left: 20px; /* Space from Member Login button */
-            text-align: center; /* Center text within button */
-            min-width: 120px; /* Give it a minimum width like other buttons */
-        }
-
-        .main-nav #cart-link:hover {
-            background-color: #d35400;
-            transform: translateY(-2px);
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .merch-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-            /* Ensure cart link on mobile menu doesn't try to be a button unless explicitly wanted */
-            .mobile-menu-overlay #cart-link { /* Target if it exists in mobile overlay */
-                background-color: transparent;
-                color: #fff; /* Or whatever default mobile menu link color is */
-                padding: 0;
-                margin: 0;
-                min-width: auto;
-                text-align: left;
-                font-size: 1em; /* Reset font size if needed */
-            }
-        }
     </style>
 </head>
 <body>
     <header>
         <div class="container header-content">
-            <img src="logo.png" alt="Kytran Empowerment Logo" class="logo"> <div class="header-text">
+            <img src="logo.png" alt="Kytran Empowerment Logo" class="logo">
+            <div class="header-text">
                 <h1>KYTRAN EMPOWERMENT INC.</h1>
                 <p class="subtitle">Strength through Strategy. Brotherhood through Purpose.</p>
             </div>
-            
+
             <button class="mobile-menu-icon" aria-label="Toggle navigation">☰</button>
 
             <nav class="main-nav">
@@ -173,7 +129,7 @@
                 <a href="books.html">Books</a>
                 <a href="submit_story.html">Submit Story</a>
                 <a href="https://k1.kytranempowerment.com/login" class="btn-nav">Member Login</a>
-                <a href="cart.html" id="cart-link">
+                <a href="cart.html">
                     Shopping Cart (<span id="cart-count">0</span>)
                 </a>
             </nav>
@@ -186,7 +142,9 @@
             <a href="merch_store.html">Shop</a>
             <a href="books.html">Books</a>
             <a href="submit_story.html">Submit Story</a>
-            <a href="https://k1.kytranempowerment.com/login">Member Login</a> <a href="cart.html">Shopping Cart (<span id="mobile-cart-count">0</span>)</a> </div>
+            <a href="https://k1.kytranempowerment.com/login">Member Login</a>
+            <a href="cart.html">Shopping Cart (<span id="mobile-cart-count">0</span>)</a>
+        </div>
     </header>
 
     <section class="merch-section">
@@ -194,7 +152,7 @@
             <h2 class="section-header">Our Merchandise</h2>
             <div id="product-list" class="merch-grid">
                 <p class="merch-loading">Loading products...</p>
-                </div>
+            </div>
         </div>
     </section>
 
@@ -212,7 +170,8 @@
         }
     </script>
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-    <script src="script.js"></script> <script>
+    <script src="script.js"></script>
+    <script>
         // Mobile menu toggle logic - ensures it's attached after DOMContentLoaded
         document.addEventListener('DOMContentLoaded', () => {
             const mobileMenuIcon = document.querySelector('.mobile-menu-icon');
