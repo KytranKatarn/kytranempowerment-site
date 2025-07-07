@@ -4,12 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="page-title">Product Details - Kytran Empowerment</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="style.css"> <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lato:wght@300;700&family=League+Spartan:wght@700&family=Montserrat+Alternates:wght@600;700&family=Open+Sans&family=Oswald:wght@400;700&family=Playfair+Display+SC:ital,wght@1,400&family=Raleway:wght@500&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="logo.png">
-    <style>
+    <link rel="icon" type="image/png" href="logo.png"> <style>
         /* Specific styles for the Product Detail section */
         .product-detail-section {
             padding: 60px 0;
@@ -100,6 +98,23 @@
             color: #e74c3c;
         }
 
+        /* Styles for the cart link (replicated for consistency) */
+        .main-nav .btn-nav#cart-link {
+            margin-left: 20px;
+            padding: 10px 15px;
+            background-color: #e67e22;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .main-nav .btn-nav#cart-link:hover {
+            background-color: #d35400;
+        }
+
+
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .product-detail-container {
@@ -132,7 +147,7 @@
                 <h1>KYTRAN EMPOWERMENT INC.</h1>
                 <p class="subtitle">Strength through Strategy. Brotherhood through Purpose.</p>
             </div>
-
+            
             <button class="mobile-menu-icon" aria-label="Toggle navigation">☰</button>
 
             <nav class="main-nav">
@@ -143,9 +158,8 @@
                 <a href="books.html">Books</a>
                 <a href="submit_story.html">Submit Story</a>
                 <a href="https://k1.kytranempowerment.com/login">Member Login</a>
-                <a href="cart.html" class="cart-icon" id="cart-link">
-                    <img src="assets/cart-icon.png" alt="Shopping Cart">
-                    <span class="cart-count" id="cart-count">0</span>
+                <a href="cart.html" class="btn-nav" id="cart-link">
+                    Shopping Cart (<span id="cart-count">0</span>)
                 </a>
             </nav>
         </div>
@@ -182,8 +196,7 @@
         }
     </script>
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-    <script src="script.js"></script>
-    <script>
+    <script src="script.js"></script> <script>
         // Mobile menu toggle (copied from script.js, or ensure script.js is loaded)
         document.addEventListener('DOMContentLoaded', () => {
             const mobileMenuIcon = document.querySelector('.mobile-menu-icon');
@@ -284,35 +297,38 @@
 
                     // Distinguish between backend-served static paths for local products and full Printful URLs
                     if (product.vendor_name === 'Kytran Local Goods') {
-                        imageUrl = `https://www.kytranempowerment.com/assets/${imageUrl}`;
-                        if (!product.image_url.startsWith('/static/') && !product.image_url.startsWith('/assets/')) {
-                            imageUrl = `https://www.kytranempowerment.com/assets/${product.image_url}`;
-                        }
+                        // Local products from Kytran Local Goods
+                        // Assumes product.image_url is just a filename like "image.png"
+                        imageUrl = `assets/${imageUrl}`; // CORRECTED: relative path to assets/
                     }
+                    // For Printful products, product.image_url should already be a full URL (e.g., from Printful's CDN)
+                    // If image_url is still empty or null, use a generic placeholder
                     imageUrl = imageUrl || 'https://via.placeholder.com/400?text=No+Image'; // Larger placeholder for detail page
 
                     productDetailDiv.innerHTML = `
-                        <div class="product-detail-image">
-                            <img src="${imageUrl}" alt="${product.name}">
-                        </div>
-                        <div class="product-detail-info">
-                            <h2>${product.name}</h2>
-                            <p class="price">$${product.price.toFixed(2)}</p>
-                            <p class="description">${product.description || 'No description available for this product.'}</p>
-                            <p class="vendor-info"><strong>Vendor:</strong> ${product.vendor_name || 'N/A'}</p>
-                            <p class="category-info"><strong>Category:</strong> ${product.category || 'N/A'}</p>
-                            <p class="stock-info"><strong>Availability:</strong> ${product.stock_status || 'N/A'}</p>
-                            <button class="btn-primary add-to-cart-btn"
-                                    data-product-id="${product.id}"
-                                    data-product-name="${product.name}"
-                                    data-product-price="${product.price}"
-                                    data-product-image="${imageUrl}"
-                                    data-product-description="${product.description || ''}"
-                                    data-vendor-name="${product.vendor_name || ''}"
-                                    data-printful-product-id="${product.printful_product_id || ''}"
-                                    data-printful-variant-ids="${product.printful_variant_ids || ''}">
-                                Add to Cart
-                            </button>
+                        <div class="product-detail-container">
+                            <div class="product-detail-image">
+                                <img src="${imageUrl}" alt="${product.name}">
+                            </div>
+                            <div class="product-detail-info">
+                                <h2>${product.name}</h2>
+                                <p class="price">$${product.price.toFixed(2)}</p>
+                                <p class="description">${product.description || 'No description available for this product.'}</p>
+                                <p class="vendor-info"><strong>Vendor:</strong> ${product.vendor_name || 'N/A'}</p>
+                                <p class="category-info"><strong>Category:</strong> ${product.category || 'N/A'}</p>
+                                <p class="stock-info"><strong>Availability:</strong> ${product.stock_status || 'N/A'}</p>
+                                <button class="btn-primary add-to-cart-btn"
+                                        data-product-id="${product.id}"
+                                        data-product-name="${product.name}"
+                                        data-product-price="${product.price}"
+                                        data-product-image="${imageUrl}"
+                                        data-product-description="${product.description || ''}"
+                                        data-vendor-name="${product.vendor_name || ''}"
+                                        data-printful-product-id="${product.printful_product_id || ''}"
+                                        data-printful-variant-ids="${product.printful_variant_ids || ''}">
+                                    Add to Cart
+                                </button>
+                            </div>
                         </div>
                     `;
 
