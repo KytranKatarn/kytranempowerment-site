@@ -107,6 +107,35 @@
             color: #e74c3c;
         }
 
+        /* Styles for the cart icon */
+        .cart-icon {
+            position: relative;
+            margin-left: 20px; /* Space from Member Login button */
+            cursor: pointer;
+        }
+
+        .cart-icon img {
+            width: 30px; /* Adjust size as needed */
+            height: 30px;
+            filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg) brightness(102%) contrast(102%); /* White color */
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: #e67e22; /* Accent color */
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 0.7em;
+            font-weight: bold;
+            min-width: 15px; /* Ensure it's round even with single digit */
+            text-align: center;
+            line-height: 1.2;
+            pointer-events: none; /* Make sure clicks go through to the icon */
+        }
+
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .merch-grid {
@@ -119,8 +148,7 @@
 <body>
     <header>
         <div class="container header-content">
-            <img src="logo.png" alt="Kytran Empowerment Logo" class="logo">
-            <div class="header-text">
+            <img src="logo.png" alt="Kytran Empowerment Logo" class="logo"> <div class="header-text">
                 <h1>KYTRAN EMPOWERMENT INC.</h1>
                 <p class="subtitle">Strength through Strategy. Brotherhood through Purpose.</p>
             </div>
@@ -134,10 +162,9 @@
                 <a href="merch_store.html">Shop</a>
                 <a href="books.html">Books</a>
                 <a href="submit_story.html">Submit Story</a>
-                <a href="https://k1.kytranempowerment.com/login" class="btn-nav">Member Login</a>
+                <a href="https://k1.kytranempowerment.com/login">Member Login</a>
                 <a href="cart.html" class="cart-icon" id="cart-link">
-                    <img src="assets/cart-icon.png" alt="Shopping Cart">
-                    <span class="cart-count" id="cart-count">0</span>
+                    <img src="assets/cart-icon.png" alt="Shopping Cart"> <span class="cart-count" id="cart-count">0</span>
                 </a>
             </nav>
         </div>
@@ -149,7 +176,7 @@
             <a href="merch_store.html">Shop</a>
             <a href="books.html">Books</a>
             <a href="submit_story.html">Submit Story</a>
-            <a href="https://k1.kytranempowerment.com/login" class="btn-nav">Member Login</a>
+            <a href="https://k1.kytranempowerment.com/login">Member Login</a>
             <a href="cart.html">Shopping Cart (<span id="mobile-cart-count">0</span>)</a>
         </div>
     </header>
@@ -177,8 +204,7 @@
         }
     </script>
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-    <script src="script.js"></script>
-    <script>
+    <script src="script.js"></script> <script>
         // Mobile menu toggle logic - ensures it's attached after DOMContentLoaded
         document.addEventListener('DOMContentLoaded', () => {
             const mobileMenuIcon = document.querySelector('.mobile-menu-icon');
@@ -269,7 +295,7 @@
                             // Local products from Kytran Local Goods
                             // Assume product.image_url will be something like "image.png" (filename only)
                             // which are expected to be in the /assets/ folder on GitHub Pages
-                            imageUrl = `https://www.kytranempowerment.com/assets/${imageUrl}`;
+                            imageUrl = `assets/${imageUrl}`; // CORRECTED: relative path to assets/
                         }
                         // For Printful products, product.image_url should already be a full URL (e.g., from Printful's CDN)
                         // If image_url is still empty or null, use a generic placeholder
