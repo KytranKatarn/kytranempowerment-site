@@ -68,7 +68,7 @@
             margin-bottom: 1.5em;
         }
         .product-detail-info .vendor-info,
-        .product-detail-info .category-info,
+        /* Removed .product-detail-info .category-info, */
         .product-detail-info .stock-info {
             font-family: 'Lato', sans-serif;
             font-size: 0.95em;
@@ -164,6 +164,13 @@
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <script src="script.js"></script>
     <script>
+        // Global variable to store the session ID
+        let userSessionId = localStorage.getItem('userSessionId');
+        if (!userSessionId) {
+            userSessionId = crypto.randomUUID(); // Generate a new UUID if not found
+            localStorage.setItem('userSessionId', userSessionId);
+        }
+
         // Mobile menu toggle (copied from script.js, or ensure script.js is loaded)
         document.addEventListener('DOMContentLoaded', () => {
             const mobileMenuIcon = document.querySelector('.mobile-menu-icon');
@@ -184,47 +191,65 @@
             }
         });
 
-        // --- Shopping Cart Logic (Copied from merch_store.html to be available here too) ---
-        function getCart() {
-            const cart = localStorage.getItem('shoppingCart');
-            return cart ? JSON.parse(cart) : [];
-        }
+        // --- Shopping Cart Logic (UPDATED TO USE BACKEND API) ---
 
-        function saveCart(cart) {
-            localStorage.setItem('shoppingCart', JSON.stringify(cart));
-            updateCartCount();
-        }
+        // This function will now fetch cart items from the backend
+        async function updateCartCount() {
+            try {
+                const response = await fetch(`https://store.kytranempowerment.com/api/cart/${userSessionId}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                const cart = data.cart_items || [];
+                const count = cart.reduce((total, item) => total + item.quantity, 0);
 
-        function updateCartCount() {
-            const cart = getCart();
-            const count = cart.reduce((total, item) => total + item.quantity, 0);
-            document.getElementById('cart-count').innerText = count;
-            document.getElementById('mobile-cart-count').innerText = count; // Update mobile cart count
-        }
+                const cartCountElement = document.getElementById('cart-count');
+                if (cartCountElement) cartCountElement.innerText = count;
+                const mobileCartCountElement = document.getElementById('mobile-cart-count');
+                if (mobileCartCountElement) mobileCartCountElement.innerText = count;
 
-        function addToCart(productId, productName, price, imageUrl, description, vendorName, printfulProductId, printfulVariantIds) {
-            const cart = getCart();
-            const existingItem = cart.find(item => item.id === productId);
-
-            if (existingItem) {
-                existingItem.quantity += 1;
-            } else {
-                cart.push({
-                    id: productId,
-                    name: productName,
-                    price: price,
-                    image_url: imageUrl, // Store the resolved image URL
-                    description: description,
-                    vendor_name: vendorName,
-                    printful_product_id: printfulProductId,
-                    printful_variant_ids: printfulVariantIds, // This should now be a JavaScript array
-                    quantity: 1
-                });
+            } catch (error) {
+                console.error('Error updating cart count from backend:', error);
+                // Fallback to 0 if there's an error
+                const cartCountElement = document.getElementById('cart-count');
+                if (cartCountElement) cartCountElement.innerText = '0';
+                const mobileCartCountElement = document.getElementById('mobile-cart-count');
+                if (mobileCartCountElement) mobileCartCountElement.innerText = '0';
             }
-            saveCart(cart);
-            alert(`${productName} added to cart! Quantity: ${existingItem ? existingItem.quantity : 1}`);
         }
-        // --- End Shopping Cart Logic ---
+
+        // Modified addToCart function to send data to backend
+        async function addToCartBackend(productId, quantity = 1) {
+            try {
+                const response = await fetch('https://store.kytranempowerment.com/api/cart/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        session_id: userSessionId,
+                        product_id: productId,
+                        quantity: quantity
+                        // In a real scenario, you'd also send selected printful_variant_id here
+                        // For now, the backend will store the full product's printful_variant_ids JSON string
+                    }),
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.detail || `HTTP error! status: ${response.status}`);
+                }
+
+                alert(result.message);
+                updateCartCount(); // Update the cart count from backend after adding
+            } catch (error) {
+                console.error('Error adding product to cart via backend:', error);
+                alert(`Failed to add product to cart: ${error.message}`);
+            }
+        }
+        // --- End Shopping Cart Logic (UPDATED) ---
 
 
         // Dynamic Product Detail Loading Script
@@ -282,17 +307,9 @@
                                 <p class="price">$${product.price.toFixed(2)}</p>
                                 <p class="description">${product.description || 'No description available for this product.'}</p>
                                 <p class="vendor-info"><strong>Vendor:</strong> ${product.vendor_name || 'N/A'}</p>
-                                <p class="category-info"><strong>Category:</strong> ${product.category || 'N/A'}</p>
                                 <p class="stock-info"><strong>Availability:</strong> ${product.stock_status || 'N/A'}</p>
                                 <button class="btn-primary add-to-cart-btn"
-                                        data-product-id="${product.id}"
-                                        data-product-name="${product.name}"
-                                        data-product-price="${product.price}"
-                                        data-product-image="${imageUrl}"
-                                        data-product-description="${product.description || ''}"
-                                        data-vendor-name="${product.vendor_name || ''}"
-                                        data-printful-product-id="${product.printful_product_id || ''}"
-                                        data-printful-variant-ids="${JSON.stringify(product.printful_variant_ids || [])}">
+                                        data-product-id="${product.id}">
                                     Add to Cart
                                 </button>
                             </div>
@@ -302,15 +319,9 @@
                     // Attach event listener for the "Add to Cart" button on the detail page
                     document.querySelector('.add-to-cart-btn').addEventListener('click', (event) => {
                         const btn = event.target;
-                        addToCart(
-                            btn.dataset.productId,
-                            btn.dataset.productName,
-                            parseFloat(btn.dataset.productPrice),
-                            btn.dataset.productImage,
-                            btn.dataset.productDescription,
-                            btn.dataset.vendorName,
-                            btn.dataset.printfulProductId,
-                            JSON.parse(btn.dataset.printfulVariantIds) // Parse the JSON string back into an array
+                        addToCartBackend(
+                            btn.dataset.productId
+                            // Quantity is hardcoded to 1 for now, but could be a selectable input
                         );
                     });
 
