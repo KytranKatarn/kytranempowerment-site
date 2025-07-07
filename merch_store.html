@@ -147,6 +147,22 @@
         <div class="container">
             <h2 class="section-header">Our Merchandise</h2>
             <div id="product-list" class="merch-grid">
+                <div class="product-card">
+                    <img src="assets/kytran_tshirt_local.png" alt="Kytran Empowerment T-Shirt">
+                    <div class="product-card-content">
+                        <h3>KYTRAN EMPOWERMENT T-SHIRT</h3>
+                        <p class="price">$29.99</p>
+                        <a href="product_detail.html?id=tshirt_local_id_example" class="btn-primary">View Details</a>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <img src="assets/empowerment_journal_local.png" alt="Empowerment Journal">
+                    <div class="product-card-content">
+                        <h3>EMPOWERMENT JOURNAL</h3>
+                        <p class="price">$15.99</p>
+                        <a href="product_detail.html?id=journal_local_id_example" class="btn-primary">View Details</a>
+                    </div>
+                </div>
                 <p class="merch-loading">Loading products...</p>
             </div>
         </div>
@@ -201,7 +217,6 @@
 
         function updateCartCount() {
             const cart = getCart();
-            // This function is still in merch_store.html even if cart link is not. It prevents errors.
             const count = cart.reduce((total, item) => total + item.quantity, 0);
             const cartCountElement = document.getElementById('cart-count');
             if (cartCountElement) {
@@ -243,8 +258,16 @@
         });
 
         async function fetchProducts() {
-            const productListDiv = document.getElementById('product-list');
-            productListDiv.innerHTML = '<p class="merch-loading">Loading products...</p>';
+            // Find the <p> element for "Loading products..." inside the merch-grid
+            const merchLoadingElement = document.querySelector('#product-list .merch-loading');
+            
+            // Get a reference to the merch-grid itself
+            const merchGrid = document.getElementById('product-list');
+
+            // Initially show loading message below hardcoded items
+            if (merchLoadingElement) {
+                merchLoadingElement.style.display = 'block';
+            }
 
             try {
                 const response = await fetch('https://store.kytranempowerment.com/api/products');
@@ -255,12 +278,13 @@
                 const products = data.products;
 
                 if (products && products.length > 0) {
-                    productListDiv.innerHTML = '';
-                    products.forEach(product => {
+                    // Filter out any products from the dynamic fetch that are explicitly "Kytran Local Goods"
+                    // because we are now hardcoding those. This prevents duplicates.
+                    const dynamicProducts = products.filter(product => product.vendor_name !== 'Kytran Local Goods');
+
+                    dynamicProducts.forEach(product => {
                         let imageUrl = product.image_url;
-                        if (product.vendor_name === 'Kytran Local Goods') {
-                            imageUrl = `assets/${imageUrl}`;
-                        }
+                        // For Printful products, product.image_url should already be a full URL (e.g., from Printful's CDN)
                         imageUrl = imageUrl || 'https://via.placeholder.com/250?text=No+Image';
 
                         const productCard = `
@@ -268,21 +292,34 @@
                                 <img src="${imageUrl}" alt="${product.name}">
                                 <div class="product-card-content">
                                     <h3>${product.name}</h3>
-                                    <p class="description">${product.description || 'No description available.'}</p>
                                     <p class="price">$${product.price.toFixed(2)}</p>
                                     <a href="product_detail.html?id=${product.id}" class="btn-primary">View Details</a>
                                 </div>
                             </div>
                         `;
-                        productListDiv.innerHTML += productCard;
+                        // Append dynamic products directly to the grid, after hardcoded ones.
+                        merchGrid.innerHTML += productCard;
                     });
                 } else {
-                    productListDiv.innerHTML = '<p class="merch-loading">No products found at this time.</p>';
+                    // Only show "No products found" if there were no dynamic products after filtering
+                    if (merchGrid.children.length <= 2) { // Assuming 2 hardcoded items + loading message initially
+                         merchLoadingElement.innerText = 'No other products found at this time.';
+                    } else {
+                        // If hardcoded items exist and no dynamic, just hide loading
+                        merchLoadingElement.style.display = 'none';
+                    }
                 }
 
             } catch (error) {
                 console.error('Error fetching products:', error);
-                productListDiv.innerHTML = `<p class="merch-error">Failed to load products. Please try again later. Error: ${error.message}</p>`;
+                if (merchLoadingElement) {
+                    merchLoadingElement.innerHTML = `<p class="merch-error">Failed to load other products. Please try again later. Error: ${error.message}</p>`;
+                }
+            } finally {
+                // Ensure loading message is hidden if dynamic products loaded, or updated otherwise
+                if (merchLoadingElement && merchLoadingElement.innerText === 'Loading products...') {
+                     merchLoadingElement.style.display = 'none';
+                }
             }
         }
     </script>
