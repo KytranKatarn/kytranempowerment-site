@@ -4,12 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shop - Kytran Empowerment</title>
-    <link rel="stylesheet" href="https://www.kytranempowerment.com/static/style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="/static/style.css"> <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lato:wght@300;700&family=League+Spartan:wght@700&family=Montserrat+Alternates:wght@600&family=Open+Sans&family=Oswald:wght@400;700&family=Playfair+Display+SC:ital,wght@1,400&family=Raleway:wght@500&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="https://www.kytranempowerment.com/static/logo.png">
-    <style>
+    <link rel="icon" type="image/png" href="/static/logo.png"> <style>
         /* Specific styles for the Merch Store section */
         .merch-section {
             padding: 60px 0;
@@ -47,8 +45,8 @@
             display: block;
             margin: 0 auto;
             border-bottom: 1px solid #eee;
-            object-fit: contain; /* Ensure image fits within bounds */
-            max-height: 250px; /* Limit image height */
+            object-fit: contain;
+            max-height: 250px;
         }
         .product-card-content {
             padding: 20px;
@@ -63,7 +61,7 @@
             margin-bottom: 0.5em;
             letter-spacing: 0.5px;
             text-transform: uppercase;
-            flex-grow: 1; /* Allow title to take space */
+            flex-grow: 1;
         }
         .product-card p.description {
             font-family: 'Open Sans', sans-serif;
@@ -74,13 +72,13 @@
             overflow: hidden;
             text-overflow: ellipsis;
             display: -webkit-box;
-            -webkit-line-clamp: 3; /* Limit description to 3 lines */
+            -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
         }
         .product-card p.price {
             font-family: 'Oswald', sans-serif;
             font-size: 1.4em;
-            color: #e67e22; /* Accent color for price */
+            color: #e67e22;
             font-weight: 700;
             margin-bottom: 1em;
         }
@@ -94,7 +92,7 @@
             font-family: 'Oswald', sans-serif;
             font-size: 1em;
             transition: background-color 0.3s ease;
-            margin-top: auto; /* Push button to bottom */
+            margin-top: auto;
         }
         .product-card .btn-primary:hover {
             background-color: #2980b9;
@@ -121,8 +119,7 @@
 <body>
     <header>
         <div class="container header-content">
-            <img src="https://www.kytranempowerment.com/static/logo.png" alt="Kytran Empowerment Logo" class="logo">
-            <div class="header-text">
+            <img src="/static/logo.png" alt="Kytran Empowerment Logo" class="logo"> <div class="header-text">
                 <h1>KYTRAN EMPOWERMENT INC.</h1>
                 <p class="subtitle">Strength through Strategy. Brotherhood through Purpose.</p>
             </div>
@@ -171,8 +168,7 @@
         }
     </script>
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-    <script src="https://www.kytranempowerment.com/static/script.js"></script>
-    <script>
+    <script src="/static/script.js"></script> <script>
         // Mobile menu toggle (copied from script.js, or ensure script.js is loaded)
         document.addEventListener('DOMContentLoaded', () => {
             const mobileMenuIcon = document.querySelector('.mobile-menu-icon');
@@ -201,6 +197,7 @@
             productListDiv.innerHTML = '<p class="merch-loading">Loading products...</p>'; // Show loading message
 
             try {
+                // Fetch from the store backend
                 const response = await fetch('https://store.kytranempowerment.com/api/products');
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -211,9 +208,20 @@
                 if (products && products.length > 0) {
                     productListDiv.innerHTML = ''; // Clear loading message
                     products.forEach(product => {
+                        // Determine the image source based on vendor_name
+                        let imageUrl = product.image_url;
+                        // If product is from local vendor, use static path relative to www.kytranempowerment.com
+                        // Otherwise, assume it's a full URL from Printful
+                        if (product.vendor_name === 'Kytran Local Goods') {
+                            imageUrl = `https://www.kytranempowerment.com${product.image_url}`;
+                        }
+                        // Default placeholder if image_url is still empty or null
+                        imageUrl = imageUrl || 'https://via.placeholder.com/250?text=No+Image';
+
+
                         const productCard = `
                             <div class="product-card">
-                                <img src="${product.image_url || 'https://via.placeholder.com/250?text=No+Image'}" alt="${product.name}">
+                                <img src="${imageUrl}" alt="${product.name}">
                                 <div class="product-card-content">
                                     <h3>${product.name}</h3>
                                     <p class="description">${product.description || 'No description available.'}</p>
