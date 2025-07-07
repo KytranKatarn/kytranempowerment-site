@@ -4,10 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="page-title">Product Details - Kytran Empowerment</title>
-    <link rel="stylesheet" href="style.css"> <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lato:wght@300;700&family=League+Spartan:wght@700&family=Montserrat+Alternates:wght@600;700&family=Open+Sans&family=Oswald:wght@400;700&family=Playfair+Display+SC:ital,wght@1,400&family=Raleway:wght@500&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="logo.png"> <style>
+    <link rel="icon" type="image/png" href="logo.png">
+    <style>
         /* Specific styles for the Product Detail section */
         .product-detail-section {
             padding: 60px 0;
@@ -98,45 +100,9 @@
             color: #e74c3c;
         }
 
-        /* Styles for the cart link (replicated for consistency) */
-        .main-nav .btn-nav#cart-link {
-            margin-left: 20px;
-            padding: 10px 15px;
-            background-color: #e67e22;
-            border-radius: 5px;
-            color: white;
-            font-weight: bold;
-            text-decoration: none;
-            transition: background-color 0.3s ease;
-        }
-
-        .main-nav .btn-nav#cart-link:hover {
-            background-color: #d35400;
-        }
-
-
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .product-detail-container {
-                flex-direction: column;
-                align-items: center;
-                padding: 20px;
-                margin-top: 20px;
-            }
-            .product-detail-image, .product-detail-info {
-                max-width: 100%;
-                flex: none;
-            }
-            .product-detail-info {
-                text-align: center;
-            }
-            .product-detail-info h2 {
-                font-size: 2em;
-            }
-            .product-detail-info .btn-primary {
-                width: 100%;
-            }
-        }
+        /* The following styles were removed as they were causing the "Shopping Cart" button to be orange */
+        /* .main-nav .btn-nav#cart-link { ... } */
+        /* .main-nav .btn-nav#cart-link:hover { ... } */
     </style>
 </head>
 <body>
@@ -147,7 +113,7 @@
                 <h1>KYTRAN EMPOWERMENT INC.</h1>
                 <p class="subtitle">Strength through Strategy. Brotherhood through Purpose.</p>
             </div>
-            
+
             <button class="mobile-menu-icon" aria-label="Toggle navigation">☰</button>
 
             <nav class="main-nav">
@@ -158,7 +124,7 @@
                 <a href="books.html">Books</a>
                 <a href="submit_story.html">Submit Story</a>
                 <a href="https://k1.kytranempowerment.com/login">Member Login</a>
-                <a href="cart.html" class="btn-nav" id="cart-link">
+                <a href="cart.html">
                     Shopping Cart (<span id="cart-count">0</span>)
                 </a>
             </nav>
@@ -179,7 +145,7 @@
     <section class="product-detail-section">
         <div class="container" id="product-detail-content">
             <p class="product-loading">Loading product details...</p>
-            </div>
+        </div>
     </section>
 
     <footer>
@@ -196,7 +162,8 @@
         }
     </script>
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-    <script src="script.js"></script> <script>
+    <script src="script.js"></script>
+    <script>
         // Mobile menu toggle (copied from script.js, or ensure script.js is loaded)
         document.addEventListener('DOMContentLoaded', () => {
             const mobileMenuIcon = document.querySelector('.mobile-menu-icon');
