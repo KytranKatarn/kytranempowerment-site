@@ -217,7 +217,7 @@
                     description: description,
                     vendor_name: vendorName,
                     printful_product_id: printfulProductId,
-                    printful_variant_ids: printfulVariantIds,
+                    printful_variant_ids: printfulVariantIds, // This should now be a JavaScript array
                     quantity: 1
                 });
             }
@@ -292,7 +292,7 @@
                                         data-product-description="${product.description || ''}"
                                         data-vendor-name="${product.vendor_name || ''}"
                                         data-printful-product-id="${product.printful_product_id || ''}"
-                                        data-printful-variant-ids="${product.printful_variant_ids || ''}">
+                                        data-printful-variant-ids="${JSON.stringify(product.printful_variant_ids || [])}">
                                     Add to Cart
                                 </button>
                             </div>
@@ -310,7 +310,7 @@
                             btn.dataset.productDescription,
                             btn.dataset.vendorName,
                             btn.dataset.printfulProductId,
-                            btn.dataset.printfulVariantIds
+                            JSON.parse(btn.dataset.printfulVariantIds) // Parse the JSON string back into an array
                         );
                     });
 
