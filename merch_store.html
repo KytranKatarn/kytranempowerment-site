@@ -160,6 +160,13 @@
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <script src="script.js"></script>
     <script>
+        // Global variable to store the session ID
+        let userSessionId = localStorage.getItem('userSessionId');
+        if (!userSessionId) {
+            userSessionId = crypto.randomUUID(); // Generate a new UUID if not found
+            localStorage.setItem('userSessionId', userSessionId);
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             const mobileMenuIcon = document.querySelector('.mobile-menu-icon');
             const mobileMenuOverlay = document.getElementById('mobileMenu');
@@ -182,49 +189,64 @@
             updateCartCount(); // Ensure cart count is updated on load
         });
 
-        function getCart() {
-            const cart = localStorage.getItem('shoppingCart');
-            return cart ? JSON.parse(cart) : [];
-        }
+        // --- Shopping Cart Logic (UPDATED TO USE BACKEND API) ---
 
-        function saveCart(cart) {
-            localStorage.setItem('shoppingCart', JSON.stringify(cart));
-            updateCartCount();
-        }
+        // This function will now fetch cart items from the backend
+        async function updateCartCount() {
+            try {
+                const response = await fetch(`https://store.kytranempowerment.com/api/cart/${userSessionId}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                const cart = data.cart_items || [];
+                const count = cart.reduce((total, item) => total + item.quantity, 0);
 
-        function updateCartCount() {
-            const cart = getCart();
-            const count = cart.reduce((total, item) => total + item.quantity, 0);
-            // Ensure elements exist before trying to update innerText
-            const cartCountElement = document.getElementById('cart-count');
-            if (cartCountElement) cartCountElement.innerText = count;
-            const mobileCartCountElement = document.getElementById('mobile-cart-count');
-            if (mobileCartCountElement) mobileCartCountElement.innerText = count;
-        }
+                const cartCountElement = document.getElementById('cart-count');
+                if (cartCountElement) cartCountElement.innerText = count;
+                const mobileCartCountElement = document.getElementById('mobile-cart-count');
+                if (mobileCartCountElement) mobileCartCountElement.innerText = count;
 
-        // This client-side addToCart function will be replaced soon by backend interaction
-        function addToCart(productId, productName, price, imageUrl, description, vendorName, printfulProductId, printfulVariantIds) {
-            const cart = getCart();
-            const existingItem = cart.find(item => item.id === productId);
-
-            if (existingItem) {
-                existingItem.quantity += 1;
-            } else {
-                cart.push({
-                    id: productId,
-                    name: productName,
-                    price: price,
-                    image_url: imageUrl,
-                    description: description,
-                    vendor_name: vendorName,
-                    printful_product_id: printfulProductId,
-                    printful_variant_ids: printfulVariantIds,
-                    quantity: 1
-                });
+            } catch (error) {
+                console.error('Error updating cart count from backend:', error);
+                // Fallback to 0 if there's an error
+                const cartCountElement = document.getElementById('cart-count');
+                if (cartCountElement) cartCountElement.innerText = '0';
+                const mobileCartCountElement = document.getElementById('mobile-cart-count');
+                if (mobileCartCountElement) mobileCartCountElement.innerText = '0';
             }
-            saveCart(cart);
-            alert(`${productName} added to cart! Quantity: ${existingItem ? existingItem.quantity : 1}`);
         }
+
+        // Add this function to merch_store.html as well
+        async function addToCartBackend(productId, quantity = 1) {
+            try {
+                const response = await fetch('https://store.kytranempowerment.com/api/cart/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        session_id: userSessionId,
+                        product_id: productId,
+                        quantity: quantity
+                    }),
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.detail || `HTTP error! status: ${response.status}`);
+                }
+
+                alert(result.message);
+                updateCartCount(); // Update the cart count from backend after adding
+            } catch (error) {
+                console.error('Error adding product to cart via backend:', error);
+                alert(`Failed to add product to cart: ${error.message}`);
+            }
+        }
+        // --- End Shopping Cart Logic (UPDATED) ---
+
 
         async function fetchProducts() {
             const productListDiv = document.getElementById('product-list');
@@ -245,8 +267,6 @@
 
                 if (products && products.length > 0) {
                     products.forEach(product => {
-                        // This condition should already be handled by the backend no longer serving local products,
-                        // but it's fine to keep as an extra client-side filter if desired.
                         if (product.vendor_name === 'Kytran Local Goods') return;
 
                         let imageUrl = product.image_url || 'https://via.placeholder.com/250?text=No+Image';
