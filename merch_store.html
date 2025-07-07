@@ -107,8 +107,10 @@
             color: #e74c3c;
         }
 
-        /* Styles for the cart link in main-nav */
-        .main-nav #cart-link { /* Target by ID to be specific */
+        /* Styles for the cart link (now a text button) */
+        /* Using the btn-nav styling from style.css for consistency */
+        /* Custom styling for cart link to make it a button-like element */
+        .main-nav #cart-link { 
             margin-left: 20px; /* Space from Member Login button */
             padding: 10px 15px; /* Button-like padding */
             background-color: #e67e22; /* Accent color */
@@ -140,7 +142,8 @@
 <body>
     <header>
         <div class="container header-content">
-            <img src="logo.png" alt="Kytran Empowerment Logo" class="logo"> <div class="header-text">
+            <img src="logo.png" alt="Kytran Empowerment Logo" class="logo">
+            <div class="header-text">
                 <h1>KYTRAN EMPOWERMENT INC.</h1>
                 <p class="subtitle">Strength through Strategy. Brotherhood through Purpose.</p>
             </div>
@@ -168,9 +171,7 @@
             <a href="merch_store.html">Shop</a>
             <a href="books.html">Books</a>
             <a href="submit_story.html">Submit Story</a>
-            <a href="https://k1.kytranempowerment.com/login">Member Login</a>
-            <a href="cart.html">Shopping Cart (<span id="mobile-cart-count">0</span>)</a>
-        </div>
+            <a href="https://k1.kytranempowerment.com/login">Member Login</a> <a href="cart.html">Shopping Cart (<span id="mobile-cart-count">0</span>)</a> </div>
     </header>
 
     <section class="merch-section">
@@ -285,8 +286,8 @@
                         // Distinguish between backend-served static paths for local products and full Printful URLs
                         if (product.vendor_name === 'Kytran Local Goods') {
                             // Local products from Kytran Local Goods
-                            // Assumes product.image_url is just a filename like "image.png"
-                            imageUrl = `assets/${imageUrl}`; // CORRECTED: relative path to assets/
+                            // Assume product.image_url is just a filename like "image.png"
+                            imageUrl = `assets/${imageUrl}`; // Corrected: relative path to assets/
                         }
                         // For Printful products, product.image_url should already be a full URL (e.g., from Printful's CDN)
                         imageUrl = imageUrl || 'https://via.placeholder.com/250?text=No+Image';
