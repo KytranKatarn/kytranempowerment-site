@@ -147,22 +147,6 @@
         <div class="container">
             <h2 class="section-header">Our Merchandise</h2>
             <div id="product-list" class="merch-grid">
-                <div class="product-card">
-                    <img src="assets/kytran_tshirt_local.png" alt="Kytran Empowerment T-Shirt">
-                    <div class="product-card-content">
-                        <h3>KYTRAN EMPOWERMENT T-SHIRT</h3>
-                        <p class="price">$29.99</p>
-                        <a href="product_detail.html?id=tshirt_local_id_example" class="btn-primary">View Details</a>
-                    </div>
-                </div>
-                <div class="product-card">
-                    <img src="assets/empowerment_journal_local.png" alt="Empowerment Journal">
-                    <div class="product-card-content">
-                        <h3>EMPOWERMENT JOURNAL</h3>
-                        <p class="price">$15.99</p>
-                        <a href="product_detail.html?id=journal_local_id_example" class="btn-primary">View Details</a>
-                    </div>
-                </div>
                 <p class="merch-loading">Loading products...</p>
             </div>
         </div>
@@ -218,14 +202,8 @@
         function updateCartCount() {
             const cart = getCart();
             const count = cart.reduce((total, item) => total + item.quantity, 0);
-            const cartCountElement = document.getElementById('cart-count');
-            if (cartCountElement) {
-                cartCountElement.innerText = count;
-            }
-            const mobileCartCountElement = document.getElementById('mobile-cart-count');
-            if (mobileCartCountElement) {
-                 mobileCartCountElement.innerText = count;
-            }
+            document.getElementById('cart-count').innerText = count;
+            document.getElementById('mobile-cart-count').innerText = count; // Update mobile cart count
         }
 
         function addToCart(productId, productName, price, imageUrl, description, vendorName, printfulProductId, printfulVariantIds) {
@@ -239,11 +217,11 @@
                     id: productId,
                     name: productName,
                     price: price,
-                    image_url: imageUrl,
+                    image_url: imageUrl, // Store the resolved image URL
                     description: description,
                     vendor_name: vendorName,
                     printful_product_id: printfulProductId,
-                    printful_variant_ids: printfulVariantIds,
+                    printful_variant_ids: printfulVariantIds, // Pass as string, parse later if needed
                     quantity: 1
                 });
             }
@@ -258,18 +236,11 @@
         });
 
         async function fetchProducts() {
-            // Find the <p> element for "Loading products..." inside the merch-grid
-            const merchLoadingElement = document.querySelector('#product-list .merch-loading');
-            
-            // Get a reference to the merch-grid itself
-            const merchGrid = document.getElementById('product-list');
-
-            // Initially show loading message below hardcoded items
-            if (merchLoadingElement) {
-                merchLoadingElement.style.display = 'block';
-            }
+            const productListDiv = document.getElementById('product-list');
+            productListDiv.innerHTML = '<p class="merch-loading">Loading products...</p>'; // Show loading message
 
             try {
+                // Fetch from the store backend
                 const response = await fetch('https://store.kytranempowerment.com/api/products');
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -278,12 +249,16 @@
                 const products = data.products;
 
                 if (products && products.length > 0) {
-                    // Filter out any products from the dynamic fetch that are explicitly "Kytran Local Goods"
-                    // because we are now hardcoding those. This prevents duplicates.
-                    const dynamicProducts = products.filter(product => product.vendor_name !== 'Kytran Local Goods');
-
-                    dynamicProducts.forEach(product => {
+                    productListDiv.innerHTML = ''; // Clear loading message
+                    products.forEach(product => {
                         let imageUrl = product.image_url;
+
+                        // Distinguish between backend-served static paths for local products and full Printful URLs
+                        if (product.vendor_name === 'Kytran Local Goods') {
+                            // Local products from Kytran Local Goods
+                            // Assume product.image_url is just a filename like "image.png"
+                            imageUrl = `assets/${imageUrl}`; // CORRECTED: relative path to assets/
+                        }
                         // For Printful products, product.image_url should already be a full URL (e.g., from Printful's CDN)
                         imageUrl = imageUrl || 'https://via.placeholder.com/250?text=No+Image';
 
@@ -292,34 +267,39 @@
                                 <img src="${imageUrl}" alt="${product.name}">
                                 <div class="product-card-content">
                                     <h3>${product.name}</h3>
+                                    <p class="description">${product.description || 'No description available.'}</p>
                                     <p class="price">$${product.price.toFixed(2)}</p>
                                     <a href="product_detail.html?id=${product.id}" class="btn-primary">View Details</a>
                                 </div>
                             </div>
                         `;
-                        // Append dynamic products directly to the grid, after hardcoded ones.
-                        merchGrid.innerHTML += productCard;
+                        productListDiv.innerHTML += productCard;
                     });
+
+                    // Attach event listeners to "Add to Cart" buttons AFTER products are rendered
+                    document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+                        button.addEventListener('click', (event) => {
+                            const btn = event.target;
+                            addToCart(
+                                btn.dataset.productId,
+                                btn.dataset.productName,
+                                parseFloat(btn.dataset.productPrice),
+                                btn.dataset.productImage,
+                                btn.dataset.productDescription,
+                                btn.dataset.vendorName,
+                                btn.dataset.printfulProductId,
+                                btn.dataset.printfulVariantIds // Pass as string, parse later if needed
+                            );
+                        });
+                    });
+
                 } else {
-                    // Only show "No products found" if there were no dynamic products after filtering
-                    if (merchGrid.children.length <= 2) { // Assuming 2 hardcoded items + loading message initially
-                         merchLoadingElement.innerText = 'No other products found at this time.';
-                    } else {
-                        // If hardcoded items exist and no dynamic, just hide loading
-                        merchLoadingElement.style.display = 'none';
-                    }
+                    productListDiv.innerHTML = '<p class="merch-loading">No products found at this time.</p>';
                 }
 
             } catch (error) {
                 console.error('Error fetching products:', error);
-                if (merchLoadingElement) {
-                    merchLoadingElement.innerHTML = `<p class="merch-error">Failed to load other products. Please try again later. Error: ${error.message}</p>`;
-                }
-            } finally {
-                // Ensure loading message is hidden if dynamic products loaded, or updated otherwise
-                if (merchLoadingElement && merchLoadingElement.innerText === 'Loading products...') {
-                     merchLoadingElement.style.display = 'none';
-                }
+                productListDiv.innerHTML = `<p class="merch-error">Failed to load products. Please try again later. Error: ${error.message}</p>`;
             }
         }
     </script>
