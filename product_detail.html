@@ -36,6 +36,8 @@
         .product-detail-image img {
             max-width: 100%;
             height: auto;
+            display: block;
+            margin: 0 auto;
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             object-fit: contain;
@@ -305,7 +307,6 @@
                             <div class="product-detail-info">
                                 <h2>${product.name}</h2>
                                 <p class="price">$${product.price.toFixed(2)}</p>
-                                <p class="description">${product.description || 'No description available for this product.'}</p>
                                 <p class="vendor-info"><strong>Vendor:</strong> ${product.vendor_name || 'N/A'}</p>
                                 <p class="stock-info"><strong>Availability:</strong> ${product.stock_status || 'N/A'}</p>
                                 <button class="btn-primary add-to-cart-btn"
