@@ -109,21 +109,7 @@
 
         /* Styles for the cart link (now a text button) */
         /* Using the btn-nav styling from style.css for consistency */
-        .main-nav .cart-button-text { /* New class to apply button-like styling */
-            padding: 10px 15px; /* Adjust padding to match other btn-nav */
-            background-color: #e67e22; /* Example accent color */
-            border-radius: 5px;
-            color: white;
-            font-weight: bold;
-            text-decoration: none;
-            transition: background-color 0.3s ease;
-            margin-left: 20px; /* Space from Member Login button */
-        }
-
-        .main-nav .cart-button-text:hover {
-            background-color: #d35400;
-        }
-
+        /* Removed custom styling here, relying on btn-nav class in HTML */
 
         /* Responsive adjustments */
         @media (max-width: 768px) {
@@ -137,7 +123,8 @@
 <body>
     <header>
         <div class="container header-content">
-            <img src="logo.png" alt="Kytran Empowerment Logo" class="logo"> <div class="header-text">
+            <img src="logo.png" alt="Kytran Empowerment Logo" class="logo">
+            <div class="header-text">
                 <h1>KYTRAN EMPOWERMENT INC.</h1>
                 <p class="subtitle">Strength through Strategy. Brotherhood through Purpose.</p>
             </div>
@@ -152,7 +139,8 @@
                 <a href="books.html">Books</a>
                 <a href="submit_story.html">Submit Story</a>
                 <a href="https://k1.kytranempowerment.com/login" class="btn-nav">Member Login</a>
-                <a href="cart.html" class="cart-button-text" id="cart-link"> Shopping Cart (<span id="cart-count">0</span>)
+                <a href="cart.html" class="btn-nav" id="cart-link">
+                    Shopping Cart (<span id="cart-count">0</span>)
                 </a>
             </nav>
         </div>
@@ -164,9 +152,7 @@
             <a href="merch_store.html">Shop</a>
             <a href="books.html">Books</a>
             <a href="submit_story.html">Submit Story</a>
-            <a href="https://k1.kytranempowerment.com/login">Member Login</a>
-            <a href="cart.html">Shopping Cart (<span id="mobile-cart-count">0</span>)</a>
-        </div>
+            <a href="https://k1.kytranempowerment.com/login">Member Login</a> <a href="cart.html">Shopping Cart (<span id="mobile-cart-count">0</span>)</a> </div>
     </header>
 
     <section class="merch-section">
@@ -281,12 +267,10 @@
                         // Distinguish between backend-served static paths for local products and full Printful URLs
                         if (product.vendor_name === 'Kytran Local Goods') {
                             // Local products from Kytran Local Goods
-                            // Assumes product.image_url is just a filename like "image.png"
-                            // which are expected to be in the /assets/ folder on GitHub Pages
+                            // Assume product.image_url is just a filename like "image.png"
                             imageUrl = `assets/${imageUrl}`; // CORRECTED: relative path to assets/
                         }
                         // For Printful products, product.image_url should already be a full URL (e.g., from Printful's CDN)
-                        // If image_url is still empty or null, use a generic placeholder
                         imageUrl = imageUrl || 'https://via.placeholder.com/250?text=No+Image';
 
                         const productCard = `
