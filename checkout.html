@@ -10,165 +10,126 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lato:wght@300;700&family=League+Spartan:wght@700&family=Montserrat+Alternates:wght@600;700&family=Open+Sans&family=Oswald:wght@400;700&family=Playfair+Display+SC:ital,wght@1,400&family=Raleway:wght@500&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="logo.png">
     <style>
-        /* Specific styles for the Checkout section */
+        /* Checkout specific styles */
         .checkout-section {
             padding: 60px 0;
-            background-color: #f5f5f5; /* Light neutral to match body */
-            min-height: calc(100vh - 100px - 100px); /* Adjust based on header/footer height */
-            display: flex; /* Use flexbox to center content vertically */
-            align-items: flex-start; /* Align items to the top initially */
-            justify-content: center; /* Center horizontally */
+            background-color: #f5f5f5;
+            min-height: calc(100vh - 100px - 100px);
         }
         .checkout-container {
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            max-width: 900px;
-            width: 90%; /* Responsive width */
-            margin: 40px auto; /* Adjust margin for overall container positioning */
+            max-width: 1000px;
+            margin: 40px auto;
             padding: 40px;
             display: flex;
-            flex-wrap: wrap; /* Allow wrapping for responsiveness */
-            gap: 30px; /* Space between columns */
+            flex-wrap: wrap;
+            gap: 30px;
+            align-items: flex-start;
         }
         .checkout-container h2 {
             font-family: 'Bebas Neue', sans-serif;
             font-size: 2.5em;
             color: #2c3e50;
             margin-top: 0;
-            margin-bottom: 0.8em;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            text-align: center;
-            width: 100%; /* Take full width */
-        }
-        .shipping-info-form, .order-summary-box {
-            flex: 1 1 400px; /* Allow sections to grow/shrink, minimum 400px wide */
-            padding: 20px;
-            border-radius: 8px;
-            background-color: #fcfcfc; /* Slightly different background for visual separation */
-            border: 1px solid #eee;
-        }
-
-        .shipping-info-form h3, .order-summary-box h3 {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 1.8em;
-            color: #e67e22; /* Accent color for headings */
-            margin-top: 0;
             margin-bottom: 1em;
-            letter-spacing: 0.5px;
+            text-align: center;
+            width: 100%; /* Make header full width */
         }
-
+        .checkout-form-section {
+            flex: 2 1 500px; /* Takes more space */
+            padding-right: 20px;
+            border-right: 1px solid #eee;
+        }
+        .order-summary-section {
+            flex: 1 1 300px; /* Takes less space */
+            padding-left: 20px;
+        }
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
         .form-group label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             font-family: 'Raleway', sans-serif;
             font-weight: 500;
             color: #34495e;
-            font-size: 0.95em;
         }
         .form-group input[type="text"],
         .form-group input[type="email"],
-        .form-group input[type="tel"] {
+        .form-group input[type="tel"],
+        .form-group select {
             width: calc(100% - 20px); /* Adjust for padding */
-            padding: 10px;
+            padding: 12px;
             border: 1px solid #ccc;
-            border-radius: 4px;
+            border-radius: 5px;
             font-family: 'Open Sans', sans-serif;
             font-size: 1em;
-            box-sizing: border-box; /* Include padding in element's total width */
+            box-sizing: border-box;
         }
-
-        .order-summary-items {
-            max-height: 300px; /* Limit height and allow scrolling for many items */
-            overflow-y: auto;
-            border-bottom: 1px solid #eee;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-        }
-        .order-item {
+        .form-row {
             display: flex;
-            align-items: center;
+            gap: 20px;
+        }
+        .form-row .form-group {
+            flex: 1;
+        }
+        .order-summary-items {
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+        .order-item-summary {
+            display: flex;
+            justify-content: space-between;
             margin-bottom: 10px;
-            padding-bottom: 10px;
-            border-bottom: 1px dashed #f0f0f0;
-        }
-        .order-item:last-child {
-            border-bottom: none;
-        }
-        .order-item img {
-            width: 50px;
-            height: 50px;
-            object-fit: contain;
-            margin-right: 10px;
-            border-radius: 4px;
-        }
-        .order-item-details {
-            flex-grow: 1;
-        }
-        .order-item-details p {
-            margin: 0;
             font-family: 'Open Sans', sans-serif;
             font-size: 0.95em;
-            color: #333;
+            color: #555;
         }
-        .order-item-details .name {
+        .order-item-summary span:first-child {
             font-weight: bold;
         }
-        .order-item-details .price {
-            color: #e67e22; /* Accent color for price */
-            font-family: 'Oswald', sans-serif;
-            font-weight: 700;
-        }
-
-        .order-summary-totals {
-            text-align: right;
-            font-family: 'Open Sans', sans-serif;
+        .order-summary-totals p {
+            font-family: 'Lato', sans-serif;
             font-size: 1.1em;
             color: #333;
-            margin-top: 20px;
-            border-top: 1px solid #eee;
-            padding-top: 20px;
+            margin: 5px 0;
+            text-align: right;
         }
-        .order-summary-totals p {
-            margin-bottom: 10px;
-        }
-        .order-summary-totals .final-total {
-            font-size: 1.6em;
-            font-weight: 700;
+        .order-summary-totals .total {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.8em;
             color: #2c3e50;
             margin-top: 15px;
         }
-
         .place-order-btn {
             display: block;
             width: 100%;
-            padding: 15px 0;
+            padding: 15px;
             border-radius: 5px;
-            background-color: #27ae60; /* Green for place order */
+            background-color: #27ae60; /* Green for success/order */
             color: #fff;
             text-decoration: none;
             font-family: 'Oswald', sans-serif;
             font-size: 1.2em;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            margin-top: 30px;
             border: none;
             cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 30px;
         }
         .place-order-btn:hover {
             background-color: #229954;
-            transform: translateY(-2px);
         }
-        .empty-cart-message {
+        .checkout-loading, .checkout-error {
             text-align: center;
             font-family: 'Open Sans', sans-serif;
-            color: #777;
+            color: #555;
             padding: 40px;
-            font-size: 1.1em;
-            width: 100%;
+        }
+        .checkout-error {
+            color: #e74c3c;
         }
 
         /* Responsive adjustments */
@@ -176,34 +137,20 @@
             .checkout-container {
                 flex-direction: column;
                 padding: 20px;
-                margin-top: 20px;
             }
-            .shipping-info-form, .order-summary-box {
-                flex: 1 1 100%; /* Stack columns on small screens */
-                padding: 15px;
+            .checkout-form-section {
+                padding-right: 0;
+                border-right: none;
+                border-bottom: 1px solid #eee;
+                padding-bottom: 20px;
+                margin-bottom: 20px;
             }
-            .checkout-container h2 {
-                font-size: 2em;
+            .order-summary-section {
+                padding-left: 0;
             }
-            .shipping-info-form h3, .order-summary-box h3 {
-                font-size: 1.5em;
-                margin-bottom: 0.8em;
-            }
-            .form-group input[type="text"],
-            .form-group input[type="email"],
-            .form-group input[type="tel"] {
-                width: calc(100% - 16px); /* Adjust for padding */
-                padding: 8px;
-            }
-            .order-summary-totals {
-                font-size: 1em;
-            }
-            .order-summary-totals .final-total {
-                font-size: 1.4em;
-            }
-            .place-order-btn {
-                padding: 12px 0;
-                font-size: 1.1em;
+            .form-row {
+                flex-direction: column;
+                gap: 0;
             }
         }
     </style>
@@ -246,66 +193,88 @@
     </header>
 
     <section class="checkout-section">
-        <div class="container">
-            <div class="checkout-container">
-                <h2>Checkout</h2>
+        <div class="container checkout-container">
+            <h2>Checkout</h2>
 
-                <p id="empty-cart-message" class="empty-cart-message" style="display: none;">
-                    Your cart is empty. Please <a href="merch_store.html">add items to your cart</a> before checking out.
-                </p>
-
-                <div class="shipping-info-form" id="shipping-form-container">
-                    <h3>Shipping Information</h3>
-                    <form id="checkout-form">
+            <div class="checkout-form-section">
+                <h3>Shipping Information</h3>
+                <form id="checkout-form">
+                    <div class="form-row">
                         <div class="form-group">
                             <label for="fullName">Full Name</label>
                             <input type="text" id="fullName" name="fullName" required>
                         </div>
                         <div class="form-group">
-                            <label for="address">Address</label>
-                            <input type="text" id="address" name="address" required>
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" required>
                         </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone (Optional)</label>
+                        <input type="tel" id="phone" name="phone">
+                    </div>
+                    <div class="form-group">
+                        <label for="address1">Address Line 1</label>
+                        <input type="text" id="address1" name="address1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address2">Address Line 2 (Apt, Suite, etc. - Optional)</label>
+                        <input type="text" id="address2" name="address2">
+                    </div>
+                    <div class="form-row">
                         <div class="form-group">
                             <label for="city">City</label>
                             <input type="text" id="city" name="city" required>
                         </div>
                         <div class="form-group">
-                            <label for="stateProvince">State/Province</label>
-                            <input type="text" id="stateProvince" name="stateProvince" required>
+                            <label for="state">State/Province</label>
+                            <input type="text" id="state" name="state" required>
                         </div>
+                    </div>
+                    <div class="form-row">
                         <div class="form-group">
-                            <label for="postalCode">Postal Code</label>
-                            <input type="text" id="postalCode" name="postalCode" required>
+                            <label for="zip">Zip/Postal Code</label>
+                            <input type="text" id="zip" name="zip" required>
                         </div>
                         <div class="form-group">
                             <label for="country">Country</label>
-                            <input type="text" id="country" name="country" value="Canada" required>
+                            <select id="country" name="country" required>
+                                <option value="US">United States</option>
+                                <option value="CA">Canada</option>
+                                <option value="GB">United Kingdom</option>
+                                <option value="AU">Australia</option>
+                                </select>
                         </div>
-                        <div class="form-group">
-                            <label for="phone">Phone (Optional)</label>
-                            <input type="tel" id="phone" name="phone">
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" id="email" name="email" required>
-                        </div>
-                        <button type="submit" class="place-order-btn">Place Order</button>
-                    </form>
-                </div>
-
-                <div class="order-summary-box" id="order-summary-container">
-                    <h3>Order Summary</h3>
-                    <div class="order-summary-items" id="order-summary-items">
-                        </div>
-                    <div class="order-summary-totals">
-                        <p>Subtotal: $<span id="order-subtotal">0.00</span></p>
-                        <p>Shipping: $<span id="order-shipping">0.00</span></p>
-                        <p>Tax: $<span id="order-tax">0.00</span></p>
-                        <p class="final-total">Total: $<span id="order-total">0.00</span></p>
                     </div>
-                </div>
 
+                    <h3>Payment Information</h3>
+                    <p>Payment processing will be integrated here (e.g., Stripe Elements).</p>
+                    <div id="payment-element">
+                        <div style="border: 1px solid #ccc; padding: 20px; text-align: center; color: #777; font-style: italic;">
+                            Payment form will appear here. For now, clicking "Place Order" will simulate success.
+                        </div>
+                    </div>
+                    <div id="payment-errors" role="alert" style="color: red; margin-top: 10px;"></div>
+
+                    <button type="submit" id="place-order-button" class="place-order-btn">Place Order</button>
+                    <p id="checkout-loading-message" style="display:none; text-align: center; margin-top: 10px;">Processing your order...</p>
+                    <p id="checkout-error-message" style="display:none; text-align: center; color: red; margin-top: 10px;"></p>
+                </form>
             </div>
+
+            <div class="order-summary-section">
+                <h3>Order Summary</h3>
+                <div id="order-summary-items" class="order-summary-items">
+                    <p id="summary-loading-message">Loading cart summary...</p>
+                    <p id="summary-empty-message" style="display:none;">Your cart is empty.</p>
+                </div>
+                <div class="order-summary-totals">
+                    <p>Subtotal: <span id="summary-subtotal">$0.00</span></p>
+                    <p>Shipping: <span id="summary-shipping">$0.00</span></p>
+                    <p class="total">Total: <span id="summary-total">$0.00</span></p>
+                </div>
+            </div>
+
         </div>
     </section>
 
@@ -325,7 +294,14 @@
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <script src="script.js"></script>
     <script>
-        // Mobile menu toggle logic (copied from script.js, or ensure script.js is loaded)
+        // Global variable for user session ID
+        let userSessionId = localStorage.getItem('userSessionId');
+        if (!userSessionId) {
+            userSessionId = crypto.randomUUID();
+            localStorage.setItem('userSessionId', userSessionId);
+        }
+
+        // Mobile menu toggle (from script.js or included directly)
         document.addEventListener('DOMContentLoaded', () => {
             const mobileMenuIcon = document.querySelector('.mobile-menu-icon');
             const mobileMenuOverlay = document.getElementById('mobileMenu');
@@ -343,147 +319,197 @@
                     });
                 });
             }
+
+            updateCartCount(); // Update header cart count on load
+            loadOrderSummary(); // Load cart items for summary on checkout page
+
+            document.getElementById('checkout-form').addEventListener('submit', handleCheckoutSubmit);
         });
 
-        // --- Shopping Cart Logic (Copied/adapted from cart.html) ---
-        function getCart() {
-            const cart = localStorage.getItem('shoppingCart');
-            return cart ? JSON.parse(cart) : [];
-        }
+        // --- Shopping Cart & Backend API Functions (consistent across pages) ---
 
-        function saveCart(cart) {
-            localStorage.setItem('shoppingCart', JSON.stringify(cart));
-            updateCartCount();
-        }
-
-        function updateCartCount() {
-            const cart = getCart();
-            const count = cart.reduce((total, item) => total + item.quantity, 0);
-            document.getElementById('cart-count').innerText = count;
-            document.getElementById('mobile-cart-count').innerText = count;
-        }
-
-        // --- Checkout Page Specific Logic ---
-        const STORE_BACKEND_URL = "https://store.kytranempowerment.com"; // Your store backend URL
-
-        function renderOrderSummary() {
-            const cart = getCart();
-            const orderSummaryItemsDiv = document.getElementById('order-summary-items');
-            const orderSubtotalSpan = document.getElementById('order-subtotal');
-            const orderShippingSpan = document.getElementById('order-shipping');
-            const orderTaxSpan = document.getElementById('order-tax');
-            const orderTotalSpan = document.getElementById('order-total');
-            const emptyCartMessage = document.getElementById('empty-cart-message');
-            const shippingFormContainer = document.getElementById('shipping-form-container');
-            const orderSummaryContainer = document.getElementById('order-summary-container');
-
-            let subtotal = 0;
-            let itemsHtml = '';
-
-            if (cart.length === 0) {
-                emptyCartMessage.style.display = 'block';
-                shippingFormContainer.style.display = 'none';
-                orderSummaryContainer.style.display = 'none';
-                return;
-            } else {
-                emptyCartMessage.style.display = 'none';
-                shippingFormContainer.style.display = 'block';
-                orderSummaryContainer.style.display = 'block';
-            }
-
-            cart.forEach(item => {
-                const itemSubtotal = item.price * item.quantity;
-                subtotal += itemSubtotal;
-                itemsHtml += `
-                    <div class="order-item">
-                        <img src="${item.image_url}" alt="${item.name}">
-                        <div class="order-item-details">
-                            <p class="name">${item.name}</p>
-                            <p>${item.quantity} x <span class="price">$${item.price.toFixed(2)}</span></p>
-                        </div>
-                    </div>
-                `;
-            });
-
-            orderSummaryItemsDiv.innerHTML = itemsHtml;
-            orderSubtotalSpan.innerText = subtotal.toFixed(2);
-
-            // For now, shipping and tax are 0. You'd add logic here later.
-            const shippingCost = 0.00;
-            const taxRate = 0.00; // e.g., 0.05 for 5%
-            const taxAmount = subtotal * taxRate;
-            const total = subtotal + shippingCost + taxAmount;
-
-            orderShippingSpan.innerText = shippingCost.toFixed(2);
-            orderTaxSpan.innerText = taxAmount.toFixed(2);
-            orderTotalSpan.innerText = total.toFixed(2);
-        }
-
-        async function submitOrder(event) {
-            event.preventDefault(); // Prevent default form submission
-
-            const cart = getCart();
-            if (cart.length === 0) {
-                alert("Your cart is empty. Please add items before placing an order.");
-                window.location.href = "merch_store.html";
-                return;
-            }
-
-            // Gather shipping information
-            const form = document.getElementById('checkout-form');
-            const formData = new FormData(form);
-            const shippingInfo = Object.fromEntries(formData.entries());
-
-            // Get total amount (re-calculate on frontend for display, but backend should verify)
-            const totalAmount = parseFloat(document.getElementById('order-total').innerText);
-
-            // Prepare order data for the backend API
-            const orderData = {
-                items: cart, // The cart items already contain most required info
-                shippingInfo: shippingInfo,
-                totalAmount: totalAmount
-            };
-
-            // Disable button to prevent double submission
-            const placeOrderBtn = document.querySelector('.place-order-btn');
-            placeOrderBtn.disabled = true;
-            placeOrderBtn.innerText = 'Processing Order...';
-
+        async function updateCartCount() {
             try {
-                const response = await fetch(`${STORE_BACKEND_URL}/api/orders`, {
+                const response = await fetch(`https://store.kytranempowerment.com/api/cart/${userSessionId}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                const cart = data.cart_items || [];
+                const count = cart.reduce((total, item) => total + item.quantity, 0);
+
+                const cartCountElement = document.getElementById('cart-count');
+                if (cartCountElement) cartCountElement.innerText = count;
+                const mobileCartCountElement = document.getElementById('mobile-cart-count');
+                if (mobileCartCountElement) mobileCartCountElement.innerText = count;
+
+            } catch (error) {
+                console.error('Error updating cart count from backend:', error);
+                const cartCountElement = document.getElementById('cart-count');
+                if (cartCountElement) cartCountElement.innerText = '0';
+                const mobileCartCountElement = document.getElementById('mobile-cart-count');
+                if (mobileCartCountElement) mobileCartCountElement.innerText = '0';
+            }
+        }
+
+        // Add to cart function (useful if you decide to have "add to cart" on summary, or for consistency)
+        async function addToCartBackend(productId, quantity = 1) {
+            try {
+                const response = await fetch('https://store.kytranempowerment.com/api/cart/add', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(orderData)
+                    body: JSON.stringify({
+                        session_id: userSessionId,
+                        product_id: productId,
+                        quantity: quantity
+                    }),
                 });
 
-                if (response.ok) {
-                    const result = await response.json();
-                    alert(`Order Placed Successfully!\nOrder ID: ${result.orderId}\nTotal: $${result.receivedTotal.toFixed(2)}\n${result.message}`);
-                    saveCart([]); // Clear the cart after successful order
-                    window.location.href = "order_confirmation.html?orderId=" + result.orderId; // Redirect to a confirmation page
+                const result = await response.json();
+                if (!response.ok) {
+                    throw new Error(result.detail || `HTTP error! status: ${response.status}`);
+                }
+                alert(result.message);
+                updateCartCount();
+                loadOrderSummary(); // Refresh summary if on checkout page
+            } catch (error) {
+                console.error('Error adding product to cart via backend:', error);
+                alert(`Failed to add product to cart: ${error.message}`);
+            }
+        }
+        // No need for updateCartItemQuantityBackend or removeCartItemBackend in this file for now,
+        // as cart.html handles direct cart modification.
+
+        // --- Checkout Specific Logic ---
+
+        async function loadOrderSummary() {
+            const summaryItemsContainer = document.getElementById('order-summary-items');
+            const summaryLoadingMessage = document.getElementById('summary-loading-message');
+            const summaryEmptyMessage = document.getElementById('summary-empty-message');
+            const subtotalSpan = document.getElementById('summary-subtotal');
+            const shippingSpan = document.getElementById('summary-shipping');
+            const totalSpan = document.getElementById('summary-total');
+            const placeOrderButton = document.getElementById('place-order-button');
+
+            if (summaryLoadingMessage) summaryLoadingMessage.style.display = 'block';
+            if (summaryEmptyMessage) summaryEmptyMessage.style.display = 'none';
+            summaryItemsContainer.innerHTML = ''; // Clear previous items
+
+            let subtotal = 0;
+            let shipping = 0; // Placeholder for shipping calculation
+
+            try {
+                const response = await fetch(`https://store.kytranempowerment.com/api/cart/${userSessionId}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                const cartItems = data.cart_items || [];
+
+                if (summaryLoadingMessage) summaryLoadingMessage.style.display = 'none';
+
+                if (cartItems.length === 0) {
+                    if (summaryEmptyMessage) summaryEmptyMessage.style.display = 'block';
+                    if (placeOrderButton) placeOrderButton.disabled = true; // Disable button if cart is empty
                 } else {
-                    const errorData = await response.json();
-                    let errorMessage = errorData.detail || errorData.message || 'Unknown error occurred.';
-                    alert(`Order Failed: ${errorMessage}`);
+                    cartItems.forEach(item => {
+                        const itemTotal = item.price * item.quantity;
+                        subtotal += itemTotal;
+
+                        const itemHtml = `
+                            <div class="order-item-summary">
+                                <span>${item.name} (x${item.quantity})</span>
+                                <span>$${itemTotal.toFixed(2)}</span>
+                            </div>
+                        `;
+                        summaryItemsContainer.innerHTML += itemHtml;
+                    });
+                    
+                    document.getElementById('summary-subtotal').innerText = `$${subtotal.toFixed(2)}`;
+                    document.getElementById('summary-shipping').innerText = `$${shipping.toFixed(2)}`;
+                    document.getElementById('summary-total').innerText = `$${(subtotal + shipping).toFixed(2)}`;
+                    if (placeOrderButton) placeOrderButton.disabled = false; // Enable button if cart has items
+
                 }
             } catch (error) {
-                console.error('Error submitting order:', error);
-                alert(`Failed to place order due to network error or unexpected response: ${error.message}`);
-            } finally {
-                // Re-enable button regardless of success or failure
-                placeOrderBtn.disabled = false;
-                placeOrderBtn.innerText = 'Place Order';
+                console.error('Error loading order summary:', error);
+                if (summaryLoadingMessage) summaryLoadingMessage.style.display = 'none';
+                summaryItemsContainer.innerHTML = `<p class="checkout-error">Failed to load cart summary. ${error.message}</p>`;
+                if (placeOrderButton) placeOrderButton.disabled = true; // Disable button on error
             }
         }
 
-        // Attach event listener to the form submission
-        document.addEventListener('DOMContentLoaded', () => {
-            updateCartCount(); // Update cart count in header
-            renderOrderSummary(); // Render the cart items and summary
-            document.getElementById('checkout-form').addEventListener('submit', submitOrder);
-        });
+        async function handleCheckoutSubmit(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const form = event.target;
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            const placeOrderButton = document.getElementById('place-order-button');
+            const loadingMessage = document.getElementById('checkout-loading-message');
+            const errorMessage = document.getElementById('checkout-error-message');
+
+            // Reset messages
+            errorMessage.style.display = 'none';
+            errorMessage.innerText = '';
+            placeOrderButton.disabled = true;
+            loadingMessage.style.display = 'block';
+            loadingMessage.innerText = 'Processing your order...';
+
+
+            // For now, payment_method_id is a placeholder.
+            // In a real Stripe integration, you'd get this from Stripe Elements after card entry.
+            const paymentMethodId = "pm_card_visa"; // Dummy value for now
+
+            const orderPayload = {
+                session_id: userSessionId,
+                recipient: {
+                    name: data.fullName,
+                    email: data.email,
+                    phone: data.phone || null,
+                    address: {
+                        address1: data.address1,
+                        address2: data.address2 || null,
+                        city: data.city,
+                        state: data.state,
+                        zip: data.zip,
+                        country: data.country
+                    }
+                },
+                payment_method_id: paymentMethodId
+            };
+
+            try {
+                const response = await fetch('https://k1.kytranempowerment.com/api/store/create-order', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(orderPayload),
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.detail || `HTTP error! status: ${response.status}`);
+                }
+
+                loadingMessage.style.display = 'none';
+                alert('Order placed successfully! Order ID: ' + result.order_id);
+                // Redirect to a success page or clear cart and show success message
+                window.location.href = 'order_success.html?order_id=' + result.order_id; // Create order_success.html later
+                
+            } catch (error) {
+                loadingMessage.style.display = 'none';
+                errorMessage.style.display = 'block';
+                errorMessage.innerText = `Order failed: ${error.message}`;
+                console.error('Checkout error:', error);
+                placeOrderButton.disabled = false; // Re-enable button on error
+            }
+        }
     </script>
 </body>
 </html>
