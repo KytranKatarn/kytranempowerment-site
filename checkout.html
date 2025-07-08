@@ -215,8 +215,8 @@
                     </div>
                     <div class="form-group">
                         <label for="address1">Address Line 1</label>
-                        <input type="text" id="address1" name="address1" required>
-                    </div>
+                            <input type="text" id="address1" name="address1" required>
+                        </div>
                     <div class="form-group">
                         <label for="address2">Address Line 2 (Apt, Suite, etc. - Optional)</label>
                         <input type="text" id="address2" name="address2">
@@ -418,9 +418,12 @@
                         const itemTotal = item.price * item.quantity;
                         subtotal += itemTotal;
 
+                        // Display variant name if available
+                        const variantDisplay = item.selected_variant_name ? ` (${item.selected_variant_name})` : ''; // Add space before variant name
+
                         const itemHtml = `
                             <div class="order-item-summary">
-                                <span>${item.name} (x${item.quantity})</span>
+                                <span>${item.name}${variantDisplay} (x${item.quantity})</span>
                                 <span>$${itemTotal.toFixed(2)}</span>
                             </div>
                         `;
