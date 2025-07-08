@@ -226,7 +226,7 @@
                 // This validation might not be strictly necessary on merch_store.html if there are no direct "add to cart" buttons
                 // or variant selectors here. It's more critical on product_detail.html.
                 // However, if you add them later, this validation becomes useful.
-                const variantSelectElement = document.getElementById('variant-select');
+                const variantSelectElement = document.getElementById('variant-select'); // This element might not exist on merch_store.html
                 if (variantSelectElement && (!selectedVariantId || selectedVariantId === "")) {
                     alert('Please select a size/variant.');
                     return;
