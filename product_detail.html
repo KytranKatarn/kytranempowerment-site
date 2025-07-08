@@ -76,18 +76,19 @@
             color: #666;
             margin-bottom: 0.5em;
         }
-        /* NEW STYLES FOR VARIANT SELECTOR */
-        .product-detail-info .variant-selector {
+        /* Styles for Variant Selectors and Quantity */
+        .product-detail-info .option-group {
             margin-bottom: 15px;
         }
-        .product-detail-info .variant-selector label {
+        .product-detail-info .option-group label {
             display: block;
             margin-bottom: 8px;
             font-family: 'Raleway', sans-serif;
             font-weight: 500;
             color: #34495e;
         }
-        .product-detail-info .variant-selector select {
+        .product-detail-info .option-group select,
+        .product-detail-info .option-group input[type="number"] {
             width: calc(100% - 20px); /* Adjust for padding */
             padding: 10px;
             border: 1px solid #ccc;
@@ -95,6 +96,14 @@
             font-family: 'Open Sans', sans-serif;
             font-size: 1em;
             box-sizing: border-box;
+        }
+        .product-detail-info .selected-price {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.6em;
+            color: #e67e22;
+            font-weight: 700;
+            margin-top: 1em;
+            margin-bottom: 0.5em;
         }
         /* END NEW STYLES */
         .product-detail-info .btn-primary {
@@ -189,6 +198,10 @@
             localStorage.setItem('userSessionId', userSessionId);
         }
 
+        // Global variable to hold the product data for easy access by event listeners
+        let currentProductData = null;
+        let selectedVariantId = null; // Will store the currently selected variant ID
+
         // Mobile menu toggle (copied from script.js, or ensure script.js is loaded)
         document.addEventListener('DOMContentLoaded', () => {
             const mobileMenuIcon = document.querySelector('.mobile-menu-icon');
@@ -238,14 +251,23 @@
         }
 
         // Modified addToCart function to send data to backend
-        async function addToCartBackend(productId, selectedVariantId, quantity = 1) { // Added selectedVariantId
+        async function addToCartBackend(productId, selectedVariantId, quantity = 1) {
             try {
-                // Validate that a variant has been selected if variants exist for the product
-                // And selectedVariantId is not empty AND is not just the default placeholder value
+                // Client-side validation: Ensure variant is selected if required
                 const variantSelectElement = document.getElementById('variant-select');
                 if (variantSelectElement && (!selectedVariantId || selectedVariantId === "")) {
-                    alert('Please select a size/variant.');
+                    alert('Please select an option (size, color, etc.) for this product.');
                     return;
+                }
+
+                // Get quantity from the input field
+                const quantityInput = document.getElementById('quantity-select');
+                if (quantityInput) {
+                    quantity = parseInt(quantityInput.value);
+                    if (isNaN(quantity) || quantity <= 0) {
+                        alert('Please enter a valid quantity.');
+                        return;
+                    }
                 }
 
                 const response = await fetch('https://store.kytranempowerment.com/api/cart/add', {
@@ -288,6 +310,7 @@
             const productId = urlParams.get('id'); // Get product ID from URL query parameter
             const productDetailDiv = document.getElementById('product-detail-content');
             const pageTitle = document.getElementById('page-title');
+            const priceDisplayElement = document.getElementById('current-price'); // Element to update live price
 
             if (!productId) {
                 productDetailDiv.innerHTML = '<p class="product-error">Error: Product ID not provided in URL.</p>';
@@ -306,41 +329,62 @@
                     }
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                const product = await response.json(); // Direct product object, not an array of products
+                currentProductData = await response.json(); // Store fetched product data globally
 
-                if (product) {
-                    pageTitle.innerText = `${product.name} - Kytran Empowerment`;
-                    let imageUrl = product.image_url;
+                if (currentProductData) {
+                    pageTitle.innerText = `${currentProductData.name} - Kytran Empowerment`;
+                    let imageUrl = currentProductData.image_url;
 
                     // Distinguish between backend-served static paths for local products and full Printful URLs
-                    if (product.vendor_name === 'Kytran Local Goods') {
-                        // Local products from Kytran Local Goods
-                        // Assumes product.image_url is just a filename like "image.png"
-                        imageUrl = `assets/${imageUrl}`; // CORRECTED: relative path to assets/
+                    if (currentProductData.vendor_name === 'Kytran Local Goods') {
+                        imageUrl = `assets/${imageUrl}`;
                     }
-                    // For Printful products, product.image_url should already be a full URL (e.g., from Printful's CDN)
-                    // If image_url is still empty or null, use a generic placeholder
-                    imageUrl = imageUrl || 'https://via.placeholder.com/400?text=No+Image'; // Larger placeholder for detail page
+                    imageUrl = imageUrl || 'https://via.placeholder.com/400?text=No+Image';
 
                     // --- Variant Selection HTML ---
                     let variantSelectorHtml = '';
                     let allVariants = [];
-                    if (product.printful_variant_ids) {
+                    let initialDisplayPrice = currentProductData.price; // Default to base product price
+
+                    if (currentProductData.printful_variant_ids) {
                         try {
-                            allVariants = JSON.parse(product.printful_variant_ids);
+                            allVariants = JSON.parse(currentProductData.printful_variant_ids);
                             if (allVariants.length > 0) {
+                                // Try to categorize variants (basic attempt)
+                                const variantOptions = allVariants.map(variant => {
+                                    return {
+                                        id: variant.id,
+                                        name: variant.name || `Variant ${variant.id}`,
+                                        retail_price: variant.retail_price,
+                                        stock_status: variant.stock_status,
+                                        image_url: variant.image_url // Assuming variant might have its own image_url
+                                    };
+                                });
+
+                                // Initial price should reflect the first available variant if not explicitly selected
+                                if (allVariants[0] && allVariants[0].retail_price) {
+                                     initialDisplayPrice = allVariants[0].retail_price;
+                                }
+
                                 variantSelectorHtml = `
-                                    <div class="form-group variant-selector">
+                                    <div class="option-group">
                                         <label for="variant-select">Select Option:</label>
                                         <select id="variant-select" name="variant-select">
-                                            <option value="">-- Please Select --</option>
-                                            ${allVariants.map(variant => `
-                                                <option value="${variant.id}" ${!variant.stock_status ? 'disabled' : ''}>
-                                                    ${variant.name || 'Variant ' + variant.id} - $${variant.retail_price.toFixed(2)}
+                                            <option value="" data-price="${currentProductData.price}" data-image="${imageUrl}">-- Please Select --</option>
+                                            ${variantOptions.map(variant => `
+                                                <option value="${variant.id}"
+                                                        data-price="${variant.retail_price}"
+                                                        data-image="${variant.image_url || imageUrl}"
+                                                        ${!variant.stock_status ? 'disabled' : ''}>
+                                                    ${variant.name} - $${variant.retail_price.toFixed(2)}
                                                     ${!variant.stock_status ? ' (Out of Stock)' : ''}
                                                 </option>
                                             `).join('')}
                                         </select>
+                                    </div>
+                                    <div class="option-group">
+                                        <label for="quantity-select">Quantity:</label>
+                                        <input type="number" id="quantity-select" value="1" min="1">
                                     </div>
                                 `;
                             }
@@ -348,39 +392,59 @@
                             console.error("Error parsing printful_variant_ids JSON:", e);
                             variantSelectorHtml = `<p class="error-message" style="color: red;">Error loading variants.</p>`;
                         }
+                    } else {
+                        // No variants, just a quantity selector
+                        variantSelectorHtml = `
+                            <div class="option-group">
+                                <label for="quantity-select">Quantity:</label>
+                                <input type="number" id="quantity-select" value="1" min="1">
+                            </div>
+                        `;
                     }
 
                     productDetailDiv.innerHTML = `
                         <div class="product-detail-container">
                             <div class="product-detail-image">
-                                <img src="${imageUrl}" alt="${product.name}">
+                                <img id="product-main-image" src="${imageUrl}" alt="${currentProductData.name}">
                             </div>
                             <div class="product-detail-info">
-                                <h2>${product.name}</h2>
-                                <p class="price">$${product.price.toFixed(2)}</p>
-                                <p class="vendor-info"><strong>Vendor:</strong> ${product.vendor_name || 'N/A'}</p>
-                                <p class="stock-info"><strong>Availability:</strong> ${product.stock_status || 'N/A'}</p>
-                                ${variantSelectorHtml} <button class="btn-primary add-to-cart-btn"
-                                        data-product-id="${product.id}">
+                                <h2>${currentProductData.name}</h2>
+                                <p class="price" id="current-price">$${initialDisplayPrice.toFixed(2)}</p>
+                                <p class="vendor-info"><strong>Vendor:</strong> ${currentProductData.vendor_name || 'N/A'}</p>
+                                <p class="stock-info"><strong>Availability:</strong> ${currentProductData.stock_status || 'N/A'}</p>
+                                ${variantSelectorHtml}
+                                <button class="btn-primary add-to-cart-btn"
+                                        data-product-id="${currentProductData.id}">
                                     Add to Cart
                                 </button>
+                                <p class="description">${currentProductData.description || 'No detailed description available.'}</p>
                             </div>
                         </div>
                     `;
 
-                    // Attach event listener for the "Add to Cart" button on the detail page
+                    // After innerHTML is set, attach event listeners
+                    const variantSelect = document.getElementById('variant-select');
+                    if (variantSelect) {
+                        variantSelect.addEventListener('change', (event) => {
+                            const selectedOption = event.target.options[event.target.selectedIndex];
+                            const selectedPrice = parseFloat(selectedOption.dataset.price);
+                            const selectedImage = selectedOption.dataset.image;
+
+                            document.getElementById('current-price').innerText = `$${selectedPrice.toFixed(2)}`;
+                            document.getElementById('product-main-image').src = selectedImage;
+                            selectedVariantId = selectedOption.value; // Update global selectedVariantId
+                        });
+                        // Trigger change event to set initial price/image if a default variant is implicitly selected
+                        // or to handle placeholder option price.
+                        // For now, we manually set initialDisplayPrice above.
+                    }
+
                     document.querySelector('.add-to-cart-btn').addEventListener('click', (event) => {
                         const btn = event.target;
                         const productId = btn.dataset.productId;
-                        const variantSelect = document.getElementById('variant-select');
-                        let selectedVariantId = null;
-
-                        // Only get selected variant if the dropdown exists
-                        if (variantSelect) {
-                            selectedVariantId = variantSelect.value;
-                        }
-                        
-                        addToCartBackend(productId, selectedVariantId); // Pass selectedVariantId
+                        // selectedVariantId is now a global variable updated by variantSelect's change listener
+                        // quantity is retrieved inside addToCartBackend from quantity-select
+                        addToCartBackend(productId, selectedVariantId);
                     });
 
                 } else {
