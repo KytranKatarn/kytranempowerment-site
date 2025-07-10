@@ -285,6 +285,8 @@
         async function updateCartCount() {
             try {
                 // Ensure using k1_backend_app for cart operations as per blueprint
+                // The blueprint states k1_backend_app handles 'Cart management'.
+                // So, the URL should point to k1.kytranempowerment.com (port 8000)
                 const response = await fetch(`https://k1.kytranempowerment.com/api/cart/${userSessionId}`); 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -300,6 +302,7 @@
 
             } catch (error) {
                 console.error('Error updating cart count from backend:', error);
+                // Fallback to 0 if there's an error retrieving cart
                 const cartCountElement = document.getElementById('cart-count');
                 if (cartCountElement) cartCountElement.innerText = '0';
                 const mobileCartCountElement = document.getElementById('mobile-cart-count');
@@ -321,10 +324,11 @@
             const quantityInput = document.getElementById('quantity-input');
             const addToCartBtn = document.getElementById('add-to-cart-btn');
 
-            productLoading.style.display = 'block'; // Show loading message initially
+            productLoading.style.display = 'block'; // Always show loading initially
             productError.style.display = 'none';
             productImageContainer.style.display = 'none';
             productInfoContainer.style.display = 'none';
+            document.getElementById('variant-selection-container').style.display = 'none'; // Hide variant selection by default
 
             if (!productId) {
                 productLoading.style.display = 'none';
@@ -337,7 +341,7 @@
                 // Fetch product details from k1_backend_store (port 8001)
                 const response = await fetch(`https://store.kytranempowerment.com/api/products/${productId}`);
                 if (!response.ok) {
-                    const errorDetail = await response.text(); // Get detailed error from backend
+                    const errorDetail = await response.text(); 
                     throw new Error(`HTTP error! Status: ${response.status}. Detail: ${errorDetail}`);
                 }
                 const product = await response.json();
@@ -359,6 +363,8 @@
                     try {
                         allProductVariants = JSON.parse(product.printful_variant_ids);
                         variantSelect.innerHTML = ''; // Clear previous options
+
+                        // Only show variant selector if there are actual variants
                         if (allProductVariants.length > 0) {
                             allProductVariants.sort((a, b) => {
                                 // Sort variants for consistent display, e.g., by name
@@ -380,13 +386,13 @@
                                 variantSelect.value = allProductVariants[0].id;
                                 updateDisplayedVariantDetails(); // Call to set initial details and price
                             }
-                            document.getElementById('variant-selection-container').style.display = 'block'; // Show container
+                            document.getElementById('variant-selection-container').style.display = 'block'; // Show variant selection
                         } else {
-                            // No variants available in data, hide selector
-                            document.getElementById('variant-selection-container').style.display = 'none'; // Hide container
+                            // If printful_variant_ids exists but is an empty array after parsing
+                            document.getElementById('variant-selection-container').style.display = 'none';
                             document.getElementById('product-price').innerText = `$${product.price.toFixed(2)}`; // Use base product price
                             document.getElementById('selected-variant-id').value = '';
-                            document.getElementById('selected-variant-name').value = 'N/A';
+                            document.getElementById('selected-variant-name').value = product.name; // Fallback name
                             document.getElementById('selected-variant-price').value = product.price;
                             document.getElementById('selected-variant-details-json').value = '';
                         }
@@ -394,18 +400,18 @@
                         console.error("Error parsing Printful variants JSON:", e);
                         // Fallback: hide variant selector and use base product price if JSON parsing fails
                         document.getElementById('variant-selection-container').style.display = 'none';
-                        document.getElementById('product-price').innerText = `$${product.price.toFixed(2)}`;
+                        document.getElementById('product-price').innerText = `$${product.price.toFixed(2)}`; 
                         document.getElementById('selected-variant-id').value = '';
-                        document.getElementById('selected-variant-name').value = 'N/A';
+                        document.getElementById('selected-variant-name').value = product.name; // Fallback name
                         document.getElementById('selected-variant-price').value = product.price;
                         document.getElementById('selected-variant-details-json').value = '';
                     }
                 } else {
-                    // No printful_variant_ids field in product data, use base product price
+                    // No printful_variant_ids field in product data at all, use base product price
                     document.getElementById('variant-selection-container').style.display = 'none';
                     document.getElementById('product-price').innerText = `$${product.price.toFixed(2)}`;
                     document.getElementById('selected-variant-id').value = '';
-                    document.getElementById('selected-variant-name').value = 'N/A';
+                    document.getElementById('selected-variant-name').value = product.name; // Fallback name
                     document.getElementById('selected-variant-price').value = product.price;
                     document.getElementById('selected-variant-details-json').value = '';
                 }
@@ -478,12 +484,18 @@
                 selectedVariantPriceInput.value = displayPrice;
                 selectedVariantDetailsJsonInput.value = JSON.stringify(selectedVariant);
             } else {
+                // Fallback to base product price or 0 if no variant or variant not found
                 // This case should ideally not be hit if variants are properly loaded and selected
-                // If it happens, fallback to a sensible default or an error state
+                // This means there might be an issue with `allProductVariants` array or `selectedVariantId`
                 console.warn("Selected variant not found in allProductVariants array. Falling back to $0.00.");
+                const urlParams = new URLSearchParams(window.location.search);
+                const productId = urlParams.get('id');
+                // Attempt to get the base product price if no variant is found or selected
+                // (This would require making the 'product' object accessible here or refetching)
+                // For now, keep as 0.00 if a variant is expected but not matched.
                 productPriceElement.innerText = '$0.00'; 
                 selectedVariantIdInput.value = '';
-                selectedVariantNameInput.value = 'N/A';
+                selectedVariantNameInput.value = 'N/A'; // Indicate no specific variant selected
                 selectedVariantPriceInput.value = 0.00;
                 selectedVariantDetailsJsonInput.value = '';
             }
