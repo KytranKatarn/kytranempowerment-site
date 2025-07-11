@@ -251,8 +251,8 @@
 
         async function updateCartCount() {
             try {
-                // Ensure this URL is consistent with app.py's cart endpoints
-                const response = await fetch(`https://k1.kytranempowerment.com/api/cart/${userSessionId}`);
+                // CHANGED URL to store.kytranempowerment.com
+                const response = await fetch(`https://store.kytranempowerment.com/api/cart/${userSessionId}`); 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -276,7 +276,8 @@
 
         async function addToCartBackend(productId, selectedVariantId, quantity = 1, variantName = null, variantPrice = null, variantDetailsJson = null) {
             try {
-                const response = await fetch('https://k1.kytranempowerment.com/api/cart', {
+                // CHANGED URL to k1.kytranempowerment.com as it's the consolidated backend
+                const response = await fetch('https://k1.kytranempowerment.com/api/cart', { 
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -311,6 +312,7 @@
 
         async function updateCartItemQuantityBackend(cartItemId, newQuantity) {
             try {
+                // CHANGED URL to k1.kytranempowerment.com
                 const response = await fetch(`https://k1.kytranempowerment.com/api/cart/update_quantity/${cartItemId}`, {
                     method: 'PUT',
                     headers: {
@@ -340,6 +342,7 @@
                 return;
             }
             try {
+                // CHANGED URL to k1.kytranempowerment.com
                 const response = await fetch(`https://k1.kytranempowerment.com/api/cart/remove/${cartItemId}`, {
                     method: 'DELETE',
                 });
@@ -374,15 +377,13 @@
             cartItemsContainer.innerHTML = '';
 
             try {
-                // Ensure this URL is consistent with app.py's cart endpoints
-                const response = await fetch(`https://k1.kytranempowerment.com/api/cart/${userSessionId}`);
+                // CHANGED URL to store.kytranempowerment.com
+                const response = await fetch(`https://store.kytranempowerment.com/api/cart/${userSessionId}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 const data = await response.json();
                 const cartItems = data.cart_items || [];
-
-                console.log("Fetched cart items:", cartItems); // Kept for continued debugging
 
                 if (cartLoadingMessage) cartLoadingMessage.style.display = 'none';
 
@@ -391,7 +392,6 @@
                 } else {
                     let subtotal = 0;
                     cartItems.forEach(item => {
-                        console.log("Processing cart item:", item); // Kept for continued debugging
                         const itemTotal = item.price * item.quantity;
                         subtotal += itemTotal;
 
@@ -399,54 +399,39 @@
                         let variantSize = '';
                         let variantOptionText = ''; 
                         
-                        // Start with the product's base image, then try to override with variant image
                         let imageUrlToDisplay = item.image_url; 
                         
                         if (item.variant_details_json) {
                             try {
                                 const variantDetails = JSON.parse(item.variant_details_json);
-                                console.log("Parsed variantDetails:", variantDetails); // Kept for continued debugging
                                 
-                                // Extract color and size from variantDetails
                                 if (variantDetails.color) variantColor = variantDetails.color;
                                 if (variantDetails.size) variantSize = variantDetails.size;
 
-                                // Construct variant option text from color/size if available
-                                const options = [];
-                                if (variantColor) options.push(`Color: ${variantColor}`);
-                                if (variantSize) options.push(`Size: ${variantSize}`);
-                                variantOptionText = options.join(', ');
+                                if (variantColor && variantSize) {
+                                    variantOptionText = `Color: ${variantColor}, Size: ${variantSize}`;
+                                } else if (variantColor) {
+                                    variantOptionText = `Color: ${variantColor}`;
+                                } else if (variantSize) {
+                                    variantOptionText = `Size: ${variantSize}`;
+                                } else if (item.selected_variant_name && item.selected_variant_name !== 'N/A') {
+                                    variantOptionText = item.selected_variant_name; 
+                                }
 
-                                // Prioritize variant-specific image if available
                                 if (variantDetails.files && variantDetails.files.length > 0) {
                                     const previewFile = variantDetails.files.find(f => f.type === 'preview' || f.type === 'mockup');
                                     if (previewFile && previewFile.preview_url) {
                                         imageUrlToDisplay = previewFile.preview_url;
-                                    } else if (variantDetails.files[0] && variantDetails.files[0].preview_url) {
+                                    } else if (variantDetails.files[0].preview_url) {
                                         imageUrlToDisplay = variantDetails.files[0].preview_url;
-                                    } else if (variantDetails.files[0] && variantDetails.files[0].url) {
+                                    } else if (variantDetails.files[0].url) {
                                         imageUrlToDisplay = variantDetails.files[0].url;
                                     }
-                                } else {
-                                    console.log("No variant files found in variantDetails for item:", item.id); // Kept for continued debugging
                                 }
                             } catch (e) {
-                                console.warn("Could not parse variant_details_json for cart item ID:", item.id, e);
-                                // Fallback to item.image_url if parsing fails
-                                imageUrlToDisplay = item.image_url;
+                                console.warn("Could not parse variant_details_json in cart.html:", e);
                             }
-                        } else {
-                            console.log("No variant_details_json for item:", item.id); // Kept for continued debugging
                         }
-
-                        // **NEW/REFINED LOGIC HERE:**
-                        // If variantOptionText is still empty (meaning no color/size from variantDetails),
-                        // use the selected_variant_name provided by the backend.
-                        if (!variantOptionText && item.selected_variant_name && item.selected_variant_name !== 'N/A') {
-                            variantOptionText = item.selected_variant_name;
-                        }
-
-                        // Ensure a placeholder if no image URL is found
                         imageUrlToDisplay = imageUrlToDisplay || 'https://via.placeholder.com/100?text=No+Image';
 
                         const cartItemHtml = `
