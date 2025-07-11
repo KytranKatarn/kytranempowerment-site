@@ -301,6 +301,9 @@
             localStorage.setItem('userSessionId', userSessionId);
         }
 
+        // NEW: Global variable to store fetched cart items for payload construction
+        let currentCartItems = [];
+
         // Mobile menu toggle (from script.js or included directly)
         document.addEventListener('DOMContentLoaded', () => {
             const mobileMenuIcon = document.querySelector('.mobile-menu-icon');
@@ -330,7 +333,8 @@
 
         async function updateCartCount() {
             try {
-                const response = await fetch(`https://store.kytranempowerment.com/api/cart/${userSessionId}`);
+                // IMPORTANT: Ensure this URL is consistent with app.py's cart endpoints, as store_app.py is not for checkout processing.
+                const response = await fetch(`https://k1.kytranempowerment.com/api/cart/${userSessionId}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -352,38 +356,6 @@
             }
         }
 
-        // Add to cart function (useful if you decide to have "add to cart" on summary, or for consistency)
-        async function addToCartBackend(productId, quantity = 1) {
-            try {
-                const response = await fetch('https://store.kytranempowerment.com/api/cart/add', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        session_id: userSessionId,
-                        product_id: productId,
-                        quantity: quantity
-                    }),
-                });
-
-                const result = await response.json();
-                if (!response.ok) {
-                    throw new Error(result.detail || `HTTP error! status: ${response.status}`);
-                }
-                alert(result.message);
-                updateCartCount();
-                loadOrderSummary(); // Refresh summary if on checkout page
-            } catch (error) {
-                console.error('Error adding product to cart via backend:', error);
-                alert(`Failed to add product to cart: ${error.message}`);
-            }
-        }
-        // No need for updateCartItemQuantityBackend or removeCartItemBackend in this file for now,
-        // as cart.html handles direct cart modification.
-
-        // --- Checkout Specific Logic ---
-
         async function loadOrderSummary() {
             const summaryItemsContainer = document.getElementById('order-summary-items');
             const summaryLoadingMessage = document.getElementById('summary-loading-message');
@@ -398,28 +370,43 @@
             summaryItemsContainer.innerHTML = ''; // Clear previous items
 
             let subtotal = 0;
-            let shipping = 0; // Placeholder for shipping calculation
+            let shipping = 0; // Placeholder for shipping calculation, currently $0.00
 
             try {
-                const response = await fetch(`https://store.kytranempowerment.com/api/cart/${userSessionId}`);
+                // IMPORTANT: Use k1.kytranempowerment.com for cart access for checkout
+                const response = await fetch(`https://k1.kytranempowerment.com/api/cart/${userSessionId}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 const data = await response.json();
-                const cartItems = data.cart_items || [];
+                currentCartItems = data.cart_items || []; // Store cart items globally
 
                 if (summaryLoadingMessage) summaryLoadingMessage.style.display = 'none';
 
-                if (cartItems.length === 0) {
+                if (currentCartItems.length === 0) {
                     if (summaryEmptyMessage) summaryEmptyMessage.style.display = 'block';
                     if (placeOrderButton) placeOrderButton.disabled = true; // Disable button if cart is empty
                 } else {
-                    cartItems.forEach(item => {
+                    currentCartItems.forEach(item => {
                         const itemTotal = item.price * item.quantity;
                         subtotal += itemTotal;
 
-                        // Display variant name if available
-                        const variantDisplay = item.selected_variant_name ? ` (${item.selected_variant_name})` : ''; // Add space before variant name
+                        // Display variant name if available, parse variant_details_json for color/size
+                        let variantOptionText = item.selected_variant_name; 
+                        if (item.variant_details_json) {
+                            try {
+                                const variantDetails = JSON.parse(item.variant_details_json);
+                                const options = [];
+                                if (variantDetails.color) options.push(`Color: ${variantDetails.color}`);
+                                if (variantDetails.size) options.push(`Size: ${variantDetails.size}`);
+                                if (options.length > 0) {
+                                    variantOptionText = options.join(', ');
+                                }
+                            } catch (e) {
+                                console.warn("Could not parse variant_details_json in checkout.html:", e);
+                            }
+                        }
+                        const variantDisplay = variantOptionText ? ` (${variantOptionText})` : '';
 
                         const itemHtml = `
                             <div class="order-item-summary">
@@ -432,7 +419,8 @@
                     
                     document.getElementById('summary-subtotal').innerText = `$${subtotal.toFixed(2)}`;
                     document.getElementById('summary-shipping').innerText = `$${shipping.toFixed(2)}`;
-                    document.getElementById('summary-total').innerText = `$${(subtotal + shipping).toFixed(2)}`;
+                    const total = subtotal + shipping; 
+                    document.getElementById('summary-total').innerText = `$${total.toFixed(2)}`;
                     if (placeOrderButton) placeOrderButton.disabled = false; // Enable button if cart has items
 
                 }
@@ -462,30 +450,48 @@
             loadingMessage.style.display = 'block';
             loadingMessage.innerText = 'Processing your order...';
 
+            // Ensure cart is not empty before proceeding
+            if (currentCartItems.length === 0) {
+                loadingMessage.style.display = 'none';
+                errorMessage.style.display = 'block';
+                errorMessage.innerText = 'Your cart is empty. Please add items before checking out.';
+                placeOrderButton.disabled = false;
+                return;
+            }
 
-            // For now, payment_method_id is a placeholder.
-            // In a real Stripe integration, you'd get this from Stripe Elements after card entry.
-            const paymentMethodId = "pm_card_visa"; // Dummy value for now
+            // Construct the cart_items array for the payload
+            const payloadCartItems = currentCartItems.map(item => ({
+                product_id: item.product_id,
+                quantity: item.quantity,
+                selected_printful_variant_id: item.selected_printful_variant_id,
+                variant_name: item.selected_variant_name, // Use selected_variant_name from cart item
+                variant_price: item.price, // Use price from cart item
+                variant_details_json: item.variant_details_json // Pass the full JSON
+            }));
 
             const orderPayload = {
                 session_id: userSessionId,
+                shipping_cost: 0.00, // Currently $0.00 placeholder
+                tax_amount: 0.00,    // Placeholder
+                discount_amount: 0.00, // Placeholder
+                shipping_method: "Standard Shipping", // Placeholder
                 recipient: {
                     name: data.fullName,
                     email: data.email,
                     phone: data.phone || null,
-                    address: {
-                        address1: data.address1,
-                        address2: data.address2 || null,
-                        city: data.city,
-                        state: data.state,
-                        zip: data.zip,
-                        country: data.country
-                    }
+                    address1: data.address1,
+                    address2: data.address2 || null,
+                    city: data.city,
+                    state: data.state,
+                    zip: data.zip,
+                    country: data.country
                 },
-                payment_method_id: paymentMethodId
+                cart_items: payloadCartItems // Attach the constructed cart items
+                // payment_method_id will be added here in future Stripe integration
             };
 
             try {
+                // Submit this payload via a POST request to k1_backend_app
                 const response = await fetch('https://k1.kytranempowerment.com/api/store/create-order', {
                     method: 'POST',
                     headers: {
@@ -502,8 +508,8 @@
 
                 loadingMessage.style.display = 'none';
                 alert('Order placed successfully! Order ID: ' + result.order_id);
-                // Redirect to a success page or clear cart and show success message
-                window.location.href = 'order_success.html?order_id=' + result.order_id; // Create order_success.html later
+                // Redirect to a success page
+                window.location.href = 'order_success.html?order_id=' + result.order_id;
                 
             } catch (error) {
                 loadingMessage.style.display = 'none';
