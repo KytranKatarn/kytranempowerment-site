@@ -431,7 +431,8 @@
         let uniqueSizes = [];
         let selectedColor = null;
         let selectedSize = null;
-        // NEW: Flag to indicate if a valid variant is selected
+        // Flag to indicate if a valid variant is selected (for products with variants)
+        // Or if it's a non-variant product (which is always considered "selected" from product perspective)
         let isVariantSelected = false; 
 
         async function fetchProductDetails() {
@@ -458,8 +459,8 @@
             colorOptionsDiv.style.display = 'none'; 
             sizeOptionsDiv.style.display = 'none';
             variantDetailsDisplay.innerHTML = ''; 
-            addToCartBtn.classList.add('disabled'); // NEW: Disable by default
-            addToCartBtn.disabled = true; // NEW: Disable by default
+            addToCartBtn.classList.add('disabled'); // Disable by default
+            addToCartBtn.disabled = true; // Disable by default
 
 
             if (!productId) {
@@ -538,21 +539,14 @@
                         }
 
                         // Initial selection logic: try to pre-select the first available combo
-                        // This will also call updateSizeButtons and updateDisplayedVariantDetails
+                        // This will also trigger updateSizeButtons and updateDisplayedVariantDetails
                         if (uniqueColors.length > 0) {
                             selectColor(uniqueColors[0]);
                         } else if (uniqueSizes.length > 0) {
-                            selectSize(uniqueSizes[0]); // If no colors, select first size
-                            updateDisplayedVariantDetails(); // Manually call if only size changes from initial
-                        } else {
-                            // No color or size variants, just update display based on base product
-                            updateDisplayedVariantDetails();
+                            selectSize(uniqueSizes[0]); 
                         }
-
-                        // If the product has variants, the "Add to Cart" button starts disabled.
-                        // It will be enabled once a valid variant combination is selected by updateDisplayedVariantDetails.
-                        addToCartBtn.classList.add('disabled');
-                        addToCartBtn.disabled = true;
+                        // After initial selections, or if no variants (handled in else block below),
+                        // updateDisplayedVariantDetails will handle button state.
 
                     } catch (e) {
                         console.error("Error parsing Printful variants JSON:", e);
@@ -564,9 +558,9 @@
                         document.getElementById('selected-variant-details-json').value = '';
                         variantDetailsDisplay.innerHTML = '';
                         // If parsing fails, treat as no variants and enable Add to Cart
+                        isVariantSelected = true; // No variants, so base product is the "selection"
                         addToCartBtn.classList.remove('disabled');
                         addToCartBtn.disabled = false;
-                        isVariantSelected = true; // No variants, so base product is the "selection"
                     }
                 } else {
                     // Product has no variants
@@ -577,9 +571,9 @@
                     document.getElementById('selected-variant-price').value = currentProductData.price;
                     document.getElementById('selected-variant-details-json').value = '';
                     variantDetailsDisplay.innerHTML = ''; 
-                    addToCartBtn.classList.remove('disabled'); // NEW: Enable if no variants
-                    addToCartBtn.disabled = false; // NEW: Enable if no variants
                     isVariantSelected = true; // No variants, so base product is the "selection"
+                    addToCartBtn.classList.remove('disabled'); // Enable if no variants
+                    addToCartBtn.disabled = false; // Enable if no variants
                 }
 
                 addToCartBtn.onclick = () => {
@@ -594,10 +588,10 @@
                         return;
                     }
 
-                    // NEW: Enforce variant selection if product has variants
-                    if (allProductVariants.length > 0 && (!isVariantSelected || !selectedVariantId)) {
-                        alert('Please select all required product options (e.g., color and size).');
-                        return;
+                    // The button itself should prevent this, but an extra check for safety
+                    if (!isVariantSelected && allProductVariants.length > 0) {
+                         alert('Please select all required product options (e.g., color and size).');
+                         return;
                     }
                      
                     // If product has no variants, or if a specific variant is selected, use the appropriate data
@@ -605,7 +599,7 @@
                     const finalVariantId = selectedVariantId || null; // Use null if no variant selected (for non-variant products)
                     const finalVariantName = selectedVariantName || currentProductData.name;
                     const finalVariantPrice = isNaN(selectedVariantPrice) ? currentProductData.price : selectedVariantPrice;
-                    const finalVariantDetailsJson = selectedVariantDetailsJson || null;
+                    const finalVariantDetailsJson = finalVariantId ? selectedVariantDetailsJson : null; // Only send JSON if a specific variant is selected
 
                     addToCartBackend(
                         finalProductId,
@@ -727,12 +721,18 @@
                 selectedSize = null; 
             }
             
+            // If the previously selected size is no longer available for the new color, or no size was selected,
+            // try to select the first available size.
+            // This is important for ensuring a complete selection if possible, and updating button state.
             if (selectedSize === null || !sizeButtonsContainer.querySelector(`.size-button[data-size="${selectedSize}"]:not(.disabled)`)) {
                 const firstAvailableSizeButton = sizeButtonsContainer.querySelector('.size-button:not(.disabled)');
                 if (firstAvailableSizeButton) {
+                    // Call selectSize, which will in turn call updateDisplayedVariantDetails
                     selectSize(firstAvailableSizeButton.dataset.size);
                 } else {
-                    selectedSize = null; 
+                    selectedSize = null; // No available sizes for this color, ensure selectedSize is null
+                    // If no sizes are available, then updateDisplayedVariantDetails will handle disabling the button
+                    updateDisplayedVariantDetails(); // Manually trigger if no size was selected
                 }
             }
         }
@@ -746,24 +746,30 @@
             const selectedVariantDetailsJsonInput = document.getElementById('selected-variant-details-json');
             const variantDetailsDisplay = document.getElementById('variant-details-display');
             const productImage = document.getElementById('product-image');
-            const addToCartBtn = document.getElementById('add-to-cart-btn'); // Get button reference
+            const addToCartBtn = document.getElementById('add-to-cart-btn');
 
             let matchingVariant = null;
-            isVariantSelected = false; // Assume no valid variant selected initially in this update cycle
+            isVariantSelected = false; // Reset the flag at the beginning of each update cycle
 
-            if (allProductVariants.length > 0) {
-                const hasColors = uniqueColors.length > 0;
-                const hasSizes = uniqueSizes.length > 0;
+            // Determine if the product has variants requiring selection
+            const hasVariants = allProductVariants.length > 0;
+            const requiresColor = uniqueColors.length > 0;
+            const requiresSize = uniqueSizes.length > 0;
 
-                if (hasColors && hasSizes) { 
+            if (hasVariants) {
+                // Logic for finding a matching variant based on selections
+                if (requiresColor && requiresSize) {
+                    // Product requires both color and size
                     if (selectedColor !== null && selectedSize !== null) {
                         matchingVariant = allProductVariants.find(v => v.color === selectedColor && v.size === selectedSize);
                     }
-                } else if (hasColors) { 
+                } else if (requiresColor) {
+                    // Product only requires color
                     if (selectedColor !== null) {
                         matchingVariant = allProductVariants.find(v => v.color === selectedColor);
                     }
-                } else if (hasSizes) { 
+                } else if (requiresSize) {
+                    // Product only requires size
                     if (selectedSize !== null) {
                         matchingVariant = allProductVariants.find(v => v.size === selectedSize);
                     }
@@ -771,6 +777,7 @@
             }
             
             if (matchingVariant) {
+                // A valid variant combination was found
                 const displayPrice = parseFloat(matchingVariant.retail_price || matchingVariant.price || '0.00');
                 productPriceElement.innerText = `$${displayPrice.toFixed(2)}`;
                 selectedVariantIdInput.value = matchingVariant.id;
@@ -798,12 +805,11 @@
                 }
                 productImage.src = variantImageUrl || 'https://via.placeholder.com/400?text=No+Image'; 
                 
-                // NEW: A valid variant is selected
-                isVariantSelected = true; 
+                isVariantSelected = true; // Set to true only when a valid matching variant is found
                 addToCartBtn.classList.remove('disabled');
                 addToCartBtn.disabled = false;
 
-            } else if (currentProductData && allProductVariants.length === 0) {
+            } else if (!hasVariants) {
                 // Case: Product has NO variants, so base product details are always "selected"
                 productPriceElement.innerText = `$${currentProductData.price.toFixed(2)}`; 
                 selectedVariantIdInput.value = ''; // No variant ID for non-variant products
@@ -813,13 +819,12 @@
                 variantDetailsDisplay.innerHTML = ''; 
                 productImage.src = currentProductData.image_url || 'https://via.placeholder.com/400?text=No+Image'; 
                 
-                // NEW: Always enable if no variants
-                isVariantSelected = true;
+                isVariantSelected = true; // Always enabled for non-variant products
                 addToCartBtn.classList.remove('disabled');
                 addToCartBtn.disabled = false;
 
             } else {
-                // Case: Product HAS variants, but current selection is incomplete/invalid
+                // Case: Product HAS variants, but current selection is incomplete or invalid
                 productPriceElement.innerText = `$${currentProductData.price.toFixed(2)}`; // Show base price
                 selectedVariantIdInput.value = ''; // Clear selected variant ID
                 selectedVariantNameInput.value = ''; // Clear variant name
@@ -828,8 +833,7 @@
                 variantDetailsDisplay.innerHTML = '<span style="color: red;">Please select all options.</span>'; 
                 productImage.src = currentProductData.image_url || 'https://via.placeholder.com/400?text=No+Image'; 
                 
-                // NEW: Keep button disabled if variant selection is incomplete
-                isVariantSelected = false; 
+                isVariantSelected = false; // Keep button disabled if variant selection is incomplete
                 addToCartBtn.classList.add('disabled');
                 addToCartBtn.disabled = true;
             }
@@ -837,7 +841,7 @@
 
         async function addToCartBackend(productId, selectedVariantId, quantity = 1, variantName = null, variantPrice = null, variantDetailsJson = null) {
             try {
-                // No need for the client-side alert here anymore, as the button is disabled if selection is incomplete
+                // No need for client-side alert here, as the button state already prevents invalid submissions
                 // The backend also validates this, providing a second layer of defense.
 
                 const response = await fetch('https://k1.kytranempowerment.com/api/cart', { 
