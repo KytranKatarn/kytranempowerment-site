@@ -402,7 +402,6 @@
 
         async function updateCartCount() {
             try {
-                // Ensure this URL is consistent with app.py's cart endpoints
                 const response = await fetch(`https://k1.kytranempowerment.com/api/cart/${userSessionId}`); 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -471,7 +470,6 @@
             }
 
             try {
-                // Ensure this URL is consistent with app.py's product endpoints
                 const response = await fetch(`https://k1.kytranempowerment.com/api/products/${productId}`);
                 if (!response.ok) {
                     const errorDetail = await response.text(); 
@@ -519,34 +517,34 @@
                                 colorSwatchesContainer.appendChild(swatch);
                             });
                             colorOptionsDiv.style.display = 'block';
+                            // Initially select the first color if colors exist, but clear size selection
+                            selectedColor = uniqueColors[0];
+                            document.querySelector(`.color-swatch[data-color="${selectedColor}"]`).classList.add('selected');
+                            selectedSize = null; // NEW: Crucially, clear selected size on initial color pick
+                            updateSizeButtons(); // Update size buttons based on this initial color
                         } else {
                             colorOptionsDiv.style.display = 'none';
                         }
 
                         sizeButtonsContainer.innerHTML = '';
                         if (uniqueSizes.length > 0) {
-                            uniqueSizes.forEach(size => {
-                                const button = document.createElement('button');
-                                button.className = 'size-button';
-                                button.innerText = size;
-                                button.dataset.size = size;
-                                button.addEventListener('click', () => selectSize(size));
-                                sizeButtonsContainer.appendChild(button);
-                            });
+                            // Size buttons will be populated by updateSizeButtons()
                             sizeOptionsDiv.style.display = 'block';
                         } else {
                             sizeOptionsDiv.style.display = 'none';
                         }
-
-                        // Initial selection logic: try to pre-select the first available combo
-                        // This will also trigger updateSizeButtons and updateDisplayedVariantDetails
-                        if (uniqueColors.length > 0) {
-                            selectColor(uniqueColors[0]);
-                        } else if (uniqueSizes.length > 0) {
-                            selectSize(uniqueSizes[0]); 
+                        
+                        // NEW: If only sizes exist (no colors), initially select the first size, and update details
+                        if (uniqueColors.length === 0 && uniqueSizes.length > 0) {
+                            selectedSize = uniqueSizes[0];
+                            updateDisplayedVariantDetails(); // Will handle enabling button if this is a complete selection
+                        } else {
+                            // For products with both color & size, or no variants, initial state handles button
+                            // updateDisplayedVariantDetails() will be called by selectColor if applicable
+                            // or it needs to be called to set initial button state for 0 variants
+                            updateDisplayedVariantDetails(); 
                         }
-                        // After initial selections, or if no variants (handled in else block below),
-                        // updateDisplayedVariantDetails will handle button state.
+
 
                     } catch (e) {
                         console.error("Error parsing Printful variants JSON:", e);
@@ -558,7 +556,7 @@
                         document.getElementById('selected-variant-details-json').value = '';
                         variantDetailsDisplay.innerHTML = '';
                         // If parsing fails, treat as no variants and enable Add to Cart
-                        isVariantSelected = true; // No variants, so base product is the "selection"
+                        isVariantSelected = true; 
                         addToCartBtn.classList.remove('disabled');
                         addToCartBtn.disabled = false;
                     }
@@ -571,9 +569,9 @@
                     document.getElementById('selected-variant-price').value = currentProductData.price;
                     document.getElementById('selected-variant-details-json').value = '';
                     variantDetailsDisplay.innerHTML = ''; 
-                    isVariantSelected = true; // No variants, so base product is the "selection"
-                    addToCartBtn.classList.remove('disabled'); // Enable if no variants
-                    addToCartBtn.disabled = false; // Enable if no variants
+                    isVariantSelected = true; 
+                    addToCartBtn.classList.remove('disabled'); 
+                    addToCartBtn.disabled = false; 
                 }
 
                 addToCartBtn.onclick = () => {
@@ -596,10 +594,10 @@
                      
                     // If product has no variants, or if a specific variant is selected, use the appropriate data
                     const finalProductId = currentProductData.id;
-                    const finalVariantId = selectedVariantId || null; // Use null if no variant selected (for non-variant products)
+                    const finalVariantId = selectedVariantId || null; 
                     const finalVariantName = selectedVariantName || currentProductData.name;
                     const finalVariantPrice = isNaN(selectedVariantPrice) ? currentProductData.price : selectedVariantPrice;
-                    const finalVariantDetailsJson = finalVariantId ? selectedVariantDetailsJson : null; // Only send JSON if a specific variant is selected
+                    const finalVariantDetailsJson = finalVariantId ? selectedVariantDetailsJson : null;
 
                     addToCartBackend(
                         finalProductId,
@@ -622,7 +620,7 @@
                 productError.innerText = `Failed to load product details. Please try again later. Error: ${error.message}`;
                 productImageContainer.style.display = 'none';
                 productInfoContainer.style.display = 'none';
-                addToCartBtn.classList.add('disabled'); // Ensure disabled on error
+                addToCartBtn.classList.add('disabled'); 
                 addToCartBtn.disabled = true;
             }
         }
@@ -662,6 +660,8 @@
                 selectedSwatch.classList.add('selected');
             }
             
+            // NEW: Reset selected size when color changes
+            selectedSize = null; 
             updateSizeButtons(); 
             updateDisplayedVariantDetails(); 
         }
@@ -685,56 +685,67 @@
                 console.error("Size buttons container not found!");
                 return;
             }
-            sizeButtonsContainer.innerHTML = ''; 
+            sizeButtonsContainer.innerHTML = ''; // Clear existing size buttons
 
             const availableSizesForSelectedColor = new Set();
             allProductVariants.forEach(variant => {
-                if (selectedColor === null || variant.color === selectedColor) {
-                    availableSizesForSelectedColor.add(variant.size);
+                // Only consider variants matching the selected color, or all variants if no color selected
+                if ((selectedColor === null || variant.color === selectedColor) && (variant.availability_status === 'active' || variant.availability_status === true)) {
+                    if (variant.size) { // Ensure size property exists
+                        availableSizesForSelectedColor.add(variant.size);
+                    }
                 }
             });
 
-            uniqueSizes.forEach(size => {
-                const button = document.createElement('button');
-                button.className = 'size-button';
-                button.innerText = size;
-                button.dataset.size = size;
-
-                const variantAvailableWithSelectedColorAndSize = allProductVariants.some(v => 
-                    (selectedColor === null || v.color === selectedColor) && 
-                    v.size === size && 
-                    (v.availability_status === 'active' || v.availability_status === true) 
-                );
-
-                if (!variantAvailableWithSelectedColorAndSize) {
-                    button.classList.add('disabled');
-                    button.disabled = true;
-                } else {
-                    button.addEventListener('click', () => selectSize(size));
-                }
-                sizeButtonsContainer.appendChild(button);
+            // Sort unique sizes based on predefined order
+            const sortedAvailableSizes = [...availableSizesForSelectedColor].sort((a, b) => {
+                const sizeOrder = ["XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL"];
+                const indexA = sizeOrder.indexOf(a);
+                const indexB = sizeOrder.indexOf(b);
+                // Handle sizes not in predefined order by pushing them to the end
+                if (indexA === -1 && indexB === -1) return a.localeCompare(b); // Alphabetical if both custom
+                if (indexA === -1) return 1; // a is custom, push to end
+                if (indexB === -1) return -1; // b is custom, push to end
+                return indexA - indexB;
             });
 
-            const currentlySelectedSizeButton = sizeButtonsContainer.querySelector(`.size-button.selected`);
-            if (currentlySelectedSizeButton && currentlySelectedSizeButton.classList.contains('disabled')) {
-                currentlySelectedSizeButton.classList.remove('selected');
-                selectedSize = null; 
+
+            if (sortedAvailableSizes.length > 0) {
+                sortedAvailableSizes.forEach(size => {
+                    const button = document.createElement('button');
+                    button.className = 'size-button';
+                    button.innerText = size;
+                    button.dataset.size = size;
+
+                    // Re-check availability for the specific color + size combination
+                    const variantAvailableWithSelectedColorAndSize = allProductVariants.some(v => 
+                        (selectedColor === null || v.color === selectedColor) && 
+                        v.size === size && 
+                        (v.availability_status === 'active' || v.availability_status === true) 
+                    );
+
+                    if (!variantAvailableWithSelectedColorAndSize) {
+                        button.classList.add('disabled');
+                        button.disabled = true;
+                    } else {
+                        button.addEventListener('click', () => selectSize(size));
+                    }
+                    sizeButtonsContainer.appendChild(button);
+                });
+                document.getElementById('size-options').style.display = 'block'; // Show size options if any available
+            } else {
+                document.getElementById('size-options').style.display = 'none'; // Hide if no sizes available for selected color
+            }
+
+            // After re-rendering, if the currently selected size is no longer valid/available for the new color, deselect it
+            const currentlySelectedSizeButton = sizeButtonsContainer.querySelector(`.size-button[data-size="${selectedSize}"]`);
+            if (selectedSize && (!currentlySelectedSizeButton || currentlySelectedSizeButton.classList.contains('disabled'))) {
+                selectedSize = null; // Deselect if no longer available
             }
             
-            // If the previously selected size is no longer available for the new color, or no size was selected,
-            // try to select the first available size.
-            // This is important for ensuring a complete selection if possible, and updating button state.
-            if (selectedSize === null || !sizeButtonsContainer.querySelector(`.size-button[data-size="${selectedSize}"]:not(.disabled)`)) {
-                const firstAvailableSizeButton = sizeButtonsContainer.querySelector('.size-button:not(.disabled)');
-                if (firstAvailableSizeButton) {
-                    // Call selectSize, which will in turn call updateDisplayedVariantDetails
-                    selectSize(firstAvailableSizeButton.dataset.size);
-                } else {
-                    selectedSize = null; // No available sizes for this color, ensure selectedSize is null
-                    // If no sizes are available, then updateDisplayedVariantDetails will handle disabling the button
-                    updateDisplayedVariantDetails(); // Manually trigger if no size was selected
-                }
-            }
+            // This function (updateDisplayedVariantDetails) will be called by selectColor,
+            // or by selectSize, and handle the button state. No automatic selection here.
+            updateDisplayedVariantDetails();
         }
 
 
@@ -751,25 +762,23 @@
             let matchingVariant = null;
             isVariantSelected = false; // Reset the flag at the beginning of each update cycle
 
-            // Determine if the product has variants requiring selection
             const hasVariants = allProductVariants.length > 0;
             const requiresColor = uniqueColors.length > 0;
             const requiresSize = uniqueSizes.length > 0;
 
             if (hasVariants) {
-                // Logic for finding a matching variant based on selections
                 if (requiresColor && requiresSize) {
-                    // Product requires both color and size
+                    // Requires both color and size. Find variant only if BOTH are selected.
                     if (selectedColor !== null && selectedSize !== null) {
                         matchingVariant = allProductVariants.find(v => v.color === selectedColor && v.size === selectedSize);
                     }
                 } else if (requiresColor) {
-                    // Product only requires color
+                    // Only requires color. Find variant if color is selected.
                     if (selectedColor !== null) {
                         matchingVariant = allProductVariants.find(v => v.color === selectedColor);
                     }
                 } else if (requiresSize) {
-                    // Product only requires size
+                    // Only requires size. Find variant if size is selected.
                     if (selectedSize !== null) {
                         matchingVariant = allProductVariants.find(v => v.size === selectedSize);
                     }
@@ -812,28 +821,28 @@
             } else if (!hasVariants) {
                 // Case: Product has NO variants, so base product details are always "selected"
                 productPriceElement.innerText = `$${currentProductData.price.toFixed(2)}`; 
-                selectedVariantIdInput.value = ''; // No variant ID for non-variant products
+                selectedVariantIdInput.value = ''; 
                 selectedVariantNameInput.value = currentProductData.name; 
                 selectedVariantPriceInput.value = currentProductData.price;
-                selectedVariantDetailsJsonInput.value = ''; // No variant details JSON for non-variant products
+                selectedVariantDetailsJsonInput.value = ''; 
                 variantDetailsDisplay.innerHTML = ''; 
                 productImage.src = currentProductData.image_url || 'https://via.placeholder.com/400?text=No+Image'; 
                 
-                isVariantSelected = true; // Always enabled for non-variant products
+                isVariantSelected = true; 
                 addToCartBtn.classList.remove('disabled');
                 addToCartBtn.disabled = false;
 
             } else {
                 // Case: Product HAS variants, but current selection is incomplete or invalid
                 productPriceElement.innerText = `$${currentProductData.price.toFixed(2)}`; // Show base price
-                selectedVariantIdInput.value = ''; // Clear selected variant ID
-                selectedVariantNameInput.value = ''; // Clear variant name
-                selectedVariantPriceInput.value = ''; // Clear variant price
-                selectedVariantDetailsJsonInput.value = ''; // Clear variant details JSON
+                selectedVariantIdInput.value = ''; 
+                selectedVariantNameInput.value = ''; 
+                selectedVariantPriceInput.value = ''; 
+                selectedVariantDetailsJsonInput.value = ''; 
                 variantDetailsDisplay.innerHTML = '<span style="color: red;">Please select all options.</span>'; 
                 productImage.src = currentProductData.image_url || 'https://via.placeholder.com/400?text=No+Image'; 
                 
-                isVariantSelected = false; // Keep button disabled if variant selection is incomplete
+                isVariantSelected = false; 
                 addToCartBtn.classList.add('disabled');
                 addToCartBtn.disabled = true;
             }
@@ -841,9 +850,6 @@
 
         async function addToCartBackend(productId, selectedVariantId, quantity = 1, variantName = null, variantPrice = null, variantDetailsJson = null) {
             try {
-                // No need for client-side alert here, as the button state already prevents invalid submissions
-                // The backend also validates this, providing a second layer of defense.
-
                 const response = await fetch('https://k1.kytranempowerment.com/api/cart', { 
                     method: 'POST',
                     headers: {
