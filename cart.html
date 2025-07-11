@@ -251,8 +251,6 @@
 
         async function updateCartCount() {
             try {
-                // Ensure this URL points to k1_backend_app (port 8000), not k1_backend_store (port 8001)
-                // The blueprint states k1_backend_app handles 'Cart management'.
                 const response = await fetch(`https://k1.kytranempowerment.com/api/cart/${userSessionId}`); 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -301,7 +299,7 @@
 
                 alert(result.message);
                 updateCartCount();
-                if (document.getElementById('cart-items-container')) { // Only reload if on cart page
+                if (document.getElementById('cart-items-container')) { 
                     loadCartItems();
                 }
             } catch (error) {
@@ -329,7 +327,8 @@
                 console.log(result.message);
                 loadCartItems();
                 updateCartCount();
-            } catch (error) {
+            }
+            catch (error) {
                 console.error('Error updating cart item quantity:', error);
                 alert(`Failed to update cart quantity: ${error.message}`);
             }
@@ -374,8 +373,6 @@
             cartItemsContainer.innerHTML = '';
 
             try {
-                // Ensure this URL points to k1_backend_app (port 8000), not k1_backend_store (port 8001)
-                // The blueprint states k1_backend_app handles 'Cart management'.
                 const response = await fetch(`https://k1.kytranempowerment.com/api/cart/${userSessionId}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -393,14 +390,56 @@
                         const itemTotal = item.price * item.quantity;
                         subtotal += itemTotal;
 
-                        const variantDisplay = item.selected_variant_name ? `<p>Option: ${item.selected_variant_name}</p>` : '';
+                        let variantColor = '';
+                        let variantSize = '';
+                        let variantOptionText = ''; // For combined display if needed
+
+                        // Determine the image URL for the cart item
+                        let imageUrlToDisplay = item.image_url; // Default to base product image from item
+
+                        // If variant_details_json exists, try to extract more specific info
+                        if (item.variant_details_json) {
+                            try {
+                                const variantDetails = JSON.parse(item.variant_details_json);
+                                
+                                if (variantDetails.color) variantColor = variantDetails.color;
+                                if (variantDetails.size) variantSize = variantDetails.size;
+
+                                // Construct a more specific option text
+                                if (variantColor && variantSize) {
+                                    variantOptionText = `Color: ${variantColor}, Size: ${variantSize}`;
+                                } else if (variantColor) {
+                                    variantOptionText = `Color: ${variantColor}`;
+                                } else if (variantSize) {
+                                    variantOptionText = `Size: ${variantSize}`;
+                                } else if (item.selected_variant_name && item.selected_variant_name !== 'N/A') {
+                                    variantOptionText = item.selected_variant_name; // Fallback to stored name
+                                }
+
+                                // Prioritize specific 'preview' or 'mockup' files for the variant from variantDetails
+                                if (variantDetails.files && variantDetails.files.length > 0) {
+                                    const previewFile = variantDetails.files.find(f => f.type === 'preview' || f.type === 'mockup');
+                                    if (previewFile && previewFile.preview_url) {
+                                        imageUrlToDisplay = previewFile.preview_url;
+                                    } else if (variantDetails.files[0].preview_url) {
+                                        imageUrlToDisplay = variantDetails.files[0].preview_url;
+                                    } else if (variantDetails.files[0].url) {
+                                        imageUrlToDisplay = variantDetails.files[0].url;
+                                    }
+                                }
+                            } catch (e) {
+                                console.warn("Could not parse variant_details_json in cart.html:", e);
+                            }
+                        }
+                        // Fallback if no specific variant image found or parsing failed
+                        imageUrlToDisplay = imageUrlToDisplay || 'https://via.placeholder.com/100?text=No+Image';
 
                         const cartItemHtml = `
                             <div class="cart-item">
-                                <img src="${item.image_url || 'https://via.placeholder.com/100?text=No+Image'}" alt="${item.name}" class="cart-item-image">
+                                <img src="${imageUrlToDisplay}" alt="${item.name}" class="cart-item-image">
                                 <div class="cart-item-details">
                                     <h3>${item.name}</h3>
-                                    ${variantDisplay}
+                                    ${variantOptionText ? `<p>Option: ${variantOptionText}</p>` : ''}
                                     <p>Price per unit: $${item.price.toFixed(2)}</p>
                                 </div>
                                 <div class="cart-item-quantity">
@@ -421,7 +460,7 @@
                     });
 
                     document.getElementById('cart-subtotal').innerText = `$${subtotal.toFixed(2)}`;
-                    document.getElementById('cart-shipping').innerText = `$0.00`; // Placeholder for now
+                    document.getElementById('cart-shipping').innerText = `$0.00`; 
                     const total = subtotal; 
                     document.getElementById('cart-total').innerText = `$${total.toFixed(2)}`;
 
@@ -437,4 +476,3 @@
     </script>
 </body>
 </html>
-}
