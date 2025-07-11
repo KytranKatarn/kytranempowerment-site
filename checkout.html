@@ -267,12 +267,12 @@
                         </div>
                     </div>
 
-                    <div id="shipping-options-container"> 
+                    <div id="shipping-options-container">
                         <h3>Shipping Method</h3>
                         <div id="shipping-methods-radio">
                             <p id="shipping-loading-message">Calculating shipping rates...</p>
                             <p id="shipping-error-message" style="color: red; display: none;"></p>
-                            <p id="no-shipping-message" style="display: none;"></p> 
+                            <p id="no-shipping-message" style="display: none;"></p>
                         </div>
                     </div>
                     
@@ -334,7 +334,7 @@
         let selectedShippingMethod = null; // Stores the selected shipping method object {id, name, rate}
         let currentSubtotal = 0; // To keep track of subtotal for dynamic shipping calculation
 
-        // NEW: Cache DOM element references once DCL is fired
+        // NEW: Cache DOM element references once DCL is fired for reliability
         let shippingOptionsContainer;
         let shippingMethodsRadio;
         let shippingLoadingMessage;
@@ -352,7 +352,6 @@
         let checkoutForm;
 
 
-        // Mobile menu toggle (from script.js or included directly)
         document.addEventListener('DOMContentLoaded', () => {
             const mobileMenuIcon = document.querySelector('.mobile-menu-icon');
             const mobileMenuOverlay = document.getElementById('mobileMenu');
@@ -371,7 +370,8 @@
                 });
             }
 
-            // NEW: Assign DOM element references here
+            // Assign DOM element references here after the DOM is fully loaded
+            // This ensures they are not null when functions like updatePlaceOrderButtonState are called.
             shippingOptionsContainer = document.getElementById('shipping-options-container');
             shippingMethodsRadio = document.getElementById('shipping-methods-radio');
             shippingLoadingMessage = document.getElementById('shipping-loading-message');
@@ -388,20 +388,19 @@
             checkoutErrorMessage = document.getElementById('checkout-error-message');
             checkoutForm = document.getElementById('checkout-form');
 
-            // Set initial display for shipping messages
+            // Set initial display states for shipping messages
             if (shippingLoadingMessage) shippingLoadingMessage.style.display = 'block';
             if (shippingErrorMessage) shippingErrorMessage.style.display = 'none';
             if (noShippingMessage) noShippingMessage.style.display = 'none';
 
 
-            updateCartCount(); // Update header cart count on load
-            loadOrderSummary(); // Load cart items for summary on checkout page
+            updateCartCount();
+            loadOrderSummary(); // This will internally trigger calculateAndDisplayShipping
 
             if (checkoutForm) {
                 checkoutForm.addEventListener('submit', handleCheckoutSubmit);
             }
 
-            // Add event listeners for address fields to recalculate shipping
             const addressFields = ['address1', 'city', 'state', 'zip', 'country'];
             addressFields.forEach(fieldId => {
                 const element = document.getElementById(fieldId);
@@ -410,8 +409,7 @@
                 }
             });
 
-            // Initial state: disable place order button
-            updatePlaceOrderButtonState();
+            updatePlaceOrderButtonState(); // Set initial button state based on cart/shipping
         });
 
         // Debounce function to limit API calls on input changes
@@ -521,9 +519,9 @@
         }
 
         function updatePlaceOrderButtonState() {
-            // Check if placeOrderButton is defined before trying to access its properties
-            if (!placeOrderButton) {
-                console.warn("Place Order Button element not found yet.");
+            // Check if essential DOM elements are ready. If not, log a warning and return.
+            if (!placeOrderButton || !shippingOptionsContainer || !shippingMethodsRadio || !shippingErrorMessage || !noShippingMessage || !shippingLoadingMessage) {
+                console.warn("Update button state: One or more shipping-related DOM elements not found yet, skipping state update.");
                 return;
             }
 
@@ -532,21 +530,16 @@
 
             if (!hasCartItems) {
                 canPlaceOrder = false;
-            } else if (shippingOptionsContainer && shippingOptionsContainer.style.display === 'none') {
-                // If shipping options container is hidden, it implies shipping calculation hasn't run or is not applicable
-                // For now, if hidden, assume we can't proceed unless explicitly stated it's a digital good.
-                // A better approach would be to ensure calculateAndDisplayShipping runs first.
-                canPlaceOrder = false; 
-            } else if (shippingErrorMessage && shippingErrorMessage.style.display === 'block') {
-                // If there's a shipping error, disable the button.
-                canPlaceOrder = false;
-            } else if (shippingMethodsRadio && shippingMethodsRadio.children.length === 0 && noShippingMessage && noShippingMessage.style.display === 'block') {
-                // No shipping methods available and message shown. If this is a physical product, disable.
-                // For a robust system, distinguish between "no methods due to address" and "digital product, no shipping needed".
-                // For now, if no methods, we assume physical and disable.
+            } else if (shippingErrorMessage.style.display === 'block') {
+                canPlaceOrder = false; // There's a shipping error displayed
+            } else if (shippingLoadingMessage.style.display === 'block') {
+                canPlaceOrder = false; // Still calculating shipping rates
+            } else if (noShippingMessage.style.display === 'block') {
+                // If 'no shipping methods' message is displayed AND there are cart items,
+                // assume it's for a physical good with no valid routes and disable the button.
                 canPlaceOrder = false;
             } else {
-                // Shipping options are displayed and no error: require a selection.
+                // Shipping options were calculated and displayed successfully. Require a selection.
                 canPlaceOrder = selectedShippingMethod !== null;
             }
 
@@ -560,22 +553,22 @@
 
 
         async function calculateAndDisplayShipping() {
-            // Ensure all relevant DOM elements are available
+            // Ensure all relevant DOM elements are available locally within the function scope if not globally cached
             if (!shippingOptionsContainer || !shippingMethodsRadio || !shippingLoadingMessage || !shippingErrorMessage || !noShippingMessage) {
-                console.error("One or more shipping-related DOM elements not found.");
+                console.error("One or more shipping-related DOM elements not found at calculateAndDisplayShipping call.");
                 return; // Exit if elements are missing
             }
 
-            // Set initial states
-            shippingOptionsContainer.style.display = 'block';
-            shippingLoadingMessage.style.display = 'block';
-            shippingErrorMessage.style.display = 'none';
-            noShippingMessage.style.display = 'none';
-            shippingMethodsRadio.innerHTML = ''; // Clear previous options
-            selectedShippingMethod = null; // Clear previous selection
-            updateTotalsDisplay(); // Reset shipping in totals display (sets to $0.00)
+            // Set initial states for shipping section
+            shippingOptionsContainer.style.display = 'block'; // Ensure container is visible
+            shippingLoadingMessage.style.display = 'block'; // Show loading message
+            shippingErrorMessage.style.display = 'none';    // Hide error message
+            noShippingMessage.style.display = 'none';       // Hide "no methods" message
+            shippingMethodsRadio.innerHTML = '';             // Clear previous options
+            selectedShippingMethod = null;                   // Clear previous selection
+            updateTotalsDisplay();                           // Reset shipping in totals display (sets to $0.00)
 
-            const form = document.getElementById('checkout-form'); // Use form directly if defined locally or globally
+            const form = checkoutForm; // Use the globally cached form reference
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
 
@@ -624,7 +617,7 @@
                     throw new Error(result.detail || `HTTP error! status: ${response.status}`);
                 }
 
-                const shippingMethods = result.shipping_methods || [];
+                const shippingMethods = result.shipping_methods || []; // This will be a list containing one method or empty
                 shippingLoadingMessage.style.display = 'none';
                 shippingMethodsRadio.innerHTML = ''; // Clear options for fresh display
 
@@ -633,7 +626,6 @@
                     noShippingMessage.style.display = 'block';
                     selectedShippingMethod = null; // No methods, no selection
                 } else {
-                    // Create a document fragment to append elements efficiently
                     const fragment = document.createDocumentFragment();
                     
                     shippingMethods.forEach(method => {
@@ -650,23 +642,16 @@
                         label.appendChild(radioInput);
                         label.append(`${method.name} - $${method.rate.toFixed(2)}`);
                         radioDiv.appendChild(label);
-                        fragment.appendChild(radioDiv); // Append to fragment
+                        fragment.appendChild(radioDiv);
                     });
 
-                    shippingMethodsRadio.appendChild(fragment); // Append fragment to DOM once
+                    shippingMethodsRadio.appendChild(fragment);
 
-                    // Add event listener to the parent container for radio button changes
-                    // Use a delegated event listener on `shippingMethodsRadio` as radio buttons are dynamically added
-                    shippingMethodsRadio.addEventListener('change', (event) => {
-                        if (event.target.name === 'shippingMethod') {
-                            selectedShippingMethod = {
-                                id: event.target.value,
-                                name: event.target.dataset.name,
-                                rate: parseFloat(event.target.dataset.rate)
-                            };
-                            updateTotalsDisplay();
-                        }
-                    }, { once: true }); // Use { once: true } to prevent multiple listeners on re-render
+                    // Re-add event listener to the shippingMethodsRadio container after its content has changed
+                    // It's important to remove existing listener to prevent duplicates.
+                    // Use a named function for the event listener for easier removal.
+                    shippingMethodsRadio.removeEventListener('change', handleShippingMethodChange);
+                    shippingMethodsRadio.addEventListener('change', handleShippingMethodChange);
 
                     // Select the first method by default and update totals
                     if (shippingMethods.length > 0) {
@@ -681,33 +666,45 @@
                         }
                     }
                 }
-                updateTotalsDisplay(); // Update totals after method display/selection
+                updateTotalsDisplay();
             } catch (error) {
                 console.error('Error calculating shipping:', error);
                 shippingLoadingMessage.style.display = 'none';
                 shippingErrorMessage.innerText = `Failed to calculate shipping: ${error.message}`;
                 shippingErrorMessage.style.display = 'block';
-                selectedShippingMethod = null; // Clear selection on error
-                updateTotalsDisplay(); // Ensure totals reflect no shipping
+                selectedShippingMethod = null;
+                updateTotalsDisplay();
             } finally {
-                updatePlaceOrderButtonState(); // Re-evaluate button state
+                updatePlaceOrderButtonState();
             }
         }
+
+        // Dedicated handler for shipping method change to be used with removeEventListener/addEventListener
+        function handleShippingMethodChange(event) {
+            if (event.target.name === 'shippingMethod') {
+                selectedShippingMethod = {
+                    id: event.target.value,
+                    name: event.target.dataset.name,
+                    rate: parseFloat(event.target.dataset.rate)
+                };
+                updateTotalsDisplay();
+            }
+        }
+
 
         async function handleCheckoutSubmit(event) {
             event.preventDefault(); // Prevent default form submission
 
-            // Ensure all relevant DOM elements are available
+            // Ensure essential form elements are available
             if (!placeOrderButton || !checkoutLoadingMessage || !checkoutErrorMessage || !checkoutForm) {
-                console.error("One or more checkout form elements not found.");
-                return; // Exit if elements are missing
+                console.error("One or more checkout form elements not found at handleCheckoutSubmit call.");
+                return;
             }
 
-            const form = checkoutForm; // Use the globally cached form reference
+            const form = checkoutForm;
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
 
-            // Reset messages
             checkoutErrorMessage.style.display = 'none';
             checkoutErrorMessage.innerText = '';
             placeOrderButton.disabled = true;
@@ -725,7 +722,6 @@
                 return;
             }
 
-            // Validate if shipping method is selected if options were displayed (and not in an error state)
             const hasShippingOptionsDisplayed = shippingMethodsRadio && shippingMethodsRadio.children.length > 0 && shippingErrorMessage.style.display !== 'block';
 
             if (hasShippingOptionsDisplayed && selectedShippingMethod === null) {
@@ -736,7 +732,6 @@
                 placeOrderButton.classList.remove('disabled');
                 return;
             } else if (!hasShippingOptionsDisplayed && shippingErrorMessage && shippingErrorMessage.style.display === 'block') {
-                 // If there's an error in shipping calculation, prevent submission
                 checkoutLoadingMessage.style.display = 'none';
                 checkoutErrorMessage.style.display = 'block';
                 checkoutErrorMessage.innerText = 'Cannot proceed due to shipping calculation error. Please resolve the issue or contact support.';
@@ -756,14 +751,14 @@
             }));
 
             const shippingCost = selectedShippingMethod ? selectedShippingMethod.rate : 0.00;
-            const shippingMethodId = selectedShippingMethod ? selectedShippingMethod.id : "NO_SHIPPING_METHOD_NEEDED"; // Fallback for no shipping methods
+            const shippingMethodId = selectedShippingMethod ? selectedShippingMethod.id : "NO_SHIPPING_METHOD_NEEDED";
 
             const orderPayload = {
                 session_id: userSessionId,
                 shipping_cost: shippingCost,
-                tax_amount: 0.00,    // Still a placeholder
-                discount_amount: 0.00, // Still a placeholder
-                shipping_method: shippingMethodId, // Send Printful's method ID
+                tax_amount: 0.00,
+                discount_amount: 0.00,
+                shipping_method: shippingMethodId,
                 recipient: {
                     name: data.fullName,
                     email: data.email,
@@ -776,7 +771,6 @@
                     country: data.country
                 },
                 cart_items: payloadCartItems
-                // payment_method_id will be added here in future Stripe integration
             };
 
             try {
@@ -796,7 +790,6 @@
 
                 checkoutLoadingMessage.style.display = 'none';
                 alert('Order placed successfully! Order ID: ' + result.order_id);
-                // Redirect to a success page
                 window.location.href = `order_success.html?order_id=${result.order_id}&printful_order_id=${result.printful_order_id || 'N/A'}`;
                 
             } catch (error) {
