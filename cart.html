@@ -382,6 +382,8 @@
                 const data = await response.json();
                 const cartItems = data.cart_items || [];
 
+                console.log("Fetched cart items:", cartItems); // ADDED LOG
+
                 if (cartLoadingMessage) cartLoadingMessage.style.display = 'none';
 
                 if (cartItems.length === 0) {
@@ -389,6 +391,7 @@
                 } else {
                     let subtotal = 0;
                     cartItems.forEach(item => {
+                        console.log("Processing cart item:", item); // ADDED LOG
                         const itemTotal = item.price * item.quantity;
                         subtotal += itemTotal;
 
@@ -402,6 +405,7 @@
                         if (item.variant_details_json) {
                             try {
                                 const variantDetails = JSON.parse(item.variant_details_json);
+                                console.log("Parsed variantDetails:", variantDetails); // ADDED LOG
                                 
                                 // Extract color and size from variantDetails
                                 if (variantDetails.color) variantColor = variantDetails.color;
@@ -413,7 +417,8 @@
                                 if (variantSize) options.push(`Size: ${variantSize}`);
                                 variantOptionText = options.join(', ');
 
-                                // Fallback to selected_variant_name if color/size not found but name is
+                                // IMPORTANT: Fallback to selected_variant_name if specific color/size details are not present
+                                // This is crucial for products like the Snapback which might not have explicit color/size fields.
                                 if (!variantOptionText && item.selected_variant_name && item.selected_variant_name !== 'N/A') {
                                     variantOptionText = item.selected_variant_name; 
                                 }
@@ -428,12 +433,16 @@
                                     } else if (variantDetails.files[0] && variantDetails.files[0].url) {
                                         imageUrlToDisplay = variantDetails.files[0].url;
                                     }
+                                } else {
+                                    console.log("No variant files found in variantDetails for item:", item.id); // ADDED LOG
                                 }
                             } catch (e) {
                                 console.warn("Could not parse variant_details_json for cart item ID:", item.id, e);
                                 // Fallback to item.image_url if parsing fails
                                 imageUrlToDisplay = item.image_url;
                             }
+                        } else {
+                            console.log("No variant_details_json for item:", item.id); // ADDED LOG
                         }
                         // Ensure a placeholder if no image URL is found
                         imageUrlToDisplay = imageUrlToDisplay || 'https://via.placeholder.com/100?text=No+Image';
