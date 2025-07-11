@@ -382,7 +382,7 @@
                 const data = await response.json();
                 const cartItems = data.cart_items || [];
 
-                console.log("Fetched cart items:", cartItems); // ADDED LOG
+                console.log("Fetched cart items:", cartItems); // Kept for continued debugging
 
                 if (cartLoadingMessage) cartLoadingMessage.style.display = 'none';
 
@@ -391,7 +391,7 @@
                 } else {
                     let subtotal = 0;
                     cartItems.forEach(item => {
-                        console.log("Processing cart item:", item); // ADDED LOG
+                        console.log("Processing cart item:", item); // Kept for continued debugging
                         const itemTotal = item.price * item.quantity;
                         subtotal += itemTotal;
 
@@ -405,25 +405,19 @@
                         if (item.variant_details_json) {
                             try {
                                 const variantDetails = JSON.parse(item.variant_details_json);
-                                console.log("Parsed variantDetails:", variantDetails); // ADDED LOG
+                                console.log("Parsed variantDetails:", variantDetails); // Kept for continued debugging
                                 
                                 // Extract color and size from variantDetails
                                 if (variantDetails.color) variantColor = variantDetails.color;
                                 if (variantDetails.size) variantSize = variantDetails.size;
 
-                                // Construct variant option text more robustly
+                                // Construct variant option text from color/size if available
                                 const options = [];
                                 if (variantColor) options.push(`Color: ${variantColor}`);
                                 if (variantSize) options.push(`Size: ${variantSize}`);
                                 variantOptionText = options.join(', ');
 
-                                // IMPORTANT: Fallback to selected_variant_name if specific color/size details are not present
-                                // This is crucial for products like the Snapback which might not have explicit color/size fields.
-                                if (!variantOptionText && item.selected_variant_name && item.selected_variant_name !== 'N/A') {
-                                    variantOptionText = item.selected_variant_name; 
-                                }
-
-                                // Prioritize variant-specific image
+                                // Prioritize variant-specific image if available
                                 if (variantDetails.files && variantDetails.files.length > 0) {
                                     const previewFile = variantDetails.files.find(f => f.type === 'preview' || f.type === 'mockup');
                                     if (previewFile && previewFile.preview_url) {
@@ -434,7 +428,7 @@
                                         imageUrlToDisplay = variantDetails.files[0].url;
                                     }
                                 } else {
-                                    console.log("No variant files found in variantDetails for item:", item.id); // ADDED LOG
+                                    console.log("No variant files found in variantDetails for item:", item.id); // Kept for continued debugging
                                 }
                             } catch (e) {
                                 console.warn("Could not parse variant_details_json for cart item ID:", item.id, e);
@@ -442,8 +436,16 @@
                                 imageUrlToDisplay = item.image_url;
                             }
                         } else {
-                            console.log("No variant_details_json for item:", item.id); // ADDED LOG
+                            console.log("No variant_details_json for item:", item.id); // Kept for continued debugging
                         }
+
+                        // **NEW/REFINED LOGIC HERE:**
+                        // If variantOptionText is still empty (meaning no color/size from variantDetails),
+                        // use the selected_variant_name provided by the backend.
+                        if (!variantOptionText && item.selected_variant_name && item.selected_variant_name !== 'N/A') {
+                            variantOptionText = item.selected_variant_name;
+                        }
+
                         // Ensure a placeholder if no image URL is found
                         imageUrlToDisplay = imageUrlToDisplay || 'https://via.placeholder.com/100?text=No+Image';
 
