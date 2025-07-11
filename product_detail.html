@@ -26,8 +26,8 @@
 
         .product-image-container {
             flex: 1;
-            min-width: 300px;
-            max-width: 500px;
+            min-width: 300px; /* Minimum width for the image container */
+            max-width: 500px; /* Max width for the image container */
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
@@ -42,15 +42,15 @@
             max-width: 100%;
             height: auto;
             display: block;
-            margin: 0 auto;
+            margin: 0 auto; /* Center image within its container */
             object-fit: contain;
-            max-height: 450px;
+            max-height: 450px; /* Limit image height */
         }
 
         .product-info-container {
             flex: 1;
-            min-width: 350px;
-            max-width: 600px;
+            min-width: 350px; /* Minimum width for info container */
+            max-width: 600px; /* Max width for info container */
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
@@ -349,7 +349,7 @@
     <script>
         let userSessionId = localStorage.getItem('userSessionId');
         if (!userSessionId) {
-            userSessionId = crypto.randomUUID();
+            userSessionId = crypto.randomUUID(); // Generate a new UUID if not found
             localStorage.setItem('userSessionId', userSessionId);
             console.log("New session ID generated:", userSessionId);
         } else {
@@ -365,6 +365,7 @@
                     mobileMenuOverlay.classList.toggle('active-menu');
                     document.body.style.overflow = mobileMenuOverlay.classList.contains('active-menu') ? 'hidden' : '';
                 });
+
                 mobileMenuOverlay.querySelectorAll('a').forEach(link => {
                     link.addEventListener('click', () => {
                         mobileMenuOverlay.classList.remove('active-menu');
@@ -424,13 +425,14 @@
             const addToCartBtn = document.getElementById('add-to-cart-btn');
             const variantDetailsDisplay = document.getElementById('variant-details-display');
 
+
             productLoading.style.display = 'block'; 
             productError.style.display = 'none';
             productImageContainer.style.display = 'none';
             productInfoContainer.style.display = 'none';
-            colorOptionsDiv.style.display = 'none'; // Hide variant sections by default
+            colorOptionsDiv.style.display = 'none'; 
             sizeOptionsDiv.style.display = 'none';
-            variantDetailsDisplay.innerHTML = ''; // Clear previous details
+            variantDetailsDisplay.innerHTML = ''; 
 
             if (!productId) {
                 productLoading.style.display = 'none';
@@ -457,28 +459,25 @@
                 document.getElementById('product-name').innerText = currentProductData.name;
                 document.getElementById('product-description').innerText = currentProductData.description || 'No description available.';
                 document.getElementById('product-image').src = currentProductData.image_url || 'https://via.placeholder.com/400?text=No+Image';
-                document.getElementById('product-price').innerText = `$${currentProductData.price.toFixed(2)}`; // Set initial price from base product
+                document.getElementById('product-price').innerText = `$${currentProductData.price.toFixed(2)}`; 
 
                 if (currentProductData.printful_variant_ids) {
                     try {
                         allProductVariants = JSON.parse(currentProductData.printful_variant_ids);
                         
-                        // Extract unique colors and sizes
                         uniqueColors = [...new Set(allProductVariants.map(v => v.color).filter(Boolean))].sort();
                         uniqueSizes = [...new Set(allProductVariants.map(v => v.size).filter(Boolean))].sort((a, b) => {
-                            // Basic size sorting (XS, S, M, L, XL, etc.)
                             const sizeOrder = ["XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL"];
                             return sizeOrder.indexOf(a) - sizeOrder.indexOf(b);
                         });
 
-                        // Render Color Swatches
                         colorSwatchesContainer.innerHTML = '';
                         if (uniqueColors.length > 0) {
                             uniqueColors.forEach(color => {
                                 const swatch = document.createElement('div');
                                 swatch.className = 'color-swatch';
-                                swatch.style.backgroundColor = mapColorNameToHex(color); // Function to map names to hex
-                                swatch.title = color; // Tooltip
+                                swatch.style.backgroundColor = mapColorNameToHex(color); 
+                                swatch.title = color; 
                                 swatch.dataset.color = color;
                                 swatch.addEventListener('click', () => selectColor(color));
                                 colorSwatchesContainer.appendChild(swatch);
@@ -488,7 +487,6 @@
                             colorOptionsDiv.style.display = 'none';
                         }
 
-                        // Render Size Buttons
                         sizeButtonsContainer.innerHTML = '';
                         if (uniqueSizes.length > 0) {
                             uniqueSizes.forEach(size => {
@@ -504,31 +502,35 @@
                             sizeOptionsDiv.style.display = 'none';
                         }
 
-                        // Initial selection (select first color and first size if available)
+                        // Initial selection logic
                         if (uniqueColors.length > 0) {
-                            selectColor(uniqueColors[0]);
-                        }
-                        if (selectedColor && uniqueSizes.length > 0) {
-                            selectSize(uniqueSizes[0]);
-                        } else if (uniqueSizes.length > 0 && !selectedColor) { // If no colors, but sizes exist
-                            selectSize(uniqueSizes[0]);
-                        }
-
-                        // If no specific color or size variants, just display base product price
-                        if (uniqueColors.length === 0 && uniqueSizes.length === 0) {
-                            document.getElementById('product-price').innerText = `$${currentProductData.price.toFixed(2)}`;
+                            selectColor(uniqueColors[0]); // This will also call updateSizeButtons and updateDisplayedVariantDetails
+                        } else if (uniqueSizes.length > 0) {
+                            selectSize(uniqueSizes[0]); // If no colors, select first size
+                            updateDisplayedVariantDetails(); // Manually call if only size changes from initial
+                        } else {
+                            // No color or size variants, just update display based on base product
+                            updateDisplayedVariantDetails();
                         }
 
                     } catch (e) {
                         console.error("Error parsing Printful variants JSON:", e);
-                        // Fallback to base product price if JSON parsing fails
-                        document.getElementById('variant-selection-container').style.display = 'none'; // Hide all variant selectors
-                        document.getElementById('product-price').innerText = `$${currentProductData.price.toFixed(2)}`;
+                        document.getElementById('variant-selection-container').style.display = 'none'; 
+                        document.getElementById('product-price').innerText = `$${currentProductData.price.toFixed(2)}`; 
+                        document.getElementById('selected-variant-id').value = '';
+                        document.getElementById('selected-variant-name').value = currentProductData.name; 
+                        document.getElementById('selected-variant-price').value = currentProductData.price;
+                        document.getElementById('selected-variant-details-json').value = '';
+                        variantDetailsDisplay.innerHTML = ''; 
                     }
                 } else {
-                    // No printful_variant_ids field, hide variant selectors
                     document.getElementById('variant-selection-container').style.display = 'none';
                     document.getElementById('product-price').innerText = `$${currentProductData.price.toFixed(2)}`;
+                    document.getElementById('selected-variant-id').value = '';
+                    document.getElementById('selected-variant-name').value = currentProductData.name; 
+                    document.getElementById('selected-variant-price').value = currentProductData.price;
+                    document.getElementById('selected-variant-details-json').value = '';
+                    variantDetailsDisplay.innerHTML = ''; 
                 }
 
                 addToCartBtn.onclick = () => {
@@ -543,17 +545,18 @@
                         return;
                     }
 
-                    // If product has variants, ensure one is selected
+                    // Ensure a variant is selected if variants exist
                     if (allProductVariants.length > 0 && (!selectedVariantId || selectedVariantId === '')) {
-                        alert('Please select a color and size.');
+                        alert('Please select both a color and a size.'); // More specific alert
                         return;
                     }
                      // If product has no variants, but add to cart is clicked, use base product data
                     const finalProductId = currentProductData.id;
-                    const finalVariantId = allProductVariants.length === 0 ? '' : selectedVariantId;
-                    const finalVariantName = allProductVariants.length === 0 ? currentProductData.name : selectedVariantName;
-                    const finalVariantPrice = allProductVariants.length === 0 ? currentProductData.price : selectedVariantPrice;
-                    const finalVariantDetailsJson = allProductVariants.length === 0 ? '' : selectedVariantDetailsJson;
+                    const finalVariantId = (allProductVariants.length === 0 || !selectedVariantId) ? '' : selectedVariantId;
+                    const finalVariantName = (allProductVariants.length === 0 || !selectedVariantName) ? currentProductData.name : selectedVariantName;
+                    const finalVariantPrice = (allProductVariants.length === 0 || isNaN(selectedVariantPrice)) ? currentProductData.price : selectedVariantPrice;
+                    const finalVariantDetailsJson = (allProductVariants.length === 0 || !selectedVariantDetailsJson) ? '' : selectedVariantDetailsJson;
+
 
                     addToCartBackend(
                         finalProductId,
@@ -565,7 +568,6 @@
                     );
                 };
 
-                // Hide loading, show content
                 productLoading.style.display = 'none';
                 productImageContainer.style.display = 'flex'; 
                 productInfoContainer.style.display = 'flex'; 
@@ -580,39 +582,28 @@
             }
         }
 
-        // Helper to map common color names to hex codes for swatches
         function mapColorNameToHex(colorName) {
             const colorMap = {
-                'black': '#000000',
-                'white': '#FFFFFF',
-                'navy': '#000080',
-                'dark navy': '#000050',
-                'royal blue': '#4169E1',
-                'red': '#FF0000',
-                'maroon': '#800000',
-                'green camo': '#7C7F60', /* A common green camo tone */
-                'dark grey': '#A9A9A9',
-                'silver': '#C0C0C0',
-                'heather/black': '#696969', /* A medium gray for heather */
-                'heather grey/navy': '#778899', /* Slate Gray */
-                'heather grey/red': '#8B0000', /* Dark Red for combo */
-                'heather grey': '#B0B0B0', /* Light Grey */
-                'oxford blue': '#4682B4', /* Steel Blue */
-                'olive': '#808000',
-                'charcoal': '#36454F',
-                'blue': '#0000FF',
-                'desert sunrise': '#EDC9AF', /* Light brown/peach */
-                'clear': '#E0E0E0', /* Light gray for clear */
-                'athletic heather': '#C0C0C0', /* Light gray for athletic heather */
-                'natural': '#F5F5DC', /* Beige */
-                'j. navy': '#2C3E50', /* Dark blue similar to Navy */
-                'black heather': '#36454F', /* Dark gray for black heather */
-                'sport grey': '#999999', /* Mid-grey for sport grey */
-                'cranberry': '#800020', /* Deep red for cranberry */
-                'spruce': '#0A7570', /* Dark green-blue for spruce */
-                'khaki': '#C3B091', /* Light brownish-yellow */
-                'stone': '#D3D3D3', /* Light gray */
-                // Add more mappings as needed based on Printful's color names
+                'black': '#000000', 'white': '#FFFFFF', 'navy': '#000080', 'dark navy': '#000050',
+                'royal blue': '#4169E1', 'red': '#FF0000', 'maroon': '#800000', 'green camo': '#7C7F60',
+                'dark grey': '#A9A9A9', 'silver': '#C0C0C0', 'heather/black': '#696969', 'heather grey/navy': '#778899',
+                'heather grey/red': '#8B0000', 'heather grey': '#B0B0B0', 'oxford blue': '#4682B4', 'olive': '#808000',
+                'charcoal': '#36454F', 'blue': '#0000FF', 'desert sunrise': '#EDC9AF', 'clear': '#E0E0E0',
+                'athletic heather': '#C0C0C0', 'natural': '#F5F5DC', 'j. navy': '#2C3E50', 'black heather': '#36454F',
+                'sport grey': '#999999', 'cranberry': '#800020', 'spruce': '#0A7570', 'khaki': '#C3B091',
+                'stone': '#D3D3D3', 'truered': '#A80000', 'athleticheather': '#C0C0C0', 'darkheathergrey': '#36454F',
+                'graphiteheather': '#555555', 'carbonheather': '#3C3C3C', 'carolina blue': '#82BBEF', 'forest': '#228B22',
+                'oxford': '#002147', 'steel': '#4682B4', 'true royal': '#00008B', 'true navy': '#000080',
+                'dark green': '#006400', 'kelly': '#4CBB17', 'light blue': '#ADD8E6', 'light steel': '#B0C4DE',
+                'gold': '#FFD700', 'orange': '#FFA500', 'purple': '#800080', 'squad green': '#005D00',
+                'sunshine': '#FFD700', 'yellow': '#FFFF00', 'irish green': '#009A49', 'safety green': '#66CD00',
+                'safety orange': '#FF8C00', 'safety pink': '#FF1493', 'neon blue': '#0000FF', 'neon green': '#39FF14',
+                'azalea': '#F75B70', 'berry': '#C91C5C', 'coral': '#FF7F50', 'daisy': '#FFFF00',
+                'electric green': '#00FF00', 'fuchsia': '#FF00FF', 'heather sport royal': '#4169E1', 'heather radiant orchid': '#B065B8',
+                'heather irish green': '#009A49', 'heather safety pink': '#FF1493', 'heather military green': '#6B8E23', 'heather dark grey': '#A9A9A9',
+                'heather orange': '#FFA500', 'heather purple': '#800080', 'heather red': '#FF0000', 'heather sapphire': '#0F52BA',
+                'heather sport dark green': '#006400', 'heather sport scarlet': '#FF2400', 'heather sport yellow': '#FFFF00',
+                // Add more as needed. You can often find common hex codes for apparel colors online.
             };
             return colorMap[colorName.toLowerCase()] || '#CCCCCC'; // Default to light gray if color not mapped
         }
@@ -624,9 +615,8 @@
             });
             document.querySelector(`.color-swatch[data-color="${color}"]`).classList.add('selected');
             
-            // Re-render sizes based on selected color and update current variant details
-            updateSizeButtons();
-            updateDisplayedVariantDetails();
+            updateSizeButtons(); // Update size buttons based on new color selection
+            updateDisplayedVariantDetails(); // Update price, details, and image based on new selection
         }
 
         function selectSize(size) {
@@ -636,17 +626,19 @@
             });
             document.querySelector(`.size-button[data-size="${size}"]`).classList.add('selected');
 
-            updateDisplayedVariantDetails();
+            updateDisplayedVariantDetails(); // Update price, details, and image based on new selection
         }
 
         function updateSizeButtons() {
-            const sizeButtonsContainer = document.getElementById('size-buttons');
+            const sizeButtonsContainer = document.getElementById('size-buttons').querySelector('.size-buttons');
             sizeButtonsContainer.innerHTML = ''; // Clear existing size buttons
 
-            const availableSizesForColor = new Set();
+            const availableSizesForSelectedColor = new Set();
             allProductVariants.forEach(variant => {
-                if (variant.color === selectedColor || !selectedColor) { // If a color is selected, filter by it, else show all sizes
-                    availableSizesForColor.add(variant.size);
+                // If a color is selected, only consider variants of that color
+                // If no color is selected (e.g., product only has sizes), consider all variants
+                if (selectedColor === null || variant.color === selectedColor) {
+                    availableSizesForSelectedColor.add(variant.size);
                 }
             });
 
@@ -656,16 +648,13 @@
                 button.innerText = size;
                 button.dataset.size = size;
 
-                const variantExists = allProductVariants.some(v => 
-                    (v.color === selectedColor || !selectedColor) && v.size === size
-                );
-                const isAvailable = allProductVariants.some(v => 
-                    (v.color === selectedColor || !selectedColor) && 
+                const variantAvailableWithSelectedColorAndSize = allProductVariants.some(v => 
+                    (selectedColor === null || v.color === selectedColor) && 
                     v.size === size && 
                     (v.availability_status === 'active' || v.availability_status === true) // Check Printful availability
                 );
 
-                if (!variantExists || !isAvailable) {
+                if (!variantAvailableWithSelectedColorAndSize) {
                     button.classList.add('disabled');
                     button.disabled = true;
                 } else {
@@ -674,21 +663,20 @@
                 sizeButtonsContainer.appendChild(button);
             });
 
-            // If the previously selected size is no longer available for the new color, deselect it
-            const currentSelectedSizeButton = document.querySelector(`.size-button.selected`);
-            if (currentSelectedSizeButton && !availableSizesForColor.has(currentSelectedSizeButton.dataset.size)) {
-                currentSelectedSizeButton.classList.remove('selected');
-                selectedSize = null; // Clear selected size
+            // Auto-select a size if current selectedSize is no longer valid or no size is selected yet.
+            const currentlySelectedSizeButton = sizeButtonsContainer.querySelector(`.size-button.selected`);
+            if (currentlySelectedSizeButton && currentlySelectedSizeButton.classList.contains('disabled')) {
+                currentlySelectedSizeButton.classList.remove('selected');
+                selectedSize = null; // Deselect if no longer available
             }
             
-            // If no size is selected or current selected size is disabled, try to select the first available size
-            if (!selectedSize || document.querySelector(`.size-button[data-size="${selectedSize}"]`).classList.contains('disabled')) {
+            // If no size is selected or the current selected size is disabled, try to select the first available size
+            if (selectedSize === null || !sizeButtonsContainer.querySelector(`.size-button[data-size="${selectedSize}"]:not(.disabled)`)) {
                 const firstAvailableSizeButton = sizeButtonsContainer.querySelector('.size-button:not(.disabled)');
                 if (firstAvailableSizeButton) {
                     selectSize(firstAvailableSizeButton.dataset.size);
                 } else {
-                    selectedSize = null; // No sizes available for this color
-                    updateDisplayedVariantDetails(); // Update display to show no selected variant price
+                    selectedSize = null; // No sizes available for the current color selection
                 }
             }
         }
@@ -705,25 +693,15 @@
 
             let matchingVariant = null;
 
-            if (allProductVariants.length > 0) {
-                // Find a variant that matches both selected color and size
-                matchingVariant = allProductVariants.find(v => {
-                    const colorMatch = selectedColor ? v.color === selectedColor : true; // Match if color selected, or if no color is selected (for products with only sizes)
-                    const sizeMatch = selectedSize ? v.size === selectedSize : true; // Match if size selected, or if no size is selected (for products with only colors)
-                    return colorMatch && sizeMatch;
-                });
-
-                // Fallback for products that only have colors or only sizes, but not both.
-                // If a product has only colors and no sizes (or vice versa), and one is selected.
-                if (!matchingVariant && (selectedColor || selectedSize)) {
-                    if (selectedColor && !selectedSize && uniqueSizes.length === 0) { // Product has colors, but no sizes
-                        matchingVariant = allProductVariants.find(v => v.color === selectedColor);
-                    } else if (selectedSize && !selectedColor && uniqueColors.length === 0) { // Product has sizes, but no colors
-                        matchingVariant = allProductVariants.find(v => v.size === selectedSize);
-                    }
-                }
+            // Step 1: Find the exact variant that matches both selectedColor and selectedSize
+            if (selectedColor !== null && selectedSize !== null) {
+                matchingVariant = allProductVariants.find(v => v.color === selectedColor && v.size === selectedSize);
+            } else if (selectedColor !== null && uniqueSizes.length === 0) { // Product has colors only
+                matchingVariant = allProductVariants.find(v => v.color === selectedColor);
+            } else if (selectedSize !== null && uniqueColors.length === 0) { // Product has sizes only
+                matchingVariant = allProductVariants.find(v => v.size === selectedSize);
             }
-            
+
             if (matchingVariant) {
                 const displayPrice = parseFloat(matchingVariant.retail_price || matchingVariant.price || '0.00');
                 productPriceElement.innerText = `$${displayPrice.toFixed(2)}`;
@@ -736,7 +714,6 @@
                 let detailsHtml = '';
                 if (matchingVariant.sku) detailsHtml += `<span>SKU: ${matchingVariant.sku}</span>`;
                 if (matchingVariant.currency) detailsHtml += `<span>Currency: ${matchingVariant.currency}</span>`;
-                // No need to repeat size/color here as they are visually selected
                 detailsHtml += `<span>Availability: ${matchingVariant.availability_status || 'N/A'}</span>`;
                 variantDetailsDisplay.innerHTML = detailsHtml;
 
@@ -757,14 +734,14 @@
                 productImage.src = variantImageUrl || 'https://via.placeholder.com/400?text=No+Image'; // Update main image
 
             } else if (currentProductData) {
-                // Fallback to base product data if no variant is perfectly matched
+                // Fallback to base product data if no variant is perfectly matched or selected
                 productPriceElement.innerText = `$${currentProductData.price.toFixed(2)}`; 
                 selectedVariantIdInput.value = ''; 
                 selectedVariantNameInput.value = currentProductData.name; 
                 selectedVariantPriceInput.value = currentProductData.price;
                 selectedVariantDetailsJsonInput.value = '';
-                variantDetailsDisplay.innerHTML = ''; // Clear variant specific details
-                productImage.src = currentProductData.image_url || 'https://via.placeholder.com/400?text=No+Image'; // Reset to base image
+                variantDetailsDisplay.innerHTML = ''; 
+                productImage.src = currentProductData.image_url || 'https://via.placeholder.com/400?text=No+Image'; 
             } else {
                 // Should not happen if product details loaded, but as a final fallback
                 productPriceElement.innerText = '$0.00'; 
