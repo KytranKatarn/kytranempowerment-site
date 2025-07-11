@@ -122,6 +122,10 @@
         .place-order-btn:hover {
             background-color: #229954;
         }
+        .place-order-btn.disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
         .checkout-loading, .checkout-error {
             text-align: center;
             font-family: 'Open Sans', sans-serif;
@@ -130,6 +134,21 @@
         }
         .checkout-error {
             color: #e74c3c;
+        }
+        #shipping-options-container {
+            margin-top: 20px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        #shipping-methods-radio label {
+            display: block;
+            margin-bottom: 10px;
+            font-family: 'Open Sans', sans-serif;
+            color: #333;
+            cursor: pointer;
+        }
+        #shipping-methods-radio input[type="radio"] {
+            margin-right: 8px;
         }
 
         /* Responsive adjustments */
@@ -239,6 +258,7 @@
                         <div class="form-group">
                             <label for="country">Country</label>
                             <select id="country" name="country" required>
+                                <option value="">Select Country</option>
                                 <option value="US">United States</option>
                                 <option value="CA">Canada</option>
                                 <option value="GB">United Kingdom</option>
@@ -247,6 +267,15 @@
                         </div>
                     </div>
 
+                    <div id="shipping-options-container" style="display: none;">
+                        <h3>Shipping Method</h3>
+                        <div id="shipping-methods-radio">
+                            <p id="shipping-loading-message">Calculating shipping rates...</p>
+                            <p id="shipping-error-message" style="color: red; display: none;"></p>
+                            <p id="no-shipping-message" style="display: none;">No shipping methods available for this address or cart.</p>
+                        </div>
+                    </div>
+                    
                     <h3>Payment Information</h3>
                     <p>Payment processing will be integrated here (e.g., Stripe Elements).</p>
                     <div id="payment-element">
@@ -301,8 +330,9 @@
             localStorage.setItem('userSessionId', userSessionId);
         }
 
-        // NEW: Global variable to store fetched cart items for payload construction
-        let currentCartItems = [];
+        let currentCartItems = []; // Stores fetched cart items for payload construction
+        let selectedShippingMethod = null; // Stores the selected shipping method object {id, name, rate}
+        let currentSubtotal = 0; // To keep track of subtotal for dynamic shipping calculation
 
         // Mobile menu toggle (from script.js or included directly)
         document.addEventListener('DOMContentLoaded', () => {
@@ -327,13 +357,32 @@
             loadOrderSummary(); // Load cart items for summary on checkout page
 
             document.getElementById('checkout-form').addEventListener('submit', handleCheckoutSubmit);
+
+            // Add event listeners for address fields to recalculate shipping
+            const addressFields = ['fullName', 'email', 'phone', 'address1', 'address2', 'city', 'state', 'zip', 'country'];
+            addressFields.forEach(fieldId => {
+                const element = document.getElementById(fieldId);
+                if (element) {
+                    element.addEventListener('change', debounce(calculateAndDisplayShipping, 500)); // Debounce to avoid too many calls
+                }
+            });
+
+            // Initial state: disable place order button
+            updatePlaceOrderButtonState();
         });
 
-        // --- Shopping Cart & Backend API Functions (consistent across pages) ---
+        // Debounce function to limit API calls on input changes
+        function debounce(func, delay) {
+            let timeout;
+            return function(...args) {
+                const context = this;
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(context, args), delay);
+            };
+        }
 
         async function updateCartCount() {
             try {
-                // IMPORTANT: Ensure this URL is consistent with app.py's cart endpoints, as store_app.py is not for checkout processing.
                 const response = await fetch(`https://k1.kytranempowerment.com/api/cart/${userSessionId}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -369,11 +418,13 @@
             if (summaryEmptyMessage) summaryEmptyMessage.style.display = 'none';
             summaryItemsContainer.innerHTML = ''; // Clear previous items
 
-            let subtotal = 0;
-            let shipping = 0; // Placeholder for shipping calculation, currently $0.00
+            currentSubtotal = 0; // Reset subtotal
+            selectedShippingMethod = null; // Clear selected shipping method on cart refresh
+            shippingSpan.innerText = `$0.00`; // Reset displayed shipping
+            totalSpan.innerText = `$0.00`; // Reset displayed total
+
 
             try {
-                // IMPORTANT: Use k1.kytranempowerment.com for cart access for checkout
                 const response = await fetch(`https://k1.kytranempowerment.com/api/cart/${userSessionId}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -385,13 +436,12 @@
 
                 if (currentCartItems.length === 0) {
                     if (summaryEmptyMessage) summaryEmptyMessage.style.display = 'block';
-                    if (placeOrderButton) placeOrderButton.disabled = true; // Disable button if cart is empty
+                    updatePlaceOrderButtonState(); // Disable button
                 } else {
                     currentCartItems.forEach(item => {
                         const itemTotal = item.price * item.quantity;
-                        subtotal += itemTotal;
+                        currentSubtotal += itemTotal;
 
-                        // Display variant name if available, parse variant_details_json for color/size
                         let variantOptionText = item.selected_variant_name; 
                         if (item.variant_details_json) {
                             try {
@@ -417,18 +467,160 @@
                         summaryItemsContainer.innerHTML += itemHtml;
                     });
                     
-                    document.getElementById('summary-subtotal').innerText = `$${subtotal.toFixed(2)}`;
-                    document.getElementById('summary-shipping').innerText = `$${shipping.toFixed(2)}`;
-                    const total = subtotal + shipping; 
-                    document.getElementById('summary-total').innerText = `$${total.toFixed(2)}`;
-                    if (placeOrderButton) placeOrderButton.disabled = false; // Enable button if cart has items
-
+                    subtotalSpan.innerText = `$${currentSubtotal.toFixed(2)}`;
+                    calculateAndDisplayShipping(); // Trigger shipping calculation after cart items are loaded
                 }
             } catch (error) {
                 console.error('Error loading order summary:', error);
                 if (summaryLoadingMessage) summaryLoadingMessage.style.display = 'none';
                 summaryItemsContainer.innerHTML = `<p class="checkout-error">Failed to load cart summary. ${error.message}</p>`;
-                if (placeOrderButton) placeOrderButton.disabled = true; // Disable button on error
+                updatePlaceOrderButtonState(); // Disable button on error
+            }
+        }
+
+        function updateTotalsDisplay() {
+            const shippingCost = selectedShippingMethod ? selectedShippingMethod.rate : 0;
+            document.getElementById('summary-shipping').innerText = `$${shippingCost.toFixed(2)}`;
+            document.getElementById('summary-total').innerText = `$${(currentSubtotal + shippingCost).toFixed(2)}`;
+            updatePlaceOrderButtonState();
+        }
+
+        function updatePlaceOrderButtonState() {
+            const placeOrderButton = document.getElementById('place-order-button');
+            // Button is enabled if cart is not empty AND a shipping method is selected (if available)
+            // Or if cart is not empty and no shipping options are offered by Printful (e.g. digital goods, or error)
+            const isShippingSelectedOrNotRequired = currentCartItems.length > 0 && (document.getElementById('shipping-options-container').style.display === 'none' || selectedShippingMethod !== null);
+            placeOrderButton.disabled = !(currentCartItems.length > 0 && isShippingSelectedOrNotRequired);
+            if (placeOrderButton.disabled) {
+                placeOrderButton.classList.add('disabled');
+            } else {
+                placeOrderButton.classList.remove('disabled');
+            }
+        }
+
+        async function calculateAndDisplayShipping() {
+            const shippingOptionsContainer = document.getElementById('shipping-options-container');
+            const shippingMethodsRadio = document.getElementById('shipping-methods-radio');
+            const shippingLoadingMessage = document.getElementById('shipping-loading-message');
+            const shippingErrorMessage = document.getElementById('shipping-error-message');
+            const noShippingMessage = document.getElementById('no-shipping-message');
+
+            shippingOptionsContainer.style.display = 'none'; // Hide until ready
+            shippingLoadingMessage.style.display = 'block';
+            shippingErrorMessage.style.display = 'none';
+            noShippingMessage.style.display = 'none';
+            shippingMethodsRadio.innerHTML = ''; // Clear previous options
+            selectedShippingMethod = null; // Clear previous selection
+            updateTotalsDisplay(); // Reset shipping in totals display
+
+            // Only calculate if cart has items and required address fields are filled
+            const form = document.getElementById('checkout-form');
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            const requiredAddressFields = ['address1', 'city', 'state', 'zip', 'country'];
+            const allAddressFieldsFilled = requiredAddressFields.every(field => data[field] && data[field].trim() !== '');
+
+            if (currentCartItems.length === 0 || !allAddressFieldsFilled || data.country === "") {
+                shippingOptionsContainer.style.display = 'block';
+                shippingLoadingMessage.style.display = 'none';
+                noShippingMessage.innerText = 'Please fill out all required address fields and ensure your cart is not empty to calculate shipping.';
+                noShippingMessage.style.display = 'block';
+                updatePlaceOrderButtonState(); // Re-evaluate button state
+                return;
+            }
+
+            const recipientData = {
+                address1: data.address1,
+                address2: data.address2 || null,
+                city: data.city,
+                state: data.state,
+                zip: data.zip,
+                country: data.country
+            };
+
+            const itemsForShipping = currentCartItems.map(item => ({
+                product_id: item.product_id, // Though Printful API uses sync_variant_id, sending product_id for backend lookup
+                quantity: item.quantity,
+                selected_printful_variant_id: item.selected_printful_variant_id // Crucial for Printful
+            }));
+
+            try {
+                const response = await fetch('https://k1.kytranempowerment.com/api/store/calculate-shipping', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        recipient: recipientData,
+                        cart_items: itemsForShipping
+                    }),
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.detail || `HTTP error! status: ${response.status}`);
+                }
+
+                const shippingMethods = result.shipping_methods || [];
+                shippingOptionsContainer.style.display = 'block';
+                shippingLoadingMessage.style.display = 'none';
+                shippingMethodsRadio.innerHTML = ''; // Clear options for fresh display
+
+                if (shippingMethods.length === 0) {
+                    noShippingMessage.innerText = 'No shipping methods available for this address and cart items.';
+                    noShippingMessage.style.display = 'block';
+                    selectedShippingMethod = null;
+                } else {
+                    shippingMethods.forEach(method => {
+                        const radioHtml = `
+                            <div>
+                                <label>
+                                    <input type="radio" name="shippingMethod" value="${method.id}" data-rate="${method.rate}" data-name="${method.name}">
+                                    ${method.name} - $${method.rate.toFixed(2)}
+                                </label>
+                            </div>
+                        `;
+                        shippingMethodsRadio.innerHTML += radioHtml;
+                    });
+
+                    // Add event listener to the parent container for radio button changes
+                    shippingMethodsRadio.addEventListener('change', (event) => {
+                        if (event.target.name === 'shippingMethod') {
+                            selectedShippingMethod = {
+                                id: event.target.value,
+                                name: event.target.dataset.name,
+                                rate: parseFloat(event.target.dataset.rate)
+                            };
+                            updateTotalsDisplay();
+                        }
+                    });
+
+                    // Select the first method by default and update totals
+                    if (shippingMethods.length > 0) {
+                        const firstRadio = shippingMethodsRadio.querySelector('input[name="shippingMethod"]');
+                        if (firstRadio) {
+                            firstRadio.checked = true;
+                            selectedShippingMethod = {
+                                id: firstRadio.value,
+                                name: firstRadio.dataset.name,
+                                rate: parseFloat(firstRadio.dataset.rate)
+                            };
+                        }
+                    }
+                }
+                updateTotalsDisplay(); // Update totals after method display/selection
+            } catch (error) {
+                console.error('Error calculating shipping:', error);
+                shippingOptionsContainer.style.display = 'block';
+                shippingLoadingMessage.style.display = 'none';
+                shippingErrorMessage.innerText = `Failed to calculate shipping: ${error.message}`;
+                shippingErrorMessage.style.display = 'block';
+                selectedShippingMethod = null;
+                updateTotalsDisplay(); // Ensure totals reflect no shipping
+            } finally {
+                updatePlaceOrderButtonState(); // Re-evaluate button state
             }
         }
 
@@ -447,34 +639,49 @@
             errorMessage.style.display = 'none';
             errorMessage.innerText = '';
             placeOrderButton.disabled = true;
+            placeOrderButton.classList.add('disabled');
             loadingMessage.style.display = 'block';
             loadingMessage.innerText = 'Processing your order...';
 
-            // Ensure cart is not empty before proceeding
+
             if (currentCartItems.length === 0) {
                 loadingMessage.style.display = 'none';
                 errorMessage.style.display = 'block';
                 errorMessage.innerText = 'Your cart is empty. Please add items before checking out.';
                 placeOrderButton.disabled = false;
+                placeOrderButton.classList.remove('disabled');
                 return;
             }
 
-            // Construct the cart_items array for the payload
+            // Validate if shipping method is selected if options were displayed
+            const shippingOptionsDisplayed = document.getElementById('shipping-options-container').style.display !== 'none';
+            if (shippingOptionsDisplayed && selectedShippingMethod === null) {
+                loadingMessage.style.display = 'none';
+                errorMessage.style.display = 'block';
+                errorMessage.innerText = 'Please select a shipping method.';
+                placeOrderButton.disabled = false;
+                placeOrderButton.classList.remove('disabled');
+                return;
+            }
+
             const payloadCartItems = currentCartItems.map(item => ({
                 product_id: item.product_id,
                 quantity: item.quantity,
                 selected_printful_variant_id: item.selected_printful_variant_id,
-                variant_name: item.selected_variant_name, // Use selected_variant_name from cart item
-                variant_price: item.price, // Use price from cart item
-                variant_details_json: item.variant_details_json // Pass the full JSON
+                variant_name: item.selected_variant_name,
+                variant_price: item.price,
+                variant_details_json: item.variant_details_json
             }));
+
+            const shippingCost = selectedShippingMethod ? selectedShippingMethod.rate : 0.00;
+            const shippingMethodName = selectedShippingMethod ? selectedShippingMethod.id : "No Shipping Required"; // Use ID for backend
 
             const orderPayload = {
                 session_id: userSessionId,
-                shipping_cost: 0.00, // Currently $0.00 placeholder
-                tax_amount: 0.00,    // Placeholder
-                discount_amount: 0.00, // Placeholder
-                shipping_method: "Standard Shipping", // Placeholder
+                shipping_cost: shippingCost,
+                tax_amount: 0.00,    // Still a placeholder
+                discount_amount: 0.00, // Still a placeholder
+                shipping_method: shippingMethodName,
                 recipient: {
                     name: data.fullName,
                     email: data.email,
@@ -486,12 +693,10 @@
                     zip: data.zip,
                     country: data.country
                 },
-                cart_items: payloadCartItems // Attach the constructed cart items
-                // payment_method_id will be added here in future Stripe integration
+                cart_items: payloadCartItems
             };
 
             try {
-                // Submit this payload via a POST request to k1_backend_app
                 const response = await fetch('https://k1.kytranempowerment.com/api/store/create-order', {
                     method: 'POST',
                     headers: {
@@ -509,14 +714,15 @@
                 loadingMessage.style.display = 'none';
                 alert('Order placed successfully! Order ID: ' + result.order_id);
                 // Redirect to a success page
-                window.location.href = 'order_success.html?order_id=' + result.order_id;
+                window.location.href = `order_success.html?order_id=${result.order_id}&printful_order_id=${result.printful_order_id || 'N/A'}`;
                 
             } catch (error) {
                 loadingMessage.style.display = 'none';
                 errorMessage.style.display = 'block';
                 errorMessage.innerText = `Order failed: ${error.message}`;
                 console.error('Checkout error:', error);
-                placeOrderButton.disabled = false; // Re-enable button on error
+                placeOrderButton.disabled = false;
+                placeOrderButton.classList.remove('disabled');
             }
         }
     </script>
