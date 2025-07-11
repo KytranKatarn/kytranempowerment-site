@@ -10,15 +10,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lato:wght@300;700&family=League+Spartan:wght@700&family=Montserrat+Alternates:wght@600;700&family=Open+Sans&family=Oswald:wght@400;700&family=Playfair+Display+SC:ital,wght@1,400&family=Raleway:wght@500&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="logo.png">
     <style>
-        /* Product Detail Page Styling */
         .product-detail-section {
             padding: 60px 20px;
             background-color: #f5f5f5;
             min-height: calc(100vh - 100px - 100px);
             display: flex;
             justify-content: center;
-            align-items: flex-start; /* Align items to the top of the container */
-            flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+            align-items: flex-start;
+            flex-wrap: wrap;
             gap: 40px;
             max-width: 1200px;
             margin: 0 auto;
@@ -26,8 +25,8 @@
 
         .product-image-container {
             flex: 1;
-            min-width: 300px; /* Minimum width for the image container */
-            max-width: 500px; /* Max width for the image container */
+            min-width: 300px;
+            max-width: 500px;
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
@@ -42,15 +41,15 @@
             max-width: 100%;
             height: auto;
             display: block;
-            margin: 0 auto; /* Center image within its container */
+            margin: 0 auto;
             object-fit: contain;
-            max-height: 450px; /* Limit image height */
+            max-height: 450px;
         }
 
         .product-info-container {
             flex: 1;
-            min-width: 350px; /* Minimum width for info container */
-            max-width: 600px; /* Max width for info container */
+            min-width: 350px;
+            max-width: 600px;
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
@@ -97,7 +96,6 @@
             color: #34495e;
         }
 
-        /* NEW: Variant UI styles */
         .variant-group {
             margin-bottom: 15px;
         }
@@ -164,9 +162,6 @@
             opacity: 0.6;
         }
 
-        /* End NEW: Variant UI styles */
-
-
         .product-options input[type="number"] {
             width: 100%;
             padding: 10px;
@@ -174,19 +169,18 @@
             border-radius: 5px;
             font-family: 'Open Sans', sans-serif;
             font-size: 1em;
-            box-sizing: border-box; /* Include padding in width */
+            box-sizing: border-box;
             margin-bottom: 15px;
         }
 
-        /* Styles for additional variant info display */
         #variant-details-display {
             font-family: 'Open Sans', sans-serif;
             font-size: 0.95em;
             color: #666;
-            margin-top: 10px; /* Adjust margin for new UI */
+            margin-top: 10px;
             margin-bottom: 1em;
             line-height: 1.4;
-            min-height: 20px; /* Prevent layout jump if no details */
+            min-height: 20px;
         }
         #variant-details-display span {
             display: block;
@@ -233,7 +227,6 @@
             color: #e74c3c;
         }
 
-        /* Responsive adjustments */
         @media (max-width: 768px) {
             .product-detail-section {
                 flex-direction: column;
@@ -298,16 +291,14 @@
             <p class="price" id="product-price"></p>
             
             <div id="variant-selection-container">
-                <div class="variant-group" id="color-options" style="display: none;">
+                <div class="variant-group" id="color-options">
                     <label>Color:</label>
-                    <div class="color-swatches">
-                        </div>
+                    <div class="color-swatches"></div>
                 </div>
 
-                <div class="variant-group" id="size-options" style="display: none;">
+                <div class="variant-group" id="size-options">
                     <label>Size:</label>
-                    <div class="size-buttons">
-                        </div>
+                    <div class="size-buttons"></div>
                 </div>
                 
                 <input type="hidden" id="selected-variant-id">
@@ -349,7 +340,7 @@
     <script>
         let userSessionId = localStorage.getItem('userSessionId');
         if (!userSessionId) {
-            userSessionId = crypto.randomUUID(); // Generate a new UUID if not found
+            userSessionId = crypto.randomUUID();
             localStorage.setItem('userSessionId', userSessionId);
             console.log("New session ID generated:", userSessionId);
         } else {
@@ -419,8 +410,9 @@
             const productInfoContainer = document.getElementById('product-info-container');
             const colorOptionsDiv = document.getElementById('color-options');
             const sizeOptionsDiv = document.getElementById('size-options');
-            const colorSwatchesContainer = colorOptionsDiv.querySelector('.color-swatches');
-            const sizeButtonsContainer = sizeOptionsDiv.querySelector('.size-buttons');
+            // FIX: Corrected querySelector calls to use the correct IDs of the parent divs
+            const colorSwatchesContainer = document.getElementById('color-options').querySelector('.color-swatches'); 
+            const sizeButtonsContainer = document.getElementById('size-options').querySelector('.size-buttons');
             const quantityInput = document.getElementById('quantity-input');
             const addToCartBtn = document.getElementById('add-to-cart-btn');
             const variantDetailsDisplay = document.getElementById('variant-details-display');
@@ -603,7 +595,6 @@
                 'heather irish green': '#009A49', 'heather safety pink': '#FF1493', 'heather military green': '#6B8E23', 'heather dark grey': '#A9A9A9',
                 'heather orange': '#FFA500', 'heather purple': '#800080', 'heather red': '#FF0000', 'heather sapphire': '#0F52BA',
                 'heather sport dark green': '#006400', 'heather sport scarlet': '#FF2400', 'heather sport yellow': '#FFFF00',
-                // Add more as needed. You can often find common hex codes for apparel colors online.
             };
             return colorMap[colorName.toLowerCase()] || '#CCCCCC'; // Default to light gray if color not mapped
         }
@@ -613,7 +604,10 @@
             document.querySelectorAll('.color-swatch').forEach(swatch => {
                 swatch.classList.remove('selected');
             });
-            document.querySelector(`.color-swatch[data-color="${color}"]`).classList.add('selected');
+            const selectedSwatch = document.querySelector(`.color-swatch[data-color="${color}"]`);
+            if (selectedSwatch) {
+                selectedSwatch.classList.add('selected');
+            }
             
             updateSizeButtons(); 
             updateDisplayedVariantDetails(); 
@@ -624,13 +618,21 @@
             document.querySelectorAll('.size-button').forEach(button => {
                 button.classList.remove('selected');
             });
-            document.querySelector(`.size-button[data-size="${size}"]`).classList.add('selected');
+            const selectedButton = document.querySelector(`.size-button[data-size="${size}"]`);
+            if (selectedButton) {
+                selectedButton.classList.add('selected');
+            }
 
             updateDisplayedVariantDetails(); 
         }
 
         function updateSizeButtons() {
-            const sizeButtonsContainer = document.getElementById('size-buttons').querySelector('.size-buttons');
+            // FIX: Corrected query for sizeButtonsContainer
+            const sizeButtonsContainer = document.getElementById('size-options').querySelector('.size-buttons');
+            if (!sizeButtonsContainer) { 
+                console.error("Size buttons container not found!");
+                return;
+            }
             sizeButtonsContainer.innerHTML = ''; 
 
             const availableSizesForSelectedColor = new Set();
@@ -690,12 +692,21 @@
             let matchingVariant = null;
 
             if (allProductVariants.length > 0) {
-                if (uniqueColors.length > 0 && uniqueSizes.length > 0) {
-                    matchingVariant = allProductVariants.find(v => v.color === selectedColor && v.size === selectedSize);
-                } else if (uniqueColors.length > 0) { // Product only has colors as variants
-                    matchingVariant = allProductVariants.find(v => v.color === selectedColor);
-                } else if (uniqueSizes.length > 0) { // Product only has sizes as variants
-                    matchingVariant = allProductVariants.find(v => v.size === selectedSize);
+                const hasColors = uniqueColors.length > 0;
+                const hasSizes = uniqueSizes.length > 0;
+
+                if (hasColors && hasSizes) { 
+                    if (selectedColor !== null && selectedSize !== null) {
+                        matchingVariant = allProductVariants.find(v => v.color === selectedColor && v.size === selectedSize);
+                    }
+                } else if (hasColors) { 
+                    if (selectedColor !== null) {
+                        matchingVariant = allProductVariants.find(v => v.color === selectedColor);
+                    }
+                } else if (hasSizes) { 
+                    if (selectedSize !== null) {
+                        matchingVariant = allProductVariants.find(v => v.size === selectedSize);
+                    }
                 }
             }
             
@@ -780,4 +791,3 @@
     </script>
 </body>
 </html>
-}
