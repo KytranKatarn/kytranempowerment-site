@@ -615,8 +615,8 @@
             });
             document.querySelector(`.color-swatch[data-color="${color}"]`).classList.add('selected');
             
-            updateSizeButtons(); // Update size buttons based on new color selection
-            updateDisplayedVariantDetails(); // Update price, details, and image based on new selection
+            updateSizeButtons(); 
+            updateDisplayedVariantDetails(); 
         }
 
         function selectSize(size) {
@@ -626,17 +626,15 @@
             });
             document.querySelector(`.size-button[data-size="${size}"]`).classList.add('selected');
 
-            updateDisplayedVariantDetails(); // Update price, details, and image based on new selection
+            updateDisplayedVariantDetails(); 
         }
 
         function updateSizeButtons() {
             const sizeButtonsContainer = document.getElementById('size-buttons').querySelector('.size-buttons');
-            sizeButtonsContainer.innerHTML = ''; // Clear existing size buttons
+            sizeButtonsContainer.innerHTML = ''; 
 
             const availableSizesForSelectedColor = new Set();
             allProductVariants.forEach(variant => {
-                // If a color is selected, only consider variants of that color
-                // If no color is selected (e.g., product only has sizes), consider all variants
                 if (selectedColor === null || variant.color === selectedColor) {
                     availableSizesForSelectedColor.add(variant.size);
                 }
@@ -651,7 +649,7 @@
                 const variantAvailableWithSelectedColorAndSize = allProductVariants.some(v => 
                     (selectedColor === null || v.color === selectedColor) && 
                     v.size === size && 
-                    (v.availability_status === 'active' || v.availability_status === true) // Check Printful availability
+                    (v.availability_status === 'active' || v.availability_status === true) 
                 );
 
                 if (!variantAvailableWithSelectedColorAndSize) {
@@ -663,20 +661,18 @@
                 sizeButtonsContainer.appendChild(button);
             });
 
-            // Auto-select a size if current selectedSize is no longer valid or no size is selected yet.
             const currentlySelectedSizeButton = sizeButtonsContainer.querySelector(`.size-button.selected`);
             if (currentlySelectedSizeButton && currentlySelectedSizeButton.classList.contains('disabled')) {
                 currentlySelectedSizeButton.classList.remove('selected');
-                selectedSize = null; // Deselect if no longer available
+                selectedSize = null; 
             }
             
-            // If no size is selected or the current selected size is disabled, try to select the first available size
             if (selectedSize === null || !sizeButtonsContainer.querySelector(`.size-button[data-size="${selectedSize}"]:not(.disabled)`)) {
                 const firstAvailableSizeButton = sizeButtonsContainer.querySelector('.size-button:not(.disabled)');
                 if (firstAvailableSizeButton) {
                     selectSize(firstAvailableSizeButton.dataset.size);
                 } else {
-                    selectedSize = null; // No sizes available for the current color selection
+                    selectedSize = null; 
                 }
             }
         }
@@ -693,35 +689,33 @@
 
             let matchingVariant = null;
 
-            // Step 1: Find the exact variant that matches both selectedColor and selectedSize
-            if (selectedColor !== null && selectedSize !== null) {
-                matchingVariant = allProductVariants.find(v => v.color === selectedColor && v.size === selectedSize);
-            } else if (selectedColor !== null && uniqueSizes.length === 0) { // Product has colors only
-                matchingVariant = allProductVariants.find(v => v.color === selectedColor);
-            } else if (selectedSize !== null && uniqueColors.length === 0) { // Product has sizes only
-                matchingVariant = allProductVariants.find(v => v.size === selectedSize);
+            if (allProductVariants.length > 0) {
+                if (uniqueColors.length > 0 && uniqueSizes.length > 0) {
+                    matchingVariant = allProductVariants.find(v => v.color === selectedColor && v.size === selectedSize);
+                } else if (uniqueColors.length > 0) { // Product only has colors as variants
+                    matchingVariant = allProductVariants.find(v => v.color === selectedColor);
+                } else if (uniqueSizes.length > 0) { // Product only has sizes as variants
+                    matchingVariant = allProductVariants.find(v => v.size === selectedSize);
+                }
             }
-
+            
             if (matchingVariant) {
                 const displayPrice = parseFloat(matchingVariant.retail_price || matchingVariant.price || '0.00');
                 productPriceElement.innerText = `$${displayPrice.toFixed(2)}`;
                 selectedVariantIdInput.value = matchingVariant.id;
-                selectedVariantNameInput.value = matchingVariant.name; // Use Printful variant name
+                selectedVariantNameInput.value = matchingVariant.name; 
                 selectedVariantPriceInput.value = displayPrice;
                 selectedVariantDetailsJsonInput.value = JSON.stringify(matchingVariant);
 
-                // Update additional variant details display
                 let detailsHtml = '';
                 if (matchingVariant.sku) detailsHtml += `<span>SKU: ${matchingVariant.sku}</span>`;
                 if (matchingVariant.currency) detailsHtml += `<span>Currency: ${matchingVariant.currency}</span>`;
                 detailsHtml += `<span>Availability: ${matchingVariant.availability_status || 'N/A'}</span>`;
                 variantDetailsDisplay.innerHTML = detailsHtml;
 
-                // --- Image Switching Logic ---
-                let variantImageUrl = currentProductData.image_url; // Default to base product image
+                let variantImageUrl = currentProductData.image_url; 
 
                 if (matchingVariant.files && matchingVariant.files.length > 0) {
-                    // Prioritize specific 'preview' or 'mockup' files for the variant
                     const previewFile = matchingVariant.files.find(f => f.type === 'preview' || f.type === 'mockup');
                     if (previewFile && previewFile.preview_url) {
                         variantImageUrl = previewFile.preview_url;
@@ -731,10 +725,9 @@
                         variantImageUrl = matchingVariant.files[0].url;
                     }
                 }
-                productImage.src = variantImageUrl || 'https://via.placeholder.com/400?text=No+Image'; // Update main image
+                productImage.src = variantImageUrl || 'https://via.placeholder.com/400?text=No+Image'; 
 
             } else if (currentProductData) {
-                // Fallback to base product data if no variant is perfectly matched or selected
                 productPriceElement.innerText = `$${currentProductData.price.toFixed(2)}`; 
                 selectedVariantIdInput.value = ''; 
                 selectedVariantNameInput.value = currentProductData.name; 
@@ -743,7 +736,6 @@
                 variantDetailsDisplay.innerHTML = ''; 
                 productImage.src = currentProductData.image_url || 'https://via.placeholder.com/400?text=No+Image'; 
             } else {
-                // Should not happen if product details loaded, but as a final fallback
                 productPriceElement.innerText = '$0.00'; 
                 selectedVariantIdInput.value = '';
                 selectedVariantNameInput.value = 'N/A';
@@ -788,3 +780,4 @@
     </script>
 </body>
 </html>
+}
