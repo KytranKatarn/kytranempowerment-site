@@ -192,7 +192,8 @@
 
             <div class="cart-summary" style="display:none;">
                 <p>Subtotal: <span id="cart-subtotal">$0.00</span></p>
-                <p>Shipping: <span id="cart-shipping">$0.00</span></p> <p class="total">Total: <span id="cart-total">$0.00</span></p>
+                <p>Shipping: <span id="cart-shipping">$0.00</span></p> 
+                <p class="total">Total: <span id="cart-total">$0.00</span></p>
             </div>
 
             <div class="cart-actions" style="display:none;">
@@ -217,10 +218,9 @@
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <script src="script.js"></script>
     <script>
-        // Global variable to store the session ID (consistent across all pages)
         let userSessionId = localStorage.getItem('userSessionId');
         if (!userSessionId) {
-            userSessionId = crypto.randomUUID(); // Generate a new UUID if not found
+            userSessionId = crypto.randomUUID();
             localStorage.setItem('userSessionId', userSessionId);
             console.log("New session ID generated:", userSessionId);
         } else {
@@ -245,17 +245,15 @@
                 });
             }
 
-            // Load cart items on page load
             loadCartItems();
-            updateCartCount(); // Update header count from backend
+            updateCartCount();
         });
 
-        // --- Shopping Cart Logic (Backend API based, consistent across all pages) ---
-
-        // This function will now fetch cart items from the backend for the header count
         async function updateCartCount() {
             try {
-                const response = await fetch(`https://store.kytranempowerment.com/api/cart/${userSessionId}`);
+                // Ensure this URL points to k1_backend_app (port 8000), not k1_backend_store (port 8001)
+                // The blueprint states k1_backend_app handles 'Cart management'.
+                const response = await fetch(`https://k1.kytranempowerment.com/api/cart/${userSessionId}`); 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -270,7 +268,6 @@
 
             } catch (error) {
                 console.error('Error updating cart count from backend:', error);
-                // Fallback to 0 if there's an error
                 const cartCountElement = document.getElementById('cart-count');
                 if (cartCountElement) cartCountElement.innerText = '0';
                 const mobileCartCountElement = document.getElementById('mobile-cart-count');
@@ -278,20 +275,9 @@
             }
         }
 
-        // Add this function (if not already present in script.js) to send data to backend
-        async function addToCartBackend(productId, selectedVariantId, quantity = 1) { // Added selectedVariantId
+        async function addToCartBackend(productId, selectedVariantId, quantity = 1, variantName = null, variantPrice = null, variantDetailsJson = null) {
             try {
-                // Validate that a variant has been selected if variants exist for the product
-                // And selectedVariantId is not empty AND is not just the default placeholder value
-                // Note: This validation is more relevant for product_detail.html
-                // For cart.html, this function might not be called directly, or variants are already handled.
-                const variantSelectElement = document.getElementById('variant-select'); // This element might not exist on cart.html
-                if (variantSelectElement && (!selectedVariantId || selectedVariantId === "")) {
-                    alert('Please select a size/variant.');
-                    return;
-                }
-
-                const response = await fetch('https://store.kytranempowerment.com/api/cart/add', {
+                const response = await fetch('https://k1.kytranempowerment.com/api/cart', { 
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -300,7 +286,10 @@
                         session_id: userSessionId,
                         product_id: productId,
                         quantity: quantity,
-                        selected_printful_variant_id: selectedVariantId // Pass the selected variant ID
+                        selected_printful_variant_id: selectedVariantId,
+                        variant_name: variantName,
+                        variant_price: variantPrice,
+                        variant_details_json: variantDetailsJson
                     }),
                 });
 
@@ -311,9 +300,8 @@
                 }
 
                 alert(result.message);
-                updateCartCount(); // Update the header cart count after adding
-                // If on cart.html, reload cart items
-                if (document.getElementById('cart-items-container')) {
+                updateCartCount();
+                if (document.getElementById('cart-items-container')) { // Only reload if on cart page
                     loadCartItems();
                 }
             } catch (error) {
@@ -324,7 +312,7 @@
 
         async function updateCartItemQuantityBackend(cartItemId, newQuantity) {
             try {
-                const response = await fetch(`https://store.kytranempowerment.com/api/cart/update_quantity/${cartItemId}`, {
+                const response = await fetch(`https://k1.kytranempowerment.com/api/cart/update_quantity/${cartItemId}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -339,8 +327,8 @@
                 }
 
                 console.log(result.message);
-                loadCartItems(); // Reload all cart items to update display and totals
-                updateCartCount(); // Update header count
+                loadCartItems();
+                updateCartCount();
             } catch (error) {
                 console.error('Error updating cart item quantity:', error);
                 alert(`Failed to update cart quantity: ${error.message}`);
@@ -352,7 +340,7 @@
                 return;
             }
             try {
-                const response = await fetch(`https://store.kytranempowerment.com/api/cart/remove/${cartItemId}`, {
+                const response = await fetch(`https://k1.kytranempowerment.com/api/cart/remove/${cartItemId}`, {
                     method: 'DELETE',
                 });
 
@@ -363,15 +351,14 @@
                 }
 
                 alert(result.message);
-                loadCartItems(); // Reload cart items after removal
-                updateCartCount(); // Update header count
+                loadCartItems();
+                updateCartCount();
             } catch (error) {
                 console.error('Error removing cart item:', error);
                 alert(`Failed to remove item from cart: ${error.message}`);
             }
         }
 
-        // Function to load and display cart items on cart.html
         async function loadCartItems() {
             const cartItemsContainer = document.getElementById('cart-items-container');
             const cartLoadingMessage = document.getElementById('cart-loading-message');
@@ -384,10 +371,12 @@
             if (cartSummary) cartSummary.style.display = 'none';
             if (cartActions) cartActions.style.display = 'none';
 
-            cartItemsContainer.innerHTML = ''; // Clear previous content
+            cartItemsContainer.innerHTML = '';
 
             try {
-                const response = await fetch(`https://store.kytranempowerment.com/api/cart/${userSessionId}`);
+                // Ensure this URL points to k1_backend_app (port 8000), not k1_backend_store (port 8001)
+                // The blueprint states k1_backend_app handles 'Cart management'.
+                const response = await fetch(`https://k1.kytranempowerment.com/api/cart/${userSessionId}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -404,8 +393,7 @@
                         const itemTotal = item.price * item.quantity;
                         subtotal += itemTotal;
 
-                        // Display variant name if available
-                        const variantDisplay = item.selected_variant_name ? `<p>${item.selected_variant_name}</p>` : '';
+                        const variantDisplay = item.selected_variant_name ? `<p>Option: ${item.selected_variant_name}</p>` : '';
 
                         const cartItemHtml = `
                             <div class="cart-item">
@@ -413,7 +401,7 @@
                                 <div class="cart-item-details">
                                     <h3>${item.name}</h3>
                                     ${variantDisplay}
-                                    <p>Price: $${item.price.toFixed(2)}</p>
+                                    <p>Price per unit: $${item.price.toFixed(2)}</p>
                                 </div>
                                 <div class="cart-item-quantity">
                                     <label for="quantity-${item.id}">Qty:</label>
@@ -433,8 +421,8 @@
                     });
 
                     document.getElementById('cart-subtotal').innerText = `$${subtotal.toFixed(2)}`;
-                    // For now, shipping is 0.00. Implement logic later.
-                    const total = subtotal; // No shipping/tax yet
+                    document.getElementById('cart-shipping').innerText = `$0.00`; // Placeholder for now
+                    const total = subtotal; 
                     document.getElementById('cart-total').innerText = `$${total.toFixed(2)}`;
 
                     if (cartSummary) cartSummary.style.display = 'block';
@@ -449,3 +437,4 @@
     </script>
 </body>
 </html>
+}
