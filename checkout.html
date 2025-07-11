@@ -267,13 +267,11 @@
                         </div>
                     </div>
 
-                    <div id="shipping-options-container" style="display: none;">
-                        <h3>Shipping Method</h3>
+                    <div id="shipping-options-container"> <h3>Shipping Method</h3>
                         <div id="shipping-methods-radio">
                             <p id="shipping-loading-message">Calculating shipping rates...</p>
                             <p id="shipping-error-message" style="color: red; display: none;"></p>
-                            <p id="no-shipping-message" style="display: none;">No shipping methods available for this address or cart.</p>
-                        </div>
+                            <p id="no-shipping-message" style="display: none;"></p> </div>
                     </div>
                     
                     <h3>Payment Information</h3>
@@ -359,7 +357,7 @@
             document.getElementById('checkout-form').addEventListener('submit', handleCheckoutSubmit);
 
             // Add event listeners for address fields to recalculate shipping
-            const addressFields = ['fullName', 'email', 'phone', 'address1', 'address2', 'city', 'state', 'zip', 'country'];
+            const addressFields = ['address1', 'city', 'state', 'zip', 'country']; // Removed fullName, email, phone as they don't directly affect shipping rates
             addressFields.forEach(fieldId => {
                 const element = document.getElementById(fieldId);
                 if (element) {
@@ -487,16 +485,42 @@
 
         function updatePlaceOrderButtonState() {
             const placeOrderButton = document.getElementById('place-order-button');
-            // Button is enabled if cart is not empty AND a shipping method is selected (if available)
-            // Or if cart is not empty and no shipping options are offered by Printful (e.g. digital goods, or error)
-            const isShippingSelectedOrNotRequired = currentCartItems.length > 0 && (document.getElementById('shipping-options-container').style.display === 'none' || selectedShippingMethod !== null);
-            placeOrderButton.disabled = !(currentCartItems.length > 0 && isShippingSelectedOrNotRequired);
+            // Button is enabled if cart is not empty AND a shipping method is selected (if shipping options are displayed)
+            // Or if cart is not empty and no shipping options are required (e.g., digital goods, or error in calculation)
+            
+            const shippingOptionsContainer = document.getElementById('shipping-options-container');
+            const shippingMethodsRadio = document.getElementById('shipping-methods-radio');
+            const shippingErrorMessage = document.getElementById('shipping-error-message');
+
+            const hasCartItems = currentCartItems.length > 0;
+            let canPlaceOrder = false;
+
+            if (!hasCartItems) {
+                canPlaceOrder = false;
+            } else if (shippingOptionsContainer.style.display === 'none') {
+                // If shipping options container is hidden (e.g., no address yet, or general error message),
+                // assume we can't proceed until shipping is calculated.
+                canPlaceOrder = false; 
+            } else if (shippingErrorMessage.style.display === 'block') {
+                // If there's a shipping error, disable the button.
+                canPlaceOrder = false;
+            } else if (shippingMethodsRadio.children.length === 0) {
+                // If shipping methods were calculated but none were returned (no options available),
+                // disable the button.
+                canPlaceOrder = false;
+            } else {
+                // Shipping options are displayed, and no error: require a selection.
+                canPlaceOrder = selectedShippingMethod !== null;
+            }
+
+            placeOrderButton.disabled = !canPlaceOrder;
             if (placeOrderButton.disabled) {
                 placeOrderButton.classList.add('disabled');
             } else {
                 placeOrderButton.classList.remove('disabled');
             }
         }
+
 
         async function calculateAndDisplayShipping() {
             const shippingOptionsContainer = document.getElementById('shipping-options-container');
@@ -505,26 +529,27 @@
             const shippingErrorMessage = document.getElementById('shipping-error-message');
             const noShippingMessage = document.getElementById('no-shipping-message');
 
-            shippingOptionsContainer.style.display = 'none'; // Hide until ready
+            // Set initial states
+            shippingOptionsContainer.style.display = 'block'; // Make sure container is visible
             shippingLoadingMessage.style.display = 'block';
             shippingErrorMessage.style.display = 'none';
             noShippingMessage.style.display = 'none';
             shippingMethodsRadio.innerHTML = ''; // Clear previous options
             selectedShippingMethod = null; // Clear previous selection
-            updateTotalsDisplay(); // Reset shipping in totals display
+            updateTotalsDisplay(); // Reset shipping in totals display (sets to $0.00)
 
             // Only calculate if cart has items and required address fields are filled
             const form = document.getElementById('checkout-form');
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
 
+            // Fields required for Printful shipping calculation (ensure these exist and are filled)
             const requiredAddressFields = ['address1', 'city', 'state', 'zip', 'country'];
             const allAddressFieldsFilled = requiredAddressFields.every(field => data[field] && data[field].trim() !== '');
 
             if (currentCartItems.length === 0 || !allAddressFieldsFilled || data.country === "") {
-                shippingOptionsContainer.style.display = 'block';
                 shippingLoadingMessage.style.display = 'none';
-                noShippingMessage.innerText = 'Please fill out all required address fields and ensure your cart is not empty to calculate shipping.';
+                noShippingMessage.innerText = 'Please fill out all required address fields (Address Line 1, City, State/Province, Zip/Postal Code, Country) and ensure your cart is not empty to calculate shipping.';
                 noShippingMessage.style.display = 'block';
                 updatePlaceOrderButtonState(); // Re-evaluate button state
                 return;
@@ -540,9 +565,9 @@
             };
 
             const itemsForShipping = currentCartItems.map(item => ({
-                product_id: item.product_id, // Though Printful API uses sync_variant_id, sending product_id for backend lookup
+                product_id: item.product_id, 
                 quantity: item.quantity,
-                selected_printful_variant_id: item.selected_printful_variant_id // Crucial for Printful
+                selected_printful_variant_id: item.selected_printful_variant_id 
             }));
 
             try {
@@ -564,29 +589,40 @@
                 }
 
                 const shippingMethods = result.shipping_methods || [];
-                shippingOptionsContainer.style.display = 'block';
                 shippingLoadingMessage.style.display = 'none';
                 shippingMethodsRadio.innerHTML = ''; // Clear options for fresh display
 
                 if (shippingMethods.length === 0) {
                     noShippingMessage.innerText = 'No shipping methods available for this address and cart items.';
                     noShippingMessage.style.display = 'block';
-                    selectedShippingMethod = null;
+                    selectedShippingMethod = null; // No methods, no selection
                 } else {
+                    // Store the current radio group so we can attach the event listener
+                    let currentRadioGroup = document.createElement('div');
+                    
                     shippingMethods.forEach(method => {
-                        const radioHtml = `
-                            <div>
-                                <label>
-                                    <input type="radio" name="shippingMethod" value="${method.id}" data-rate="${method.rate}" data-name="${method.name}">
-                                    ${method.name} - $${method.rate.toFixed(2)}
-                                </label>
-                            </div>
-                        `;
-                        shippingMethodsRadio.innerHTML += radioHtml;
+                        const radioDiv = document.createElement('div');
+                        const label = document.createElement('label');
+                        const radioInput = document.createElement('input');
+
+                        radioInput.type = 'radio';
+                        radioInput.name = 'shippingMethod';
+                        radioInput.value = method.id;
+                        radioInput.dataset.rate = method.rate;
+                        radioInput.dataset.name = method.name;
+
+                        label.appendChild(radioInput);
+                        label.append(`${method.name} - $${method.rate.toFixed(2)}`);
+                        radioDiv.appendChild(label);
+                        currentRadioGroup.appendChild(radioDiv);
                     });
 
-                    // Add event listener to the parent container for radio button changes
-                    shippingMethodsRadio.addEventListener('change', (event) => {
+                    // Append the generated radio buttons to the container
+                    shippingMethodsRadio.appendChild(currentRadioGroup);
+
+                    // Add event listener to the newly created radio group (or the shippingMethodsRadio container itself)
+                    // The event listener needs to be added *after* elements are appended to the DOM
+                    currentRadioGroup.addEventListener('change', (event) => { // Use currentRadioGroup or shippingMethodsRadio
                         if (event.target.name === 'shippingMethod') {
                             selectedShippingMethod = {
                                 id: event.target.value,
@@ -599,7 +635,7 @@
 
                     // Select the first method by default and update totals
                     if (shippingMethods.length > 0) {
-                        const firstRadio = shippingMethodsRadio.querySelector('input[name="shippingMethod"]');
+                        const firstRadio = currentRadioGroup.querySelector('input[name="shippingMethod"]');
                         if (firstRadio) {
                             firstRadio.checked = true;
                             selectedShippingMethod = {
@@ -613,11 +649,10 @@
                 updateTotalsDisplay(); // Update totals after method display/selection
             } catch (error) {
                 console.error('Error calculating shipping:', error);
-                shippingOptionsContainer.style.display = 'block';
                 shippingLoadingMessage.style.display = 'none';
                 shippingErrorMessage.innerText = `Failed to calculate shipping: ${error.message}`;
                 shippingErrorMessage.style.display = 'block';
-                selectedShippingMethod = null;
+                selectedShippingMethod = null; // Clear selection on error
                 updateTotalsDisplay(); // Ensure totals reflect no shipping
             } finally {
                 updatePlaceOrderButtonState(); // Re-evaluate button state
@@ -653,16 +688,30 @@
                 return;
             }
 
-            // Validate if shipping method is selected if options were displayed
-            const shippingOptionsDisplayed = document.getElementById('shipping-options-container').style.display !== 'none';
-            if (shippingOptionsDisplayed && selectedShippingMethod === null) {
+            // Validate if shipping method is selected if options were displayed (and not in an error state)
+            const shippingOptionsContainer = document.getElementById('shipping-options-container');
+            const shippingErrorMessage = document.getElementById('shipping-error-message');
+            const shippingMethodsRadio = document.getElementById('shipping-methods-radio');
+
+            const hasShippingOptions = shippingMethodsRadio.children.length > 0 && shippingErrorMessage.style.display !== 'block';
+
+            if (hasShippingOptions && selectedShippingMethod === null) {
                 loadingMessage.style.display = 'none';
                 errorMessage.style.display = 'block';
                 errorMessage.innerText = 'Please select a shipping method.';
                 placeOrderButton.disabled = false;
                 placeOrderButton.classList.remove('disabled');
                 return;
+            } else if (!hasShippingOptions && shippingErrorMessage.style.display === 'block') {
+                 // If there's an error in shipping calculation, prevent submission
+                loadingMessage.style.display = 'none';
+                errorMessage.style.display = 'block';
+                errorMessage.innerText = 'Cannot proceed due to shipping calculation error. Please resolve the issue or contact support.';
+                placeOrderButton.disabled = false;
+                placeOrderButton.classList.remove('disabled');
+                return;
             }
+
 
             const payloadCartItems = currentCartItems.map(item => ({
                 product_id: item.product_id,
@@ -674,14 +723,14 @@
             }));
 
             const shippingCost = selectedShippingMethod ? selectedShippingMethod.rate : 0.00;
-            const shippingMethodName = selectedShippingMethod ? selectedShippingMethod.id : "No Shipping Required"; // Use ID for backend
+            const shippingMethodId = selectedShippingMethod ? selectedShippingMethod.id : "NO_SHIPPING_METHOD_NEEDED"; // Fallback for no shipping methods
 
             const orderPayload = {
                 session_id: userSessionId,
                 shipping_cost: shippingCost,
                 tax_amount: 0.00,    // Still a placeholder
                 discount_amount: 0.00, // Still a placeholder
-                shipping_method: shippingMethodName,
+                shipping_method: shippingMethodId, // Send Printful's method ID
                 recipient: {
                     name: data.fullName,
                     email: data.email,
@@ -694,6 +743,7 @@
                     country: data.country
                 },
                 cart_items: payloadCartItems
+                // payment_method_id will be added here in future Stripe integration
             };
 
             try {
