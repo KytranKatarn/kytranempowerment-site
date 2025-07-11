@@ -392,12 +392,10 @@
 
                         let variantColor = '';
                         let variantSize = '';
-                        let variantOptionText = ''; // For combined display if needed
+                        let variantOptionText = ''; 
 
-                        // Determine the image URL for the cart item
-                        let imageUrlToDisplay = item.image_url; // Default to base product image from item
-
-                        // If variant_details_json exists, try to extract more specific info
+                        let imageUrlToDisplay = item.image_url; 
+                        
                         if (item.variant_details_json) {
                             try {
                                 const variantDetails = JSON.parse(item.variant_details_json);
@@ -405,7 +403,6 @@
                                 if (variantDetails.color) variantColor = variantDetails.color;
                                 if (variantDetails.size) variantSize = variantDetails.size;
 
-                                // Construct a more specific option text
                                 if (variantColor && variantSize) {
                                     variantOptionText = `Color: ${variantColor}, Size: ${variantSize}`;
                                 } else if (variantColor) {
@@ -413,10 +410,9 @@
                                 } else if (variantSize) {
                                     variantOptionText = `Size: ${variantSize}`;
                                 } else if (item.selected_variant_name && item.selected_variant_name !== 'N/A') {
-                                    variantOptionText = item.selected_variant_name; // Fallback to stored name
+                                    variantOptionText = item.selected_variant_name; 
                                 }
 
-                                // Prioritize specific 'preview' or 'mockup' files for the variant from variantDetails
                                 if (variantDetails.files && variantDetails.files.length > 0) {
                                     const previewFile = variantDetails.files.find(f => f.type === 'preview' || f.type === 'mockup');
                                     if (previewFile && previewFile.preview_url) {
@@ -431,7 +427,6 @@
                                 console.warn("Could not parse variant_details_json in cart.html:", e);
                             }
                         }
-                        // Fallback if no specific variant image found or parsing failed
                         imageUrlToDisplay = imageUrlToDisplay || 'https://via.placeholder.com/100?text=No+Image';
 
                         const cartItemHtml = `
