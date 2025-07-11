@@ -267,11 +267,13 @@
                         </div>
                     </div>
 
-                    <div id="shipping-options-container"> <h3>Shipping Method</h3>
+                    <div id="shipping-options-container"> 
+                        <h3>Shipping Method</h3>
                         <div id="shipping-methods-radio">
                             <p id="shipping-loading-message">Calculating shipping rates...</p>
                             <p id="shipping-error-message" style="color: red; display: none;"></p>
-                            <p id="no-shipping-message" style="display: none;"></p> </div>
+                            <p id="no-shipping-message" style="display: none;"></p> 
+                        </div>
                     </div>
                     
                     <h3>Payment Information</h3>
@@ -332,6 +334,24 @@
         let selectedShippingMethod = null; // Stores the selected shipping method object {id, name, rate}
         let currentSubtotal = 0; // To keep track of subtotal for dynamic shipping calculation
 
+        // NEW: Cache DOM element references once DCL is fired
+        let shippingOptionsContainer;
+        let shippingMethodsRadio;
+        let shippingLoadingMessage;
+        let shippingErrorMessage;
+        let noShippingMessage;
+        let placeOrderButton;
+        let summaryShippingSpan;
+        let summaryTotalSpan;
+        let summarySubtotalSpan;
+        let summaryEmptyMessage;
+        let summaryLoadingMessage;
+        let orderSummaryItemsContainer;
+        let checkoutLoadingMessage;
+        let checkoutErrorMessage;
+        let checkoutForm;
+
+
         // Mobile menu toggle (from script.js or included directly)
         document.addEventListener('DOMContentLoaded', () => {
             const mobileMenuIcon = document.querySelector('.mobile-menu-icon');
@@ -351,17 +371,42 @@
                 });
             }
 
+            // NEW: Assign DOM element references here
+            shippingOptionsContainer = document.getElementById('shipping-options-container');
+            shippingMethodsRadio = document.getElementById('shipping-methods-radio');
+            shippingLoadingMessage = document.getElementById('shipping-loading-message');
+            shippingErrorMessage = document.getElementById('shipping-error-message');
+            noShippingMessage = document.getElementById('no-shipping-message');
+            placeOrderButton = document.getElementById('place-order-button');
+            summaryShippingSpan = document.getElementById('summary-shipping');
+            summaryTotalSpan = document.getElementById('summary-total');
+            summarySubtotalSpan = document.getElementById('summary-subtotal');
+            summaryEmptyMessage = document.getElementById('summary-empty-message');
+            summaryLoadingMessage = document.getElementById('summary-loading-message');
+            orderSummaryItemsContainer = document.getElementById('order-summary-items');
+            checkoutLoadingMessage = document.getElementById('checkout-loading-message');
+            checkoutErrorMessage = document.getElementById('checkout-error-message');
+            checkoutForm = document.getElementById('checkout-form');
+
+            // Set initial display for shipping messages
+            if (shippingLoadingMessage) shippingLoadingMessage.style.display = 'block';
+            if (shippingErrorMessage) shippingErrorMessage.style.display = 'none';
+            if (noShippingMessage) noShippingMessage.style.display = 'none';
+
+
             updateCartCount(); // Update header cart count on load
             loadOrderSummary(); // Load cart items for summary on checkout page
 
-            document.getElementById('checkout-form').addEventListener('submit', handleCheckoutSubmit);
+            if (checkoutForm) {
+                checkoutForm.addEventListener('submit', handleCheckoutSubmit);
+            }
 
             // Add event listeners for address fields to recalculate shipping
-            const addressFields = ['address1', 'city', 'state', 'zip', 'country']; // Removed fullName, email, phone as they don't directly affect shipping rates
+            const addressFields = ['address1', 'city', 'state', 'zip', 'country'];
             addressFields.forEach(fieldId => {
                 const element = document.getElementById(fieldId);
                 if (element) {
-                    element.addEventListener('change', debounce(calculateAndDisplayShipping, 500)); // Debounce to avoid too many calls
+                    element.addEventListener('change', debounce(calculateAndDisplayShipping, 500));
                 }
             });
 
@@ -404,22 +449,14 @@
         }
 
         async function loadOrderSummary() {
-            const summaryItemsContainer = document.getElementById('order-summary-items');
-            const summaryLoadingMessage = document.getElementById('summary-loading-message');
-            const summaryEmptyMessage = document.getElementById('summary-empty-message');
-            const subtotalSpan = document.getElementById('summary-subtotal');
-            const shippingSpan = document.getElementById('summary-shipping');
-            const totalSpan = document.getElementById('summary-total');
-            const placeOrderButton = document.getElementById('place-order-button');
-
             if (summaryLoadingMessage) summaryLoadingMessage.style.display = 'block';
             if (summaryEmptyMessage) summaryEmptyMessage.style.display = 'none';
-            summaryItemsContainer.innerHTML = ''; // Clear previous items
+            if (orderSummaryItemsContainer) orderSummaryItemsContainer.innerHTML = '';
 
             currentSubtotal = 0; // Reset subtotal
             selectedShippingMethod = null; // Clear selected shipping method on cart refresh
-            shippingSpan.innerText = `$0.00`; // Reset displayed shipping
-            totalSpan.innerText = `$0.00`; // Reset displayed total
+            if (summaryShippingSpan) summaryShippingSpan.innerText = `$0.00`; // Reset displayed shipping
+            if (summaryTotalSpan) summaryTotalSpan.innerText = `$0.00`; // Reset displayed total
 
 
             try {
@@ -462,54 +499,54 @@
                                 <span>$${itemTotal.toFixed(2)}</span>
                             </div>
                         `;
-                        summaryItemsContainer.innerHTML += itemHtml;
+                        if (orderSummaryItemsContainer) orderSummaryItemsContainer.innerHTML += itemHtml;
                     });
                     
-                    subtotalSpan.innerText = `$${currentSubtotal.toFixed(2)}`;
+                    if (summarySubtotalSpan) summarySubtotalSpan.innerText = `$${currentSubtotal.toFixed(2)}`;
                     calculateAndDisplayShipping(); // Trigger shipping calculation after cart items are loaded
                 }
             } catch (error) {
                 console.error('Error loading order summary:', error);
                 if (summaryLoadingMessage) summaryLoadingMessage.style.display = 'none';
-                summaryItemsContainer.innerHTML = `<p class="checkout-error">Failed to load cart summary. ${error.message}</p>`;
+                if (orderSummaryItemsContainer) orderSummaryItemsContainer.innerHTML = `<p class="checkout-error">Failed to load cart summary. ${error.message}</p>`;
                 updatePlaceOrderButtonState(); // Disable button on error
             }
         }
 
         function updateTotalsDisplay() {
             const shippingCost = selectedShippingMethod ? selectedShippingMethod.rate : 0;
-            document.getElementById('summary-shipping').innerText = `$${shippingCost.toFixed(2)}`;
-            document.getElementById('summary-total').innerText = `$${(currentSubtotal + shippingCost).toFixed(2)}`;
+            if (summaryShippingSpan) summaryShippingSpan.innerText = `$${shippingCost.toFixed(2)}`;
+            if (summaryTotalSpan) summaryTotalSpan.innerText = `$${(currentSubtotal + shippingCost).toFixed(2)}`;
             updatePlaceOrderButtonState();
         }
 
         function updatePlaceOrderButtonState() {
-            const placeOrderButton = document.getElementById('place-order-button');
-            // Button is enabled if cart is not empty AND a shipping method is selected (if shipping options are displayed)
-            // Or if cart is not empty and no shipping options are required (e.g., digital goods, or error in calculation)
-            
-            const shippingOptionsContainer = document.getElementById('shipping-options-container');
-            const shippingMethodsRadio = document.getElementById('shipping-methods-radio');
-            const shippingErrorMessage = document.getElementById('shipping-error-message');
+            // Check if placeOrderButton is defined before trying to access its properties
+            if (!placeOrderButton) {
+                console.warn("Place Order Button element not found yet.");
+                return;
+            }
 
             const hasCartItems = currentCartItems.length > 0;
             let canPlaceOrder = false;
 
             if (!hasCartItems) {
                 canPlaceOrder = false;
-            } else if (shippingOptionsContainer.style.display === 'none') {
-                // If shipping options container is hidden (e.g., no address yet, or general error message),
-                // assume we can't proceed until shipping is calculated.
+            } else if (shippingOptionsContainer && shippingOptionsContainer.style.display === 'none') {
+                // If shipping options container is hidden, it implies shipping calculation hasn't run or is not applicable
+                // For now, if hidden, assume we can't proceed unless explicitly stated it's a digital good.
+                // A better approach would be to ensure calculateAndDisplayShipping runs first.
                 canPlaceOrder = false; 
-            } else if (shippingErrorMessage.style.display === 'block') {
+            } else if (shippingErrorMessage && shippingErrorMessage.style.display === 'block') {
                 // If there's a shipping error, disable the button.
                 canPlaceOrder = false;
-            } else if (shippingMethodsRadio.children.length === 0) {
-                // If shipping methods were calculated but none were returned (no options available),
-                // disable the button.
+            } else if (shippingMethodsRadio && shippingMethodsRadio.children.length === 0 && noShippingMessage && noShippingMessage.style.display === 'block') {
+                // No shipping methods available and message shown. If this is a physical product, disable.
+                // For a robust system, distinguish between "no methods due to address" and "digital product, no shipping needed".
+                // For now, if no methods, we assume physical and disable.
                 canPlaceOrder = false;
             } else {
-                // Shipping options are displayed, and no error: require a selection.
+                // Shipping options are displayed and no error: require a selection.
                 canPlaceOrder = selectedShippingMethod !== null;
             }
 
@@ -523,14 +560,14 @@
 
 
         async function calculateAndDisplayShipping() {
-            const shippingOptionsContainer = document.getElementById('shipping-options-container');
-            const shippingMethodsRadio = document.getElementById('shipping-methods-radio');
-            const shippingLoadingMessage = document.getElementById('shipping-loading-message');
-            const shippingErrorMessage = document.getElementById('shipping-error-message');
-            const noShippingMessage = document.getElementById('no-shipping-message');
+            // Ensure all relevant DOM elements are available
+            if (!shippingOptionsContainer || !shippingMethodsRadio || !shippingLoadingMessage || !shippingErrorMessage || !noShippingMessage) {
+                console.error("One or more shipping-related DOM elements not found.");
+                return; // Exit if elements are missing
+            }
 
             // Set initial states
-            shippingOptionsContainer.style.display = 'block'; // Make sure container is visible
+            shippingOptionsContainer.style.display = 'block';
             shippingLoadingMessage.style.display = 'block';
             shippingErrorMessage.style.display = 'none';
             noShippingMessage.style.display = 'none';
@@ -538,8 +575,7 @@
             selectedShippingMethod = null; // Clear previous selection
             updateTotalsDisplay(); // Reset shipping in totals display (sets to $0.00)
 
-            // Only calculate if cart has items and required address fields are filled
-            const form = document.getElementById('checkout-form');
+            const form = document.getElementById('checkout-form'); // Use form directly if defined locally or globally
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
 
@@ -597,8 +633,8 @@
                     noShippingMessage.style.display = 'block';
                     selectedShippingMethod = null; // No methods, no selection
                 } else {
-                    // Store the current radio group so we can attach the event listener
-                    let currentRadioGroup = document.createElement('div');
+                    // Create a document fragment to append elements efficiently
+                    const fragment = document.createDocumentFragment();
                     
                     shippingMethods.forEach(method => {
                         const radioDiv = document.createElement('div');
@@ -614,15 +650,14 @@
                         label.appendChild(radioInput);
                         label.append(`${method.name} - $${method.rate.toFixed(2)}`);
                         radioDiv.appendChild(label);
-                        currentRadioGroup.appendChild(radioDiv);
+                        fragment.appendChild(radioDiv); // Append to fragment
                     });
 
-                    // Append the generated radio buttons to the container
-                    shippingMethodsRadio.appendChild(currentRadioGroup);
+                    shippingMethodsRadio.appendChild(fragment); // Append fragment to DOM once
 
-                    // Add event listener to the newly created radio group (or the shippingMethodsRadio container itself)
-                    // The event listener needs to be added *after* elements are appended to the DOM
-                    currentRadioGroup.addEventListener('change', (event) => { // Use currentRadioGroup or shippingMethodsRadio
+                    // Add event listener to the parent container for radio button changes
+                    // Use a delegated event listener on `shippingMethodsRadio` as radio buttons are dynamically added
+                    shippingMethodsRadio.addEventListener('change', (event) => {
                         if (event.target.name === 'shippingMethod') {
                             selectedShippingMethod = {
                                 id: event.target.value,
@@ -631,11 +666,11 @@
                             };
                             updateTotalsDisplay();
                         }
-                    });
+                    }, { once: true }); // Use { once: true } to prevent multiple listeners on re-render
 
                     // Select the first method by default and update totals
                     if (shippingMethods.length > 0) {
-                        const firstRadio = currentRadioGroup.querySelector('input[name="shippingMethod"]');
+                        const firstRadio = shippingMethodsRadio.querySelector('input[name="shippingMethod"]');
                         if (firstRadio) {
                             firstRadio.checked = true;
                             selectedShippingMethod = {
@@ -662,51 +697,49 @@
         async function handleCheckoutSubmit(event) {
             event.preventDefault(); // Prevent default form submission
 
-            const form = event.target;
+            // Ensure all relevant DOM elements are available
+            if (!placeOrderButton || !checkoutLoadingMessage || !checkoutErrorMessage || !checkoutForm) {
+                console.error("One or more checkout form elements not found.");
+                return; // Exit if elements are missing
+            }
+
+            const form = checkoutForm; // Use the globally cached form reference
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
 
-            const placeOrderButton = document.getElementById('place-order-button');
-            const loadingMessage = document.getElementById('checkout-loading-message');
-            const errorMessage = document.getElementById('checkout-error-message');
-
             // Reset messages
-            errorMessage.style.display = 'none';
-            errorMessage.innerText = '';
+            checkoutErrorMessage.style.display = 'none';
+            checkoutErrorMessage.innerText = '';
             placeOrderButton.disabled = true;
             placeOrderButton.classList.add('disabled');
-            loadingMessage.style.display = 'block';
-            loadingMessage.innerText = 'Processing your order...';
+            checkoutLoadingMessage.style.display = 'block';
+            checkoutLoadingMessage.innerText = 'Processing your order...';
 
 
             if (currentCartItems.length === 0) {
-                loadingMessage.style.display = 'none';
-                errorMessage.style.display = 'block';
-                errorMessage.innerText = 'Your cart is empty. Please add items before checking out.';
+                checkoutLoadingMessage.style.display = 'none';
+                checkoutErrorMessage.style.display = 'block';
+                checkoutErrorMessage.innerText = 'Your cart is empty. Please add items before checking out.';
                 placeOrderButton.disabled = false;
                 placeOrderButton.classList.remove('disabled');
                 return;
             }
 
             // Validate if shipping method is selected if options were displayed (and not in an error state)
-            const shippingOptionsContainer = document.getElementById('shipping-options-container');
-            const shippingErrorMessage = document.getElementById('shipping-error-message');
-            const shippingMethodsRadio = document.getElementById('shipping-methods-radio');
+            const hasShippingOptionsDisplayed = shippingMethodsRadio && shippingMethodsRadio.children.length > 0 && shippingErrorMessage.style.display !== 'block';
 
-            const hasShippingOptions = shippingMethodsRadio.children.length > 0 && shippingErrorMessage.style.display !== 'block';
-
-            if (hasShippingOptions && selectedShippingMethod === null) {
-                loadingMessage.style.display = 'none';
-                errorMessage.style.display = 'block';
-                errorMessage.innerText = 'Please select a shipping method.';
+            if (hasShippingOptionsDisplayed && selectedShippingMethod === null) {
+                checkoutLoadingMessage.style.display = 'none';
+                checkoutErrorMessage.style.display = 'block';
+                checkoutErrorMessage.innerText = 'Please select a shipping method.';
                 placeOrderButton.disabled = false;
                 placeOrderButton.classList.remove('disabled');
                 return;
-            } else if (!hasShippingOptions && shippingErrorMessage.style.display === 'block') {
+            } else if (!hasShippingOptionsDisplayed && shippingErrorMessage && shippingErrorMessage.style.display === 'block') {
                  // If there's an error in shipping calculation, prevent submission
-                loadingMessage.style.display = 'none';
-                errorMessage.style.display = 'block';
-                errorMessage.innerText = 'Cannot proceed due to shipping calculation error. Please resolve the issue or contact support.';
+                checkoutLoadingMessage.style.display = 'none';
+                checkoutErrorMessage.style.display = 'block';
+                checkoutErrorMessage.innerText = 'Cannot proceed due to shipping calculation error. Please resolve the issue or contact support.';
                 placeOrderButton.disabled = false;
                 placeOrderButton.classList.remove('disabled');
                 return;
@@ -761,15 +794,15 @@
                     throw new Error(result.detail || `HTTP error! status: ${response.status}`);
                 }
 
-                loadingMessage.style.display = 'none';
+                checkoutLoadingMessage.style.display = 'none';
                 alert('Order placed successfully! Order ID: ' + result.order_id);
                 // Redirect to a success page
                 window.location.href = `order_success.html?order_id=${result.order_id}&printful_order_id=${result.printful_order_id || 'N/A'}`;
                 
             } catch (error) {
-                loadingMessage.style.display = 'none';
-                errorMessage.style.display = 'block';
-                errorMessage.innerText = `Order failed: ${error.message}`;
+                checkoutLoadingMessage.style.display = 'none';
+                checkoutErrorMessage.style.display = 'block';
+                checkoutErrorMessage.innerText = `Order failed: ${error.message}`;
                 console.error('Checkout error:', error);
                 placeOrderButton.disabled = false;
                 placeOrderButton.classList.remove('disabled');
