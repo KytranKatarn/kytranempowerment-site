@@ -17,8 +17,8 @@
             min-height: calc(100vh - 100px - 100px);
             display: flex;
             justify-content: center;
-            align-items: flex-start;
-            flex-wrap: wrap;
+            align-items: flex-start; /* Align items to the top of the container */
+            flex-wrap: wrap; /* Allow items to wrap on smaller screens */
             gap: 40px;
             max-width: 1200px;
             margin: 0 auto;
@@ -26,8 +26,8 @@
 
         .product-image-container {
             flex: 1;
-            min-width: 300px;
-            max-width: 500px;
+            min-width: 300px; /* Minimum width for the image container */
+            max-width: 500px; /* Max width for the image container */
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
@@ -42,15 +42,15 @@
             max-width: 100%;
             height: auto;
             display: block;
-            margin: 0 auto;
+            margin: 0 auto; /* Center image within its container */
             object-fit: contain;
-            max-height: 450px;
+            max-height: 450px; /* Limit image height */
         }
 
         .product-info-container {
             flex: 1;
-            min-width: 350px;
-            max-width: 600px;
+            min-width: 350px; /* Minimum width for info container */
+            max-width: 600px; /* Max width for info container */
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
@@ -101,6 +101,7 @@
             color: #34495e;
         }
 
+        /* NEW: Variant UI styles */
         .variant-group {
             margin-bottom: 15px;
         }
@@ -108,6 +109,8 @@
             font-size: 1.1em;
             color: #2c3e50;
             margin-bottom: 10px;
+            text-align: center; /* Center labels for color/size */
+            width: 100%;
         }
 
         .color-swatches {
@@ -115,6 +118,7 @@
             flex-wrap: wrap;
             gap: 10px;
             margin-top: 10px;
+            justify-content: center; /* FIX: Center color swatches */
         }
         .color-swatch {
             width: 30px;
@@ -140,6 +144,7 @@
             flex-wrap: wrap;
             gap: 10px;
             margin-top: 10px;
+            justify-content: center; /* FIX: Center size buttons */
         }
         .size-button {
             padding: 8px 15px;
@@ -196,6 +201,7 @@
             margin-bottom: 1em;
             line-height: 1.4;
             min-height: 20px;
+            text-align: center; /* Center variant details */
         }
         #variant-details-display span {
             display: block;
@@ -211,10 +217,10 @@
         }
 
         .product-actions .btn-primary {
-            flex-grow: 0; /* Don't grow, maintain fixed width */
-            flex-shrink: 0; /* Don't shrink */
+            flex-grow: 0;
+            flex-shrink: 0;
             min-width: 120px;
-            max-width: 160px; /* Optional: limit max width to prevent stretching too wide */
+            max-width: 160px;
             padding: 12px 25px;
             border-radius: 5px;
             background-color: #3498db;
@@ -429,12 +435,13 @@
             const colorOptionsDiv = document.getElementById('color-options');
             const sizeOptionsDiv = document.getElementById('size-options');
             // FIX: Corrected querySelector calls to use the correct IDs of the parent divs
-            const colorSwatchesContainer = colorOptionsDiv.querySelector('.color-swatches'); // Corrected
-            const sizeButtonsContainer = sizeOptionsDiv.querySelector('.size-buttons'); // Corrected
+            // The containers are `colorOptionsDiv` and `sizeOptionsDiv` themselves.
+            const colorSwatchesContainer = colorOptionsDiv.querySelector('.color-swatches'); 
+            const sizeButtonsContainer = sizeOptionsDiv.querySelector('.size-buttons');
             const quantityInput = document.getElementById('quantity-input');
             const addToCartBtn = document.getElementById('add-to-cart-btn');
             const variantDetailsDisplay = document.getElementById('variant-details-display');
-            const productDescriptionElement = document.getElementById('product-description'); // Added reference
+            const productDescriptionElement = document.getElementById('product-description'); 
 
 
             productLoading.style.display = 'block'; 
@@ -468,8 +475,7 @@
                 }
 
                 document.getElementById('product-name').innerText = currentProductData.name;
-                // FIX: Conditionally display description
-                if (currentProductData.description && currentProductData.description.trim() !== 'No description available.') {
+                if (currentProductData.description && currentProductData.description.trim() !== '' && currentProductData.description.trim() !== 'No description available.') {
                     productDescriptionElement.innerText = currentProductData.description;
                     productDescriptionElement.classList.remove('hidden-description');
                 } else {
@@ -653,7 +659,6 @@
         }
 
         function updateSizeButtons() {
-            // FIX: Corrected query for sizeButtonsContainer
             const sizeButtonsContainer = document.getElementById('size-options').querySelector('.size-buttons');
             if (!sizeButtonsContainer) { 
                 console.error("Size buttons container not found!");
