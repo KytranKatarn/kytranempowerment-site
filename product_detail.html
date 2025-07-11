@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lato:wght@300;700&family=League+Spartan:wght@700&family=Montserrat+Alternates:wght@600;700&family=Open+Sans&family=Oswald:wght@400;700&family=Playfair+Display+SC:ital,wght@1,400&family=Raleway:wght@500&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="logo.png">
     <style>
+        /* Product Detail Page Styling */
         .product-detail-section {
             padding: 60px 20px;
             background-color: #f5f5f5;
@@ -74,6 +75,10 @@
             color: #555;
             line-height: 1.6;
             margin-bottom: 1em;
+        }
+        /* Style for hidden description */
+        .product-info-container p.hidden-description {
+            display: none;
         }
 
         .product-info-container p.price {
@@ -162,8 +167,9 @@
             opacity: 0.6;
         }
 
-        .product-options input[type="number"] {
-            width: 100%;
+        #quantity-input {
+            width: 80px; /* Smaller width */
+            text-align: center; /* Center text */
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 5px;
@@ -171,7 +177,16 @@
             font-size: 1em;
             box-sizing: border-box;
             margin-bottom: 15px;
+            display: block; /* Make it a block element to center with margin auto */
+            margin-left: auto;
+            margin-right: auto;
         }
+        /* Style the label for Quantity to also center it */
+        .product-options label[for="quantity-input"] {
+            text-align: center;
+            width: 100%; /* Ensure label takes full width for text-align to work */
+        }
+
 
         #variant-details-display {
             font-family: 'Open Sans', sans-serif;
@@ -192,11 +207,14 @@
             flex-wrap: wrap;
             gap: 15px;
             margin-top: auto;
+            justify-content: center; /* Center buttons horizontally */
         }
 
         .product-actions .btn-primary {
-            flex-grow: 1;
+            flex-grow: 0; /* Don't grow, maintain fixed width */
+            flex-shrink: 0; /* Don't shrink */
             min-width: 120px;
+            max-width: 160px; /* Optional: limit max width to prevent stretching too wide */
             padding: 12px 25px;
             border-radius: 5px;
             background-color: #3498db;
@@ -287,7 +305,7 @@
 
         <div class="product-info-container" id="product-info-container" style="display: none;">
             <h2 id="product-name"></h2>
-            <p id="product-description"></p>
+            <p id="product-description" class="hidden-description"></p> 
             <p class="price" id="product-price"></p>
             
             <div id="variant-selection-container">
@@ -411,11 +429,12 @@
             const colorOptionsDiv = document.getElementById('color-options');
             const sizeOptionsDiv = document.getElementById('size-options');
             // FIX: Corrected querySelector calls to use the correct IDs of the parent divs
-            const colorSwatchesContainer = document.getElementById('color-options').querySelector('.color-swatches'); 
-            const sizeButtonsContainer = document.getElementById('size-options').querySelector('.size-buttons');
+            const colorSwatchesContainer = colorOptionsDiv.querySelector('.color-swatches'); // Corrected
+            const sizeButtonsContainer = sizeOptionsDiv.querySelector('.size-buttons'); // Corrected
             const quantityInput = document.getElementById('quantity-input');
             const addToCartBtn = document.getElementById('add-to-cart-btn');
             const variantDetailsDisplay = document.getElementById('variant-details-display');
+            const productDescriptionElement = document.getElementById('product-description'); // Added reference
 
 
             productLoading.style.display = 'block'; 
@@ -449,7 +468,14 @@
                 }
 
                 document.getElementById('product-name').innerText = currentProductData.name;
-                document.getElementById('product-description').innerText = currentProductData.description || 'No description available.';
+                // FIX: Conditionally display description
+                if (currentProductData.description && currentProductData.description.trim() !== 'No description available.') {
+                    productDescriptionElement.innerText = currentProductData.description;
+                    productDescriptionElement.classList.remove('hidden-description');
+                } else {
+                    productDescriptionElement.classList.add('hidden-description');
+                }
+
                 document.getElementById('product-image').src = currentProductData.image_url || 'https://via.placeholder.com/400?text=No+Image';
                 document.getElementById('product-price').innerText = `$${currentProductData.price.toFixed(2)}`; 
 
