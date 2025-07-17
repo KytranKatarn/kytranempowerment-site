@@ -777,7 +777,7 @@
                 }
 
                 checkoutLoadingMessage.style.display = 'none';
-                alert('Order placed successfully! Order ID: ' + result.order_id);
+                // alert('Order placed successfully! Order ID: ' + result.order_id);
                 window.location.href = `order_success.html?order_id=${result.order_id}&printful_order_id=${result.printful_order_id || 'N/A'}`;
                 
             } catch (error) {
