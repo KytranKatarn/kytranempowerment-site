@@ -295,6 +295,24 @@
             color: var(--text-muted); font-size: 0.8rem;
         }
 
+        /* ── Language Selector ── */
+        .lang-selector { position: relative; }
+        .lang-btn { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 6px 10px; cursor: pointer; color: inherit; display: flex; align-items: center; }
+        .lang-btn:hover { background: rgba(0,153,255,0.15); border-color: rgba(0,153,255,0.3); }
+        .lang-menu { position: absolute; right: 0; top: 100%; margin-top: 8px; background: #141824; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 6px; z-index: 1000; min-width: 160px; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+        .lang-menu button { display: block; width: 100%; text-align: left; padding: 8px 14px; background: none; border: none; color: #ccc; cursor: pointer; border-radius: 6px; font-size: 0.85rem; }
+        .lang-menu button:hover { background: rgba(0,153,255,0.15); color: #fff; }
+        .lang-menu button.active { color: var(--accent-cyan); font-weight: 600; }
+
+        /* ── RTL Support ── */
+        [dir="rtl"] .nav-inner { flex-direction: row-reverse; }
+        [dir="rtl"] .nav-links { flex-direction: row-reverse; }
+        [dir="rtl"] .lang-menu { right: auto; left: 0; }
+        [dir="rtl"] .lang-menu button { text-align: right; }
+        [dir="rtl"] .footer-inner { flex-direction: row-reverse; }
+        [dir="rtl"] .card { text-align: right; }
+        [dir="rtl"] .showcase-links a .arrow { transform: scaleX(-1); }
+
         /* ── Responsive ── */
         @media (max-width: 768px) {
             .nav-links { display: none; }
@@ -327,15 +345,32 @@
             <img src="logo.png" alt="Kytran Empowerment logo">
             <span>Kytran Empowerment</span>
         </a>
-        <button class="nav-toggle" aria-label="Toggle navigation">
-            <span></span><span></span><span></span>
-        </button>
+        <div style="display:flex;align-items:center;gap:12px;">
+            <div class="lang-selector">
+                <button class="lang-btn" onclick="toggleLangMenu()" aria-label="Language">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
+                </button>
+                <div class="lang-menu" id="langMenu" style="display:none;">
+                    <button class="active" onclick="switchLang('en')">English</button>
+                    <button onclick="switchLang('fr')">Fran&ccedil;ais (QC)</button>
+                    <button onclick="switchLang('es')">Espa&ntilde;ol</button>
+                    <button onclick="switchLang('pt')">Portugu&ecirc;s</button>
+                    <button onclick="switchLang('de')">Deutsch</button>
+                    <button onclick="switchLang('zh')">&#x4E2D;&#x6587;</button>
+                    <button onclick="switchLang('ar')">&#x0627;&#x0644;&#x0639;&#x0631;&#x0628;&#x064A;&#x0629;</button>
+                    <button onclick="switchLang('he')">&#x05E2;&#x05D1;&#x05E8;&#x05D9;&#x05EA;</button>
+                </div>
+            </div>
+            <button class="nav-toggle" aria-label="Toggle navigation">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
         <ul class="nav-links" id="navLinks">
-            <li><a href="#services">Services</a></li>
-            <li><a href="#platform">Platform</a></li>
-            <li><a href="#mission">About</a></li>
-            <li><a href="#contact">Contact</a></li>
-            <li><a href="https://archie.kytranempowerment.com" class="btn-cta btn-primary">Get Started</a></li>
+            <li><a href="#services" data-i18n="nav_services">Services</a></li>
+            <li><a href="#platform" data-i18n="nav_platform">Platform</a></li>
+            <li><a href="#mission" data-i18n="nav_about">About</a></li>
+            <li><a href="#contact" data-i18n="nav_contact">Contact</a></li>
+            <li><a href="https://archie.kytranempowerment.com" class="btn-cta btn-primary" data-i18n="nav_get_started">Get Started</a></li>
         </ul>
     </div>
 </nav>
@@ -345,12 +380,12 @@
     <div class="hero-bg"></div>
     <div class="hero-grid"></div>
     <div class="hero-content fade-in">
-        <div class="hero-badge"><span class="dot"></span> SaaS &amp; AI Consulting Agency</div>
-        <h1>AI-Powered Solutions for Modern Business</h1>
-        <p>We build intelligent systems that transform how organizations operate. Our flagship platform A.R.C.H.I.E. leads the industry in autonomous AI orchestration.</p>
+        <div class="hero-badge"><span class="dot"></span> <span data-i18n="hero_badge">SaaS &amp; AI Consulting Agency</span></div>
+        <h1 data-i18n="hero_title">AI-Powered Solutions for Modern Business</h1>
+        <p data-i18n="hero_subtitle">We build intelligent systems that transform how organizations operate. Our flagship platform A.R.C.H.I.E. leads the industry in autonomous AI orchestration.</p>
         <div class="hero-buttons">
-            <a href="https://archie.kytranempowerment.com" class="btn-cta btn-primary">Explore ARCHIE</a>
-            <a href="#services" class="btn-cta btn-outline">Our Services</a>
+            <a href="https://archie.kytranempowerment.com" class="btn-cta btn-primary" data-i18n="hero_cta_explore">Explore ARCHIE</a>
+            <a href="#services" class="btn-cta btn-outline" data-i18n="hero_cta_services">Our Services</a>
         </div>
     </div>
 </section>
@@ -359,39 +394,39 @@
 <section class="section-pad" id="services">
     <div class="container">
         <div class="services-heading fade-in">
-            <h2>What We Do</h2>
-            <p>End-to-end AI solutions from strategy to deployment, backed by production-grade infrastructure.</p>
+            <h2 data-i18n="services_title">What We Do</h2>
+            <p data-i18n="services_subtitle">End-to-end AI solutions from strategy to deployment, backed by production-grade infrastructure.</p>
         </div>
         <div class="services-grid">
             <div class="card fade-in">
                 <div class="card-icon">&#x1F9E0;</div>
-                <h3>AI Consulting</h3>
-                <p>Strategic AI implementation, workflow automation, intelligent agent design. Build AI roadmaps that deliver measurable ROI.</p>
+                <h3 data-i18n="card_ai_title">AI Consulting</h3>
+                <p data-i18n="card_ai_desc">Strategic AI implementation, workflow automation, intelligent agent design. Build AI roadmaps that deliver measurable ROI.</p>
             </div>
             <div class="card fade-in">
                 <div class="card-icon">&#x1F680;</div>
-                <h3>SaaS Platform</h3>
-                <p>A.R.C.H.I.E. &mdash; 50+ modules, 23 AI agents, autonomous operations. Enterprise-grade orchestration running 24/7.</p>
+                <h3 data-i18n="card_saas_title">SaaS Platform</h3>
+                <p data-i18n="card_saas_desc">A.R.C.H.I.E. &mdash; 50+ modules, 23 AI agents, autonomous operations. Enterprise-grade orchestration running 24/7.</p>
             </div>
             <div class="card fade-in">
                 <div class="card-icon">&#x1F310;</div>
-                <h3>Website Design &amp; Hosting</h3>
-                <p>Full website design, development, and hosting. Domain management, SSL certificates, DNS configuration, and deployment via our integrated platform.</p>
+                <h3 data-i18n="card_web_title">Website Design &amp; Hosting</h3>
+                <p data-i18n="card_web_desc">Full website design, development, and hosting. Domain management, SSL certificates, DNS configuration, and deployment via our integrated platform.</p>
             </div>
             <div class="card fade-in">
                 <div class="card-icon">&#x1F6E1;</div>
-                <h3>Network Security</h3>
-                <p>DNS filtering, firewall management, intrusion detection, SSH hardening, device monitoring, camera surveillance, and real-time Telegram alerts.</p>
+                <h3 data-i18n="card_sec_title">Network Security</h3>
+                <p data-i18n="card_sec_desc">DNS filtering, firewall management, intrusion detection, SSH hardening, device monitoring, camera surveillance, and real-time Telegram alerts.</p>
             </div>
             <div class="card fade-in">
                 <div class="card-icon">&#x1F4CA;</div>
-                <h3>Business Intelligence</h3>
-                <p>CRM, invoicing, analytics, stock trading bots, content management, social media automation, and call center solutions &mdash; all AI-powered.</p>
+                <h3 data-i18n="card_bi_title">Business Intelligence</h3>
+                <p data-i18n="card_bi_desc">CRM, invoicing, analytics, stock trading bots, content management, social media automation, and call center solutions &mdash; all AI-powered.</p>
             </div>
             <div class="card fade-in">
                 <div class="card-icon">&#x1F527;</div>
-                <h3>Custom Development</h3>
-                <p>Bespoke AI solutions, integrations, data pipelines, custom model training, and deployment &mdash; built to your exact specifications.</p>
+                <h3 data-i18n="card_dev_title">Custom Development</h3>
+                <p data-i18n="card_dev_desc">Bespoke AI solutions, integrations, data pipelines, custom model training, and deployment &mdash; built to your exact specifications.</p>
             </div>
         </div>
     </div>
@@ -401,39 +436,39 @@
 <section class="showcase section-pad" id="platform">
     <div class="container">
         <div class="showcase-header fade-in">
-            <div class="subtitle">Autonomous Resource &amp; Cognitive Hyperintelligence Engine</div>
-            <h2>Meet A.R.C.H.I.E.</h2>
-            <p>A self-orchestrating AI platform that manages its own agents, resources, and improvement cycles &mdash; autonomously.</p>
+            <div class="subtitle" data-i18n="showcase_subtitle">Autonomous Resource &amp; Cognitive Hyperintelligence Engine</div>
+            <h2 data-i18n="showcase_title">Meet A.R.C.H.I.E.</h2>
+            <p data-i18n="showcase_desc">A self-orchestrating AI platform that manages its own agents, resources, and improvement cycles &mdash; autonomously.</p>
         </div>
         <div class="feature-grid fade-in">
             <div class="feature-item">
                 <div class="feature-number">23</div>
-                <div class="feature-label">AI Agents</div>
+                <div class="feature-label" data-i18n="feat_agents">AI Agents</div>
             </div>
             <div class="feature-item">
                 <div class="feature-number">10</div>
-                <div class="feature-label">Command Stations</div>
+                <div class="feature-label" data-i18n="feat_stations">Command Stations</div>
             </div>
             <div class="feature-item">
                 <div class="feature-number">39</div>
-                <div class="feature-label">Autonomous Jobs</div>
+                <div class="feature-label" data-i18n="feat_jobs">Autonomous Jobs</div>
             </div>
             <div class="feature-item">
                 <div class="feature-number">GPU</div>
-                <div class="feature-label">Aware Routing</div>
+                <div class="feature-label" data-i18n="feat_gpu">Aware Routing</div>
             </div>
             <div class="feature-item">
                 <div class="feature-number">IAAE</div>
-                <div class="feature-label">Agent Welfare System</div>
+                <div class="feature-label" data-i18n="feat_iaae">Agent Welfare System</div>
             </div>
             <div class="feature-item">
                 <div class="feature-number">CI/CD</div>
-                <div class="feature-label">Self-Improvement Pipeline</div>
+                <div class="feature-label" data-i18n="feat_cicd">Self-Improvement Pipeline</div>
             </div>
         </div>
         <div class="showcase-links fade-in">
-            <a href="https://archie.kytranempowerment.com/competitors">See how we compare <span class="arrow">&rarr;</span></a>
-            <a href="https://archie.kytranempowerment.com">Access Platform <span class="arrow">&rarr;</span></a>
+            <a href="https://archie.kytranempowerment.com/competitors"><span data-i18n="showcase_link_compare">See how we compare</span> <span class="arrow">&rarr;</span></a>
+            <a href="https://archie.kytranempowerment.com"><span data-i18n="showcase_link_access">Access Platform</span> <span class="arrow">&rarr;</span></a>
         </div>
     </div>
 </section>
@@ -441,10 +476,10 @@
 <!-- ── Mental Health Mission ── -->
 <section class="section-pad mission" id="mission">
     <div class="container fade-in">
-        <h2>Profits for Purpose</h2>
-        <p>100% of our profits support men&rsquo;s mental health initiatives. We believe that technology should serve a higher purpose &mdash; building stronger communities and healthier lives.</p>
+        <h2 data-i18n="mission_title">Profits for Purpose</h2>
+        <p data-i18n="mission_desc">100% of our profits support men&rsquo;s mental health initiatives. We believe that technology should serve a higher purpose &mdash; building stronger communities and healthier lives.</p>
         <img src="logo.png" alt="Kytran Empowerment blue ram" class="mission-logo">
-        <div class="tagline">Strength through Strategy. Brotherhood through Purpose.</div>
+        <div class="tagline" data-i18n="mission_tagline">Strength through Strategy. Brotherhood through Purpose.</div>
     </div>
 </section>
 
@@ -457,10 +492,10 @@
                     <img src="logo.png" alt="Kytran Empowerment logo">
                     <span>Kytran Empowerment Inc.</span>
                 </div>
-                <p>SaaS &amp; AI Consulting Agency. Building intelligent systems that transform how organizations operate.</p>
+                <p data-i18n="footer_desc">SaaS &amp; AI Consulting Agency. Building intelligent systems that transform how organizations operate.</p>
             </div>
             <div class="footer-links">
-                <h4>Navigate</h4>
+                <h4 data-i18n="footer_navigate">Navigate</h4>
                 <ul>
                     <li><a href="#services">Services</a></li>
                     <li><a href="#platform">Platform</a></li>
@@ -469,14 +504,14 @@
                 </ul>
             </div>
             <div class="footer-links">
-                <h4>Platform</h4>
+                <h4 data-i18n="footer_platform">Platform</h4>
                 <ul>
                     <li><a href="https://archie.kytranempowerment.com">A.R.C.H.I.E.</a></li>
                     <li><a href="https://archie.kytranempowerment.com/iaae">IAAE Transparency</a></li>
                 </ul>
             </div>
             <div class="footer-links">
-                <h4>Connect</h4>
+                <h4 data-i18n="footer_connect">Connect</h4>
                 <ul>
                     <li>&#x1F4DE; 1-877-463-3352</li>
                     <li><a href="mailto:contactus@kytranempowerment.com">contactus@kytranempowerment.com</a></li>
@@ -486,10 +521,13 @@
             </div>
         </div>
         <div class="footer-bottom">
-            &copy; 2026 Kytran Empowerment Inc. All rights reserved.
+            <span data-i18n="footer_copyright">&copy; 2026 Kytran Empowerment Inc. All rights reserved.</span>
         </div>
     </div>
 </footer>
+
+<!-- ── i18n ── -->
+<script src="i18n.js"></script>
 
 <!-- ── Scripts ── -->
 <script>
