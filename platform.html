@@ -424,29 +424,30 @@
             <h2>Platform at a Glance</h2>
             <p>Real numbers from a production AI orchestration system running on bare metal.</p>
         </div>
-        <div class="stats-grid fade-in">
+        <div class="stats-grid fade-in" id="statsGrid">
+            <!-- Fallback values shown until API loads -->
             <div class="stat-card">
-                <div class="stat-number">23</div>
+                <div class="stat-number" data-stat="total_agents">23</div>
                 <div class="stat-label">AI Agents</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number">10</div>
+                <div class="stat-number" data-stat="total_stations">10</div>
                 <div class="stat-label">Command Stations</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number">50+</div>
+                <div class="stat-number" data-stat="total_modules">50+</div>
                 <div class="stat-label">Modules</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number">39</div>
+                <div class="stat-number" data-stat="autonomous_jobs">39</div>
                 <div class="stat-label">Autonomous Jobs</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number">21</div>
-                <div class="stat-label">Unique Features</div>
+                <div class="stat-number" data-stat="contractors">19</div>
+                <div class="stat-label">Cloud Contractors</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number">8</div>
+                <div class="stat-number" data-stat="languages">8</div>
                 <div class="stat-label">Languages</div>
             </div>
         </div>
@@ -463,13 +464,13 @@
         <div class="steps fade-in">
             <div class="step">
                 <div class="step-number">1</div>
-                <h3>Bridge Command Dispatches</h3>
-                <p>The central Bridge Command receives tasks and dispatches them to specialized stations &mdash; each staffed by dedicated AI agents with domain expertise.</p>
+                <h3>Starbase Command Dispatches</h3>
+                <p>The central Starbase Command receives tasks and dispatches them across hub and fleet nodes &mdash; each staffed by dedicated AI agents with domain expertise.</p>
             </div>
             <div class="step">
                 <div class="step-number">2</div>
-                <h3>GPU-Aware Processing</h3>
-                <p>The Smart Router uses an 11-tier escalation chain to match each task to the optimal model, managing VRAM, RAM, and cloud resources automatically.</p>
+                <h3>Multi-GPU Fleet Processing</h3>
+                <p>The Smart Router uses a 4-tier escalation chain across fleet nodes, hub, free cloud, and paid cloud &mdash; with hardware-aware model selection matching tasks to the best available GPU.</p>
             </div>
             <div class="step">
                 <div class="step-number">3</div>
@@ -487,7 +488,8 @@
             <h2>Feature Highlights</h2>
             <p>Built-in capabilities that set A.R.C.H.I.E. apart from every other platform.</p>
         </div>
-        <div class="features-grid fade-in">
+        <div class="features-grid fade-in" id="featuresGrid">
+            <!-- Populated dynamically from ARCHIE API; fallback below -->
             <div class="feature-card">
                 <div class="feature-card-icon">&#x1F3AF;</div>
                 <h3>Mission Profiles</h3>
@@ -519,6 +521,16 @@
                 <p>8 languages translated in real-time across the entire platform. RTL support for Arabic and Hebrew included.</p>
             </div>
             <div class="feature-card">
+                <div class="feature-card-icon">&#x1F680;</div>
+                <h3>Fleet Orchestration</h3>
+                <p>Deploy agents across multiple GPU nodes with OTA updates, remote ComfyUI setup, and mesh sync. Add nodes with a one-liner installer.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-card-icon">&#x1F3A8;</div>
+                <h3>Multi-GPU Image Gen</h3>
+                <p>4-tier escalation: fleet GPU &rarr; hub GPU &rarr; free cloud &rarr; paid cloud. Hardware-aware model selection with parallel benchmark generation.</p>
+            </div>
+            <div class="feature-card">
                 <div class="feature-card-icon">&#x1F4F1;</div>
                 <h3>Device Registry</h3>
                 <p>Auto-discover and protect every device on your network. Continuous monitoring with anomaly detection.</p>
@@ -527,6 +539,11 @@
                 <div class="feature-card-icon">&#x1F52C;</div>
                 <h3>Self-Improvement</h3>
                 <p>Scan &rarr; Propose &rarr; Sandbox &rarr; Deploy. The platform identifies its own issues and fixes them autonomously.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-card-icon">&#x2601;</div>
+                <h3>19 Cloud Contractors</h3>
+                <p>Integrated with OpenAI, Gemini, HuggingFace, Cloudflare AI, Groq, Mistral, and more. Auto-escalation with Telegram approval for paid services.</p>
             </div>
         </div>
     </div>
@@ -640,6 +657,71 @@
                 nav.style.background = 'rgba(10, 14, 23, 0.85)';
             }
         });
+
+        // ── Auto-update from ARCHIE API ──
+        var API_URL = 'https://archie.kytranempowerment.com/api/public/platform-features';
+
+        // Lucide icon name to emoji fallback map
+        var iconMap = {
+            target: '\u{1F3AF}', heart: '\u{1F49A}', 'refresh-cw': '\u{1F504}',
+            zap: '\u26A1', shield: '\u{1F6E1}', globe: '\u{1F310}',
+            smartphone: '\u{1F4F1}', microscope: '\u{1F52C}', monitor: '\u{1F5A5}',
+            brain: '\u{1F9E0}', cpu: '\u2699\uFE0F', lock: '\u{1F512}'
+        };
+
+        function createFeatureCard(highlight) {
+            var card = document.createElement('div');
+            card.className = 'feature-card';
+
+            var iconDiv = document.createElement('div');
+            iconDiv.className = 'feature-card-icon';
+            iconDiv.textContent = iconMap[highlight.icon] || '\u2728';
+            card.appendChild(iconDiv);
+
+            var h3 = document.createElement('h3');
+            h3.textContent = highlight.title;
+            card.appendChild(h3);
+
+            var p = document.createElement('p');
+            p.textContent = highlight.summary;
+            card.appendChild(p);
+
+            return card;
+        }
+
+        fetch(API_URL, { mode: 'cors' })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                // Update stat numbers
+                if (data.stats) {
+                    var s = data.stats;
+                    document.querySelectorAll('[data-stat]').forEach(function(el) {
+                        var key = el.getAttribute('data-stat');
+                        if (key === 'highlights' && data.highlights) {
+                            el.textContent = data.highlights.length;
+                        } else if (s[key] !== undefined) {
+                            el.textContent = s[key];
+                        }
+                    });
+                }
+
+                // Update feature highlights using safe DOM methods
+                if (data.highlights && data.highlights.length > 0) {
+                    var grid = document.getElementById('featuresGrid');
+                    // Clear existing fallback cards
+                    while (grid.firstChild) {
+                        grid.removeChild(grid.firstChild);
+                    }
+                    // Build new cards from API data
+                    data.highlights.forEach(function(h) {
+                        grid.appendChild(createFeatureCard(h));
+                    });
+                }
+            })
+            .catch(function(err) {
+                // Silently keep fallback content — site still works without API
+                console.log('ARCHIE API unavailable, using fallback data', err);
+            });
     });
 </script>
 </body>
