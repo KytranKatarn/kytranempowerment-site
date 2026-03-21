@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Our Team — Kytran Empowerment</title>
-    <meta name="description" content="Meet the team at Kytran Empowerment Inc. Browse our professionals by department, expertise, and availability.">
+    <meta name="description" content="Meet the diverse AI-powered team behind Kytran Empowerment. Over 100 agents across 10 specialized departments driving innovation in SaaS and AI consulting.">
+    <meta property="og:title" content="Our Team — Kytran Empowerment">
+    <meta property="og:description" content="Meet the diverse AI-powered team behind Kytran Empowerment. Over 100 agents across 10 specialized departments.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.kytranempowerment.com/directory.html">
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,11 +23,14 @@
             --accent-blue: #0099ff;
             --accent-cyan: #00d4ff;
             --accent-gold: #f0c040;
+            --accent-purple: #8b5cf6;
+            --accent-green: #10b981;
             --text-primary: #e8ecf4;
             --text-secondary: #8892a4;
             --text-muted: #5a6478;
             --border-subtle: rgba(0, 153, 255, 0.12);
             --glow-blue: 0 0 30px rgba(0, 153, 255, 0.3);
+            --line: rgba(0, 212, 255, 0.3);
             --font-heading: 'Outfit', sans-serif;
             --font-body: 'Inter', sans-serif;
         }
@@ -39,7 +46,18 @@
             -webkit-font-smoothing: antialiased;
         }
 
+        /* ── Skip Link ── */
+        .skip-link {
+            position: absolute; top: -100px; left: 50%; transform: translateX(-50%);
+            background: var(--accent-blue); color: #fff; padding: 8px 20px;
+            border-radius: 0 0 8px 8px; z-index: 9999; font-size: 0.9rem;
+            text-decoration: none; transition: top 0.3s;
+        }
+        .skip-link:focus { top: 0; }
+
+        /* ── Utility ── */
         .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .section-pad { padding: 100px 0; }
 
         .fade-in {
             opacity: 0; transform: translateY(32px);
@@ -74,7 +92,7 @@
             color: var(--text-secondary); text-decoration: none; font-size: 0.9rem;
             font-weight: 500; letter-spacing: 0.5px; transition: color 0.25s;
         }
-        .nav-links a:hover, .nav-links a.active { color: var(--accent-blue); }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent-cyan); }
         .btn-cta {
             display: inline-flex; align-items: center; gap: 8px;
             padding: 10px 24px; border-radius: 8px;
@@ -87,289 +105,428 @@
             color: #fff; box-shadow: 0 4px 20px rgba(0, 153, 255, 0.25);
         }
         .btn-primary:hover { box-shadow: var(--glow-blue); transform: translateY(-2px); }
+
+        /* Mobile hamburger */
         .nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 8px; }
         .nav-toggle span {
             display: block; width: 24px; height: 2px; background: var(--text-primary);
             margin: 6px 0; transition: all 0.3s;
         }
 
+        /* ── Aurora Background ── */
+        .aurora-bg {
+            position: fixed; inset: 0; z-index: -1; overflow: hidden;
+        }
+        .aurora-blob {
+            position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.4;
+            animation: auroraFloat 20s ease-in-out infinite alternate;
+        }
+        .aurora-blob:nth-child(1) {
+            width: 600px; height: 600px; top: -10%; left: 10%;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.3), transparent 70%);
+        }
+        .aurora-blob:nth-child(2) {
+            width: 500px; height: 500px; top: 30%; right: -5%;
+            background: radial-gradient(circle, rgba(0, 212, 255, 0.25), transparent 70%);
+            animation-delay: -7s; animation-duration: 25s;
+        }
+        .aurora-blob:nth-child(3) {
+            width: 450px; height: 450px; bottom: 10%; left: 20%;
+            background: radial-gradient(circle, rgba(0, 153, 255, 0.2), transparent 70%);
+            animation-delay: -14s; animation-duration: 22s;
+        }
+        @keyframes auroraFloat {
+            0% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(40px, -30px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.95); }
+            100% { transform: translate(30px, -10px) scale(1.05); }
+        }
+
+        /* Film grain */
+        .film-grain {
+            position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+            background-repeat: repeat; background-size: 256px 256px;
+        }
+
         /* ── Hero ── */
-        .dir-hero {
-            position: relative; padding: 140px 24px 80px; text-align: center;
-            overflow: hidden;
+        .hero {
+            position: relative; padding: 160px 24px 80px;
+            text-align: center; overflow: hidden;
         }
-        .dir-hero-bg {
-            position: absolute; inset: 0; z-index: 0;
-            background:
-                radial-gradient(ellipse 80% 60% at 30% 50%, rgba(0, 153, 255, 0.08) 0%, transparent 60%),
-                radial-gradient(ellipse 60% 50% at 70% 30%, rgba(0, 212, 255, 0.06) 0%, transparent 50%),
-                var(--bg-primary);
-        }
-        .dir-hero-grid {
-            position: absolute; inset: 0; z-index: 0; opacity: 0.03;
-            background-image:
-                linear-gradient(rgba(0, 153, 255, 0.5) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 153, 255, 0.5) 1px, transparent 1px);
-            background-size: 60px 60px;
-        }
-        .dir-hero-content { position: relative; z-index: 1; max-width: 820px; margin: 0 auto; }
-        .dir-hero-subtitle {
-            font-size: 0.8rem; color: var(--accent-cyan); font-weight: 500;
-            letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px;
-        }
-        .dir-hero h1 {
-            font-size: clamp(2rem, 4.5vw, 3.4rem); font-weight: 800;
-            letter-spacing: -1px; margin-bottom: 16px;
+        .hero h1 {
+            font-size: clamp(2.2rem, 5vw, 3.8rem); font-weight: 800;
+            letter-spacing: -1px; margin-bottom: 20px;
             background: linear-gradient(135deg, #fff 30%, var(--accent-cyan) 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-        .dir-hero p {
-            font-size: clamp(0.95rem, 1.6vw, 1.1rem);
-            color: var(--text-secondary); max-width: 600px; margin: 0 auto 40px;
+        .hero p {
+            font-size: clamp(1rem, 1.6vw, 1.15rem);
+            color: var(--text-secondary); max-width: 640px; margin: 0 auto 40px;
+            line-height: 1.8;
         }
-        .dir-hero-stats {
-            display: flex; gap: 32px; justify-content: center; flex-wrap: wrap;
+        .hero-stats {
+            display: flex; gap: 48px; justify-content: center; flex-wrap: wrap;
+            margin-top: 48px;
         }
-        .dir-stat {
-            text-align: center; padding: 20px 28px; border-radius: 12px;
-            background: rgba(0, 153, 255, 0.04); border: 1px solid var(--border-subtle);
-            min-width: 130px;
+        .hero-stat { text-align: center; }
+        .hero-stat-value {
+            font-family: var(--font-heading); font-size: 2.5rem; font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        .dir-stat-value {
-            display: block; font-family: var(--font-heading); font-size: 2rem;
-            font-weight: 800; color: var(--accent-blue); margin-bottom: 2px;
+        .hero-stat-value.gold {
+            background: linear-gradient(135deg, var(--accent-gold), #e8a820);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        .dir-stat-label {
-            font-size: 0.8rem; color: var(--text-secondary); font-weight: 500;
+        .hero-stat-value.green {
+            background: linear-gradient(135deg, var(--accent-green), #059669);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-
-        /* ── Filters ── */
-        .dir-filters {
-            padding: 24px; background: var(--bg-secondary);
-            border-bottom: 1px solid var(--border-subtle);
-            position: sticky; top: 72px; z-index: 50;
-        }
-        .dir-filters-inner {
-            max-width: 1200px; margin: 0 auto;
-            display: flex; gap: 16px; flex-wrap: wrap; align-items: center;
-        }
-        .dir-search {
-            flex: 1; min-width: 240px; padding: 12px 16px; border-radius: 10px;
-            background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-subtle);
-            color: var(--text-primary); font-family: var(--font-body); font-size: 0.95rem;
-            outline: none; transition: border-color 0.25s;
-        }
-        .dir-search:focus { border-color: var(--accent-blue); }
-        .dir-search::placeholder { color: var(--text-muted); }
-        .dir-filter-select {
-            padding: 12px 16px; border-radius: 10px;
-            background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-subtle);
-            color: var(--text-primary); font-family: var(--font-body); font-size: 0.95rem;
-            outline: none; cursor: pointer; min-width: 180px;
-        }
-        .dir-filter-select option { background: #141824; color: var(--text-primary); }
-        .dir-results-count {
-            font-size: 0.85rem; color: var(--text-muted); margin-left: auto;
+        .hero-stat-label {
+            font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;
+            letter-spacing: 1.5px; margin-top: 4px;
         }
 
-        /* ── Department Sections ── */
-        .dir-departments { padding: 60px 0 80px; }
-        .dir-dept-section { margin-bottom: 56px; }
-        .dir-dept-header {
-            display: flex; align-items: center; gap: 12px;
-            margin-bottom: 24px; padding-bottom: 12px;
-            border-bottom: 1px solid var(--border-subtle);
+        /* ── Org Chart ── */
+        .org-section { padding: 40px 0 100px; }
+        .org-section h2 {
+            text-align: center; font-size: clamp(1.6rem, 3vw, 2.4rem);
+            margin-bottom: 12px;
         }
-        .dir-dept-color {
-            width: 4px; height: 28px; border-radius: 2px;
+        .org-subtitle {
+            text-align: center; color: var(--text-secondary); font-size: 0.95rem;
+            margin-bottom: 48px;
         }
-        .dir-dept-name {
-            font-family: var(--font-heading); font-size: 1.2rem; font-weight: 700;
+        .org-tree {
+            display: flex; flex-direction: column; align-items: center;
+            padding: 0 20px 60px; min-width: 900px;
         }
-        .dir-dept-count {
-            font-size: 0.8rem; color: var(--text-muted);
-            background: rgba(255, 255, 255, 0.05); padding: 3px 10px;
-            border-radius: 20px; margin-left: 8px;
+        .org-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+        /* Node card */
+        .org-node {
+            position: relative; display: inline-flex; align-items: center; gap: 10px;
+            padding: 10px 16px; border-radius: 10px;
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+            cursor: pointer; transition: all 0.25s; white-space: nowrap;
+            min-width: 170px;
+        }
+        .org-node:hover {
+            border-color: rgba(0,212,255,0.3); background: rgba(255,255,255,0.06);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+        }
+        .org-node:focus-visible {
+            outline: 2px solid var(--accent-cyan); outline-offset: 2px;
+        }
+        .org-node.expanded {
+            border-color: rgba(0,212,255,0.35); background: rgba(0,212,255,0.05);
+        }
+        .org-node.ceo-node {
+            border-color: rgba(240,192,64,0.4); background: rgba(240,192,64,0.06);
+        }
+        .org-node.vigil-node {
+            border-color: rgba(239,68,68,0.3); background: rgba(239,68,68,0.04);
         }
 
-        /* ── Card Grid ── */
-        .dir-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-        }
-        .dir-card {
-            background: var(--bg-card); border: 1px solid var(--border-subtle);
-            border-radius: 14px; padding: 28px 24px; cursor: pointer;
-            backdrop-filter: blur(12px);
-            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-            position: relative; overflow: hidden;
-        }
-        .dir-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(0, 153, 255, 0.1);
-            border-color: rgba(0, 153, 255, 0.25);
-        }
-        .dir-card-avatar {
-            width: 56px; height: 56px; border-radius: 50%;
-            background: linear-gradient(135deg, rgba(0, 153, 255, 0.15), rgba(0, 212, 255, 0.08));
-            border: 2px solid var(--border-subtle);
+        .org-avatar {
+            width: 36px; height: 36px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            margin-bottom: 16px; overflow: hidden;
-            font-size: 1.4rem; color: var(--accent-cyan);
-            font-family: var(--font-heading); font-weight: 700;
+            font-family: var(--font-heading); font-weight: 700; font-size: 12px;
+            color: white; flex-shrink: 0; overflow: hidden;
         }
-        .dir-card-avatar img {
+        .org-avatar img {
             width: 100%; height: 100%; object-fit: cover; border-radius: 50%;
         }
-        .dir-card-status {
-            position: absolute; top: 16px; right: 16px;
-            width: 10px; height: 10px; border-radius: 50%;
-            border: 2px solid var(--bg-primary);
+        .org-name { font-family: var(--font-heading); font-weight: 600; font-size: 13px; }
+        .org-title { font-size: 10px; color: var(--text-secondary); margin-top: 1px; }
+        .org-count {
+            font-size: 10px; color: var(--text-muted); padding: 2px 7px;
+            border-radius: 10px; background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06); margin-left: auto;
         }
-        .dir-card-status.online {
-            background: #22c55e;
-            box-shadow: 0 0 8px rgba(34, 197, 94, 0.5);
+        .org-chevron {
+            font-size: 14px; color: var(--text-muted); transition: transform 0.25s;
+            margin-left: 4px;
         }
-        .dir-card-status.busy {
+        .org-node.expanded .org-chevron { transform: rotate(90deg); color: var(--accent-cyan); }
+
+        .status-dot {
+            position: absolute; top: 8px; right: 8px;
+            width: 6px; height: 6px; border-radius: 50%;
+        }
+        .status-online {
+            background: var(--accent-green);
+            box-shadow: 0 0 6px rgba(16,185,129,0.6);
+        }
+        .status-busy {
             background: #f59e0b;
-            box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+            box-shadow: 0 0 6px rgba(245,158,11,0.6);
         }
-        .dir-card-status.offline { background: #4b5563; }
-        .dir-card-name {
-            font-family: var(--font-heading); font-weight: 600; font-size: 1.05rem;
-            margin-bottom: 4px; color: var(--text-primary);
+        .status-offline { background: var(--text-muted); }
+
+        /* Dept avatar colors */
+        .dept-command { background: linear-gradient(135deg, #00e5ff, #0099aa); }
+        .dept-analytics { background: linear-gradient(135deg, #8b5cf6, #6d3fc4); }
+        .dept-creative { background: linear-gradient(135deg, #f472b6, #c0528e); }
+        .dept-engineering { background: linear-gradient(135deg, #fbbf24, #d4991a); }
+        .dept-communications { background: linear-gradient(135deg, #22d3ee, #1aa3b8); }
+        .dept-research { background: linear-gradient(135deg, #10b981, #0d8f64); }
+        .dept-security { background: linear-gradient(135deg, #ef4444, #c43636); }
+        .dept-logistics { background: linear-gradient(135deg, #f97316, #c45c11); }
+        .dept-diplomatic { background: linear-gradient(135deg, #818cf8, #6470d4); }
+        .dept-operations { background: linear-gradient(135deg, #a3e635, #82b82a); }
+        .dept-executive { background: linear-gradient(135deg, #f0c040, #c4982e); }
+        .dept-human-resources { background: linear-gradient(135deg, #ec4899, #be185d); }
+        .dept-finance { background: linear-gradient(135deg, #6366f1, #4f46e5); }
+        .dept-marketing { background: linear-gradient(135deg, #14b8a6, #0d9488); }
+        .dept-legal { background: linear-gradient(135deg, #a78bfa, #7c3aed); }
+        .dept-customer-success { background: linear-gradient(135deg, #f59e0b, #d97706); }
+
+        /* Org tree lines */
+        .org-vline { width: 2px; background: var(--line); margin: 0 auto; }
+        .org-vline-24 { height: 24px; }
+        .org-vline-20 { height: 20px; }
+        .org-hbar { height: 2px; background: var(--line); }
+        .org-row { display: flex; gap: 16px; justify-content: center; }
+        .org-col { display: flex; flex-direction: column; align-items: center; }
+
+        /* Split layout: ARCHIE center + Vigil right */
+        .org-split { display: flex; align-items: flex-start; position: relative; }
+        .archie-branch { display: flex; flex-direction: column; align-items: center; }
+        .vigil-branch { display: flex; flex-direction: row; align-items: flex-start; }
+        .vigil-hconn { width: 60px; height: 2px; background: var(--line); margin-top: 28px; }
+        .vigil-inner { display: flex; flex-direction: column; align-items: center; }
+
+        /* Collapsible children */
+        .org-children {
+            display: none; flex-direction: column; align-items: center;
+            overflow: hidden;
         }
-        .dir-card-title {
-            font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 8px;
-        }
-        .dir-card-dept {
-            font-size: 0.75rem; color: var(--accent-cyan);
-            letter-spacing: 0.5px; text-transform: uppercase; font-weight: 500;
+        .org-children.open { display: flex; animation: orgFadeIn 0.3s ease; }
+        @keyframes orgFadeIn {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* ── Loading & Empty States ── */
-        .dir-loading {
-            text-align: center; padding: 80px 24px;
-            color: var(--text-secondary);
+        /* Vigil right-branching children */
+        .vigil-children {
+            display: none; flex-direction: column; align-items: flex-start;
+            gap: 0; padding-left: 28px;
         }
-        .dir-loading-spinner {
-            width: 40px; height: 40px; border: 3px solid var(--border-subtle);
-            border-top-color: var(--accent-blue); border-radius: 50%;
-            animation: spin 0.8s linear infinite; margin: 0 auto 16px;
+        .vigil-children.open { display: flex; animation: orgFadeIn 0.3s ease; }
+        .vigil-group-label {
+            font-family: var(--font-heading); font-size: 10px; font-weight: 600;
+            color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px;
+            margin: 12px 0 4px 26px;
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .dir-empty {
-            text-align: center; padding: 60px 24px; color: var(--text-muted);
-            font-size: 1.05rem;
+        .vigil-group-label:first-child { margin-top: 8px; }
+        .vigil-child-row { display: flex; align-items: center; }
+        .vigil-child-hline { width: 24px; height: 2px; background: var(--line); }
+
+        /* ── Directory Grid ── */
+        .directory-section { padding: 60px 0 100px; }
+        .directory-section h2 {
+            text-align: center; font-size: clamp(1.6rem, 3vw, 2.4rem);
+            margin-bottom: 40px;
+        }
+
+        .directory-filters {
+            display: flex; gap: 16px; margin-bottom: 40px;
+            flex-wrap: wrap; justify-content: center;
+        }
+        .filter-input {
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px; padding: 10px 20px; color: var(--text-primary);
+            font-family: var(--font-body); font-size: 0.9rem; min-width: 280px;
+            transition: border-color 0.25s;
+        }
+        .filter-input:focus {
+            outline: none; border-color: rgba(0,212,255,0.4);
+            box-shadow: 0 0 0 3px rgba(0,212,255,0.1);
+        }
+        .filter-select {
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px; padding: 10px 20px; color: var(--text-primary);
+            font-family: var(--font-body); font-size: 0.9rem; cursor: pointer;
+            appearance: none; -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%238892a4' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 14px center;
+            padding-right: 40px;
+        }
+        .filter-select:focus {
+            outline: none; border-color: rgba(0,212,255,0.4);
+        }
+        .filter-select option { background: #141824; color: var(--text-primary); }
+
+        .dept-section { margin-bottom: 48px; }
+        .dept-header {
+            display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+            padding-left: 16px; border-left: 3px solid var(--accent-cyan);
+        }
+        .dept-header h3 { font-size: 1.1rem; font-weight: 600; }
+        .dept-header .dept-count {
+            font-size: 0.75rem; color: var(--text-muted); padding: 2px 10px;
+            border-radius: 20px; background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .member-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+        }
+        .member-card {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 14px; padding: 24px 20px; text-align: center;
+            backdrop-filter: blur(12px); cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .member-card:hover {
+            transform: translateY(-4px); border-color: rgba(0,212,255,0.25);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+        }
+        .member-card:focus-visible {
+            outline: 2px solid var(--accent-cyan); outline-offset: 2px;
+        }
+        .member-avatar {
+            width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-heading); font-weight: 700; font-size: 18px;
+            color: white; overflow: hidden; position: relative;
+        }
+        .member-avatar img {
+            width: 100%; height: 100%; object-fit: cover; border-radius: 50%;
+        }
+        .member-card-name {
+            font-family: var(--font-heading); font-weight: 600; font-size: 0.95rem;
+            margin-bottom: 4px;
+        }
+        .member-card-title {
+            font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 8px;
+        }
+        .member-card-status {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .member-card-status .status-dot {
+            position: static; width: 6px; height: 6px;
         }
 
         /* ── Profile Slide-Out ── */
-        .dir-overlay {
-            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6);
-            z-index: 200; opacity: 0; pointer-events: none;
-            transition: opacity 0.3s ease;
+        .profile-overlay {
+            position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px); opacity: 0; pointer-events: none;
+            transition: opacity 0.3s;
         }
-        .dir-overlay.active { opacity: 1; pointer-events: auto; }
-        .dir-profile {
-            position: fixed; top: 0; right: -480px; width: 480px; height: 100vh;
-            background: var(--bg-secondary); z-index: 210;
-            border-left: 1px solid var(--border-subtle);
-            transition: right 0.35s ease; overflow-y: auto;
-            display: flex; flex-direction: column;
+        .profile-overlay.open { opacity: 1; pointer-events: auto; }
+
+        .profile-panel {
+            position: fixed; top: 0; right: 0; bottom: 0; z-index: 201;
+            width: 420px; max-width: 90vw;
+            background: rgba(15, 20, 35, 0.95); backdrop-filter: blur(20px);
+            border-left: 1px solid rgba(0,212,255,0.15);
+            transform: translateX(100%); transition: transform 0.35s ease;
+            overflow-y: auto; padding: 0;
         }
-        .dir-profile.active { right: 0; }
-        .dir-profile-top {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 20px 24px; border-bottom: 1px solid var(--border-subtle);
-        }
-        .dir-profile-close {
-            background: none; border: none; color: var(--text-muted);
-            font-size: 1.8rem; cursor: pointer; line-height: 1;
-            transition: color 0.25s;
-        }
-        .dir-profile-close:hover { color: var(--text-primary); }
-        .dir-profile-body { padding: 24px; flex: 1; }
-        .dir-profile-portrait {
-            width: 96px; height: 96px; border-radius: 50%;
-            background: linear-gradient(135deg, rgba(0, 153, 255, 0.15), rgba(0, 212, 255, 0.08));
-            border: 3px solid var(--border-subtle);
+        .profile-panel.open { transform: translateX(0); }
+
+        .profile-close {
+            position: absolute; top: 16px; right: 16px;
+            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px; width: 36px; height: 36px;
             display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 20px; overflow: hidden;
-            font-size: 2.4rem; color: var(--accent-cyan);
-            font-family: var(--font-heading); font-weight: 700;
+            cursor: pointer; color: var(--text-secondary); font-size: 18px;
+            transition: all 0.25s; z-index: 2;
         }
-        .dir-profile-portrait img {
+        .profile-close:hover {
+            background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.3);
+            color: #ef4444;
+        }
+        .profile-close:focus-visible { outline: 2px solid var(--accent-cyan); }
+
+        .profile-header {
+            text-align: center; padding: 48px 32px 32px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .profile-portrait {
+            width: 100px; height: 100px; border-radius: 50%; margin: 0 auto 16px;
+            display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-heading); font-weight: 700; font-size: 28px;
+            color: white; overflow: hidden;
+        }
+        .profile-portrait img {
             width: 100%; height: 100%; object-fit: cover; border-radius: 50%;
         }
-        .dir-profile-name {
+        .profile-name {
             font-family: var(--font-heading); font-size: 1.4rem; font-weight: 700;
-            text-align: center; margin-bottom: 4px;
+            margin-bottom: 4px;
         }
-        .dir-profile-title {
-            text-align: center; color: var(--text-secondary); font-size: 0.95rem;
-            margin-bottom: 6px;
-        }
-        .dir-profile-pronouns {
-            text-align: center; color: var(--text-muted); font-size: 0.8rem;
-            margin-bottom: 16px;
-        }
-        .dir-profile-status-badge {
-            display: flex; align-items: center; gap: 6px;
-            padding: 5px 14px; border-radius: 20px; font-size: 0.8rem;
-            font-weight: 600; margin: 0 auto 20px;
-            width: fit-content;
-        }
-        .dir-profile-status-badge.online {
-            background: rgba(34, 197, 94, 0.12); color: #22c55e;
-            border: 1px solid rgba(34, 197, 94, 0.25);
-        }
-        .dir-profile-status-badge.busy {
-            background: rgba(245, 158, 11, 0.12); color: #f59e0b;
-            border: 1px solid rgba(245, 158, 11, 0.25);
-        }
-        .dir-profile-status-badge.offline {
-            background: rgba(75, 85, 99, 0.15); color: #9ca3af;
-            border: 1px solid rgba(75, 85, 99, 0.25);
-        }
-        .dir-profile-status-dot {
-            width: 8px; height: 8px; border-radius: 50%;
-        }
-        .dir-profile-status-badge.online .dir-profile-status-dot { background: #22c55e; }
-        .dir-profile-status-badge.busy .dir-profile-status-dot { background: #f59e0b; }
-        .dir-profile-status-badge.offline .dir-profile-status-dot { background: #6b7280; }
-        .dir-profile-section {
-            margin-bottom: 20px;
-        }
-        .dir-profile-section-label {
-            font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px;
-            color: var(--text-muted); font-weight: 600; margin-bottom: 8px;
-        }
-        .dir-profile-bio {
-            font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;
-        }
-        .dir-profile-contact-item {
-            display: flex; align-items: center; gap: 10px;
+        .profile-title-text {
             font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 8px;
         }
-        .dir-profile-contact-item a {
-            color: var(--accent-blue); text-decoration: none;
+        .profile-dept-badge {
+            display: inline-block; font-size: 0.7rem; padding: 3px 12px;
+            border-radius: 20px; text-transform: uppercase; letter-spacing: 1px;
+            font-weight: 600;
         }
-        .dir-profile-contact-item a:hover { text-decoration: underline; }
-        .dir-profile-skills {
-            display: flex; flex-wrap: wrap; gap: 8px;
+        .profile-pronouns {
+            font-size: 0.8rem; color: var(--text-muted); margin-top: 6px;
         }
-        .dir-profile-skill {
-            padding: 4px 12px; border-radius: 20px; font-size: 0.8rem;
-            background: rgba(0, 153, 255, 0.08); border: 1px solid rgba(0, 153, 255, 0.15);
+        .profile-status-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 4px 14px; border-radius: 20px; font-size: 0.75rem;
+            font-weight: 600; text-transform: uppercase; letter-spacing: 1px;
+            margin-top: 12px;
+        }
+        .profile-status-badge.online {
+            background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3);
+            color: var(--accent-green);
+        }
+        .profile-status-badge.busy {
+            background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3);
+            color: #f59e0b;
+        }
+        .profile-status-badge.offline-badge {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+            color: var(--text-muted);
+        }
+
+        .profile-body { padding: 28px 32px; }
+        .profile-section { margin-bottom: 24px; }
+        .profile-section-title {
+            font-family: var(--font-heading); font-size: 0.75rem; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+        .profile-bio {
+            font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;
+        }
+        .profile-skills { display: flex; flex-wrap: wrap; gap: 8px; }
+        .profile-skill {
+            font-size: 0.75rem; padding: 4px 12px; border-radius: 20px;
+            background: rgba(0,212,255,0.06); border: 1px solid rgba(0,212,255,0.15);
             color: var(--accent-cyan);
+        }
+        .profile-contact-row {
+            display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
+            font-size: 0.85rem; color: var(--text-secondary);
+        }
+        .profile-contact-icon { color: var(--accent-cyan); font-size: 0.9rem; width: 18px; text-align: center; }
+
+        .profile-loading {
+            text-align: center; padding: 80px 32px; color: var(--text-muted);
         }
 
         /* ── Footer ── */
         .footer {
             border-top: 1px solid var(--border-subtle);
             padding: 60px 0 32px; background: var(--bg-primary);
+            position: relative; z-index: 1;
         }
         .footer-inner {
             display: flex; justify-content: space-between; align-items: flex-start;
@@ -400,9 +557,20 @@
             color: var(--text-muted); font-size: 0.8rem;
         }
 
+        /* ── Reduced Motion ── */
+        @media (prefers-reduced-motion: reduce) {
+            .aurora-blob { animation: none !important; }
+            .fade-in { transition: none !important; opacity: 1 !important; transform: none !important; }
+            .org-children.open, .vigil-children.open { animation: none !important; }
+            .profile-panel { transition: none !important; }
+            .profile-overlay { transition: none !important; }
+            .member-card { transition: none !important; }
+            .org-node { transition: none !important; }
+        }
+
         /* ── Responsive ── */
         @media (max-width: 1024px) {
-            .dir-grid { grid-template-columns: repeat(3, 1fr); }
+            .member-grid { grid-template-columns: repeat(3, 1fr); }
         }
         @media (max-width: 768px) {
             .nav-links { display: none; }
@@ -410,116 +578,118 @@
                 display: flex; flex-direction: column;
                 position: absolute; top: 72px; left: 0; right: 0;
                 background: rgba(10, 14, 23, 0.97); backdrop-filter: blur(20px);
-                padding: 24px; gap: 20px; border-bottom: 1px solid var(--border-subtle);
+                padding: 24px; gap: 20px;
+                border-bottom: 1px solid var(--border-subtle);
             }
             .nav-toggle { display: block; }
-            .dir-grid { grid-template-columns: repeat(2, 1fr); }
-            .dir-hero { padding: 120px 24px 60px; }
-            .dir-hero-stats { gap: 16px; }
-            .dir-stat { min-width: 110px; padding: 16px 20px; }
-            .dir-profile { width: 100%; right: -100%; }
+            .section-pad { padding: 80px 0; }
+            .member-grid { grid-template-columns: repeat(2, 1fr); }
+            .hero-stats { gap: 32px; }
             .footer-inner { flex-direction: column; }
         }
         @media (max-width: 480px) {
-            .dir-grid { grid-template-columns: 1fr; }
-            .dir-filters-inner { flex-direction: column; }
-            .dir-search, .dir-filter-select { width: 100%; min-width: unset; }
-            .dir-hero-stats { flex-direction: column; align-items: center; }
+            .member-grid { grid-template-columns: 1fr; }
+            .hero-stats { gap: 24px; }
+            .filter-input { min-width: 100%; }
         }
     </style>
 </head>
 <body>
 
-<!-- Navigation -->
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<!-- Aurora Background -->
+<div class="aurora-bg" aria-hidden="true">
+    <div class="aurora-blob"></div>
+    <div class="aurora-blob"></div>
+    <div class="aurora-blob"></div>
+</div>
+<div class="film-grain" aria-hidden="true"></div>
+
+<!-- ── Navigation ── -->
 <nav class="nav">
     <div class="nav-inner">
         <a href="/" class="nav-brand">
             <img src="logo.png" alt="Kytran Empowerment logo">
             <span>Kytran Empowerment</span>
         </a>
-        <div style="display:flex;align-items:center;gap:12px;">
-            <button class="nav-toggle" aria-label="Toggle navigation">
-                <span></span><span></span><span></span>
-            </button>
-        </div>
+        <button class="nav-toggle" aria-label="Toggle navigation">
+            <span></span><span></span><span></span>
+        </button>
         <ul class="nav-links" id="navLinks">
-            <li><a href="/">Home</a></li>
-            <li><a href="/services.html">Services</a></li>
-            <li><a href="/platform.html">Platform</a></li>
-            <li><a href="/directory.html" class="active">Our Team</a></li>
-            <li><a href="/#mission">About</a></li>
+            <li><a href="services.html">Services</a></li>
+            <li><a href="platform.html">Platform</a></li>
+            <li><a href="directory.html" class="active">Our Team</a></li>
+            <li><a href="competitors.html">Competitors</a></li>
+            <li><a href="about.html">About</a></li>
             <li><a href="/#contact">Contact</a></li>
             <li><a href="https://archie.kytranempowerment.com" class="btn-cta btn-primary">Get Started</a></li>
         </ul>
     </div>
 </nav>
 
-<!-- Hero -->
-<section class="dir-hero">
-    <div class="dir-hero-bg"></div>
-    <div class="dir-hero-grid"></div>
-    <div class="dir-hero-content fade-in">
-        <div class="dir-hero-subtitle">Kytran Empowerment</div>
-        <h1>Meet Our Team</h1>
-        <p>The professionals building the future of business intelligence, creative solutions, and enterprise technology.</p>
-        <div class="dir-hero-stats">
-            <div class="dir-stat">
-                <span class="dir-stat-value" id="statTotal">--</span>
-                <span class="dir-stat-label">Team Members</span>
+<!-- ── Hero ── -->
+<section class="hero" id="main-content">
+    <div class="container fade-in">
+        <h1>Our Team</h1>
+        <p>A diverse, AI-powered workforce spanning 10 specialized departments. Every agent brings unique skills, backgrounds, and perspectives to deliver extraordinary results.</p>
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <div class="hero-stat-value" id="statTotal">--</div>
+                <div class="hero-stat-label">Team Members</div>
             </div>
-            <div class="dir-stat">
-                <span class="dir-stat-value" id="statDepts">--</span>
-                <span class="dir-stat-label">Departments</span>
+            <div class="hero-stat">
+                <div class="hero-stat-value gold" id="statDepts">--</div>
+                <div class="hero-stat-label">Departments</div>
             </div>
-            <div class="dir-stat">
-                <span class="dir-stat-value" id="statOnline">--</span>
-                <span class="dir-stat-label">Online Now</span>
-            </div>
-            <div class="dir-stat">
-                <span class="dir-stat-value">24/7</span>
-                <span class="dir-stat-label">Availability</span>
+            <div class="hero-stat">
+                <div class="hero-stat-value green" id="statOnline">--</div>
+                <div class="hero-stat-label">Online Now</div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Filters -->
-<section class="dir-filters">
-    <div class="dir-filters-inner">
-        <input type="text" class="dir-search" id="dirSearch"
-               placeholder="Search by name, title, or department..." autocomplete="off">
-        <select class="dir-filter-select" id="dirDeptFilter">
-            <option value="all">All Departments</option>
-        </select>
-        <span class="dir-results-count" id="resultsCount"></span>
-    </div>
-</section>
-
-<!-- Team Grid -->
-<section class="dir-departments container" id="dirContent">
-    <div class="dir-loading" id="dirLoading">
-        <div class="dir-loading-spinner"></div>
-        <div>Loading team data...</div>
-    </div>
-</section>
-
-<!-- Profile Slide-Out -->
-<div class="dir-overlay" id="profileOverlay"></div>
-<aside class="dir-profile" id="profilePanel">
-    <div class="dir-profile-top">
-        <h3 style="font-family:var(--font-heading);font-weight:700;">Profile</h3>
-        <button class="dir-profile-close" id="profileClose" aria-label="Close profile">&times;</button>
-    </div>
-    <div class="dir-profile-body" id="profileBody">
-        <div class="dir-loading" style="padding:40px;">
-            <div class="dir-loading-spinner"></div>
-            <div>Loading profile...</div>
+<!-- ── Org Chart ── -->
+<section class="org-section">
+    <div class="container">
+        <h2 class="fade-in">Organization Chart</h2>
+        <p class="org-subtitle fade-in">Click any leader to expand their team. Green dot = online now.</p>
+        <div class="org-scroll">
+            <div class="org-tree" id="orgTree" role="tree" aria-label="Organization chart">
+                <div class="profile-loading" id="orgLoading">Loading organization chart...</div>
+            </div>
         </div>
+    </div>
+</section>
+
+<!-- ── Directory Grid ── -->
+<section class="directory-section" id="directory">
+    <div class="container">
+        <h2 class="fade-in">Team Directory</h2>
+        <div class="directory-filters fade-in">
+            <input type="text" class="filter-input" id="searchInput" placeholder="Search by name, title, or department..." aria-label="Search team members">
+            <select class="filter-select" id="deptFilter" aria-label="Filter by department">
+                <option value="">All Departments</option>
+            </select>
+        </div>
+        <div id="directoryGrid">
+            <div class="profile-loading">Loading team directory...</div>
+        </div>
+    </div>
+</section>
+
+<!-- ── Profile Slide-Out ── -->
+<div class="profile-overlay" id="profileOverlay" aria-hidden="true"></div>
+<aside class="profile-panel" id="profilePanel" role="dialog" aria-label="Team member profile" aria-hidden="true">
+    <button class="profile-close" id="profileClose" aria-label="Close profile">&times;</button>
+    <div id="profileContent">
+        <div class="profile-loading">Loading profile...</div>
     </div>
 </aside>
 
-<!-- Footer -->
-<footer class="footer" id="contact">
+<!-- ── Footer ── -->
+<footer class="footer">
     <div class="container">
         <div class="footer-inner">
             <div class="footer-brand">
@@ -532,10 +702,10 @@
             <div class="footer-links">
                 <h4>Navigate</h4>
                 <ul>
-                    <li><a href="/services.html">Services</a></li>
-                    <li><a href="/platform.html">Platform</a></li>
-                    <li><a href="/directory.html">Our Team</a></li>
-                    <li><a href="/competitors.html">Competitors</a></li>
+                    <li><a href="services.html">Services</a></li>
+                    <li><a href="platform.html">Platform</a></li>
+                    <li><a href="directory.html">Our Team</a></li>
+                    <li><a href="competitors.html">Competitors</a></li>
                     <li><a href="/merch_store.html">Store</a></li>
                 </ul>
             </div>
@@ -557,496 +727,723 @@
             </div>
         </div>
         <div class="footer-bottom">
-            &copy; 2026 Kytran Empowerment Inc. All rights reserved.
+            <span>&copy; 2026 Kytran Empowerment Inc. All rights reserved.</span>
         </div>
     </div>
 </footer>
+
+<!-- ── GSAP ── -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
 
 <script>
 (function() {
     'use strict';
 
     var API_BASE = 'https://archie.kytranempowerment.com';
+
     var DEPT_COLORS = {
         'Command': '#00e5ff', 'Analytics': '#8b5cf6', 'Creative': '#f472b6',
         'Engineering': '#fbbf24', 'Communications': '#22d3ee', 'Research': '#10b981',
         'Security': '#ef4444', 'Logistics': '#f97316', 'Diplomatic': '#818cf8',
-        'Operations': '#a3e635', 'Leadership': '#f0c040', 'General': '#6b7280',
-        'Finance': '#34d399', 'Marketing': '#fb923c', 'Human Resources': '#c084fc',
-        'Legal': '#94a3b8'
+        'Operations': '#a3e635', 'Executive': '#f0c040', 'Human Resources': '#ec4899',
+        'Finance': '#6366f1', 'Marketing': '#14b8a6', 'Legal': '#a78bfa',
+        'Customer Success': '#f59e0b'
     };
 
-    var allMembers = [];
-    var liveStatus = {};
-    var currentDept = 'all';
-    var currentSearch = '';
-
-    /* ── Initialization ── */
-    document.addEventListener('DOMContentLoaded', function() {
-        initNav();
-        initFadeIn();
-        loadDirectory();
-    });
-
-    function initNav() {
-        var toggle = document.querySelector('.nav-toggle');
-        var links = document.getElementById('navLinks');
-        toggle.addEventListener('click', function() { links.classList.toggle('open'); });
-        links.querySelectorAll('a').forEach(function(a) {
-            a.addEventListener('click', function() { links.classList.remove('open'); });
-        });
-        window.addEventListener('scroll', function() {
-            var nav = document.querySelector('.nav');
-            nav.style.background = window.scrollY > 60
-                ? 'rgba(10, 14, 23, 0.95)' : 'rgba(10, 14, 23, 0.85)';
-        });
+    function deptClass(dept) {
+        if (!dept) return 'dept-command';
+        return 'dept-' + dept.toLowerCase().replace(/\s+/g, '-');
     }
 
-    function initFadeIn() {
+    function getInitials(name) {
+        if (!name) return '??';
+        var parts = name.replace(/[.]/g, ' ').split(/\s+/).filter(function(p) { return p.length > 0; });
+        if (parts.length >= 2) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+        return name.substring(0, 2).toUpperCase();
+    }
+
+    function avatarUrl(url) {
+        if (!url) return null;
+        return url.startsWith('http') ? url : API_BASE + url;
+    }
+
+    var allMembers = [];
+    var liveStatuses = {};
+
+    // ── Init ──
+    document.addEventListener('DOMContentLoaded', function() {
+        // Mobile nav
+        var toggle = document.querySelector('.nav-toggle');
+        var links = document.getElementById('navLinks');
+        if (toggle && links) {
+            toggle.addEventListener('click', function() { links.classList.toggle('open'); });
+        }
+
+        // Fade-in observer
         var observer = new IntersectionObserver(function(entries) {
             entries.forEach(function(e) {
                 if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
             });
-        }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+        }, { threshold: 0.1 });
         document.querySelectorAll('.fade-in').forEach(function(el) { observer.observe(el); });
+
+        // Load data
+        loadDirectory();
+        loadOrgChart();
+        loadLiveStatus();
+        setInterval(loadLiveStatus, 30000);
+
+        // Profile panel
+        document.getElementById('profileClose').addEventListener('click', closeProfile);
+        document.getElementById('profileOverlay').addEventListener('click', closeProfile);
+        document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeProfile(); });
+
+        // Filters
+        document.getElementById('searchInput').addEventListener('input', applyFilters);
+        document.getElementById('deptFilter').addEventListener('change', applyFilters);
+    });
+
+    // ── API ──
+    function apiFetch(path) {
+        return fetch(API_BASE + path).then(function(r) {
+            if (!r.ok) throw new Error('API error ' + r.status);
+            return r.json();
+        });
     }
 
-    /* ── Data Loading ── */
+    // ── Load Directory ──
     function loadDirectory() {
-        var dirFetch = fetch(API_BASE + '/api/directory')
-            .then(function(r) { return r.ok ? r.json() : Promise.reject('API error'); })
-            .catch(function() { return null; });
-
-        var statusFetch = fetch(API_BASE + '/api/directory/live-status')
-            .then(function(r) { return r.ok ? r.json() : Promise.reject('Status error'); })
-            .catch(function() { return null; });
-
-        Promise.all([dirFetch, statusFetch]).then(function(results) {
-            var dirData = results[0];
-            var statusData = results[1];
-
-            if (dirData && dirData.success) {
-                allMembers = dirData.members || [];
-                updateStats(dirData.statistics, dirData.departments);
-                populateDeptFilter(dirData.departments || []);
-            }
-
-            if (statusData && statusData.success) {
-                liveStatus = statusData.agents || {};
-                var onlineEl = document.getElementById('statOnline');
-                if (onlineEl) onlineEl.textContent = statusData.summary.online || 0;
-            }
-
-            if (allMembers.length > 0) {
-                renderAll();
-            } else {
-                showFallback();
-            }
+        apiFetch('/api/directory').then(function(data) {
+            allMembers = data.members || data || [];
+            updateHeroStats();
+            renderDirectory(allMembers);
+            populateDeptFilter();
+        }).catch(function() {
+            document.getElementById('directoryGrid').textContent = 'Unable to load team directory. Please try again later.';
         });
-
-        // Refresh live status every 30s
-        setInterval(refreshLiveStatus, 30000);
     }
 
-    function refreshLiveStatus() {
-        fetch(API_BASE + '/api/directory/live-status')
-            .then(function(r) { return r.ok ? r.json() : null; })
-            .then(function(data) {
-                if (data && data.success) {
-                    liveStatus = data.agents || {};
-                    var onlineEl = document.getElementById('statOnline');
-                    if (onlineEl) onlineEl.textContent = data.summary.online || 0;
-                    updateStatusDots();
+    // ── Load Org Chart ──
+    function loadOrgChart() {
+        apiFetch('/api/directory/org-chart').then(function(data) {
+            renderOrgTree(data);
+        }).catch(function() {
+            document.getElementById('orgLoading').textContent = 'Unable to load organization chart.';
+        });
+    }
+
+    // ── Load Live Status ──
+    function loadLiveStatus() {
+        apiFetch('/api/directory/live-status').then(function(data) {
+            liveStatuses = data.agents || data || {};
+            updateStatusDots();
+            updateOnlineCount();
+        }).catch(function() {});
+    }
+
+    // ── Stats ──
+    function updateHeroStats() {
+        document.getElementById('statTotal').textContent = allMembers.length;
+        var depts = {};
+        allMembers.forEach(function(m) { if (m.department) depts[m.department] = true; });
+        document.getElementById('statDepts').textContent = Object.keys(depts).length;
+    }
+
+    function updateOnlineCount() {
+        var count = 0;
+        Object.keys(liveStatuses).forEach(function(k) { if (liveStatuses[k].is_online) count++; });
+        document.getElementById('statOnline').textContent = count;
+    }
+
+    // ── Status dots ──
+    function updateStatusDots() {
+        document.querySelectorAll('[data-agent-id]').forEach(function(el) {
+            var id = el.getAttribute('data-agent-id');
+            var dots = el.querySelectorAll('.status-dot');
+            var info = liveStatuses[id] || liveStatuses[String(id)] || {};
+            dots.forEach(function(dot) {
+                dot.className = 'status-dot';
+                if (info.is_online) {
+                    dot.classList.add(info.status === 'busy' ? 'status-busy' : 'status-online');
+                } else {
+                    dot.classList.add('status-offline');
                 }
-            })
-            .catch(function() { /* silent */ });
-    }
-
-    function showFallback() {
-        var el = document.getElementById('dirLoading');
-        if (el) {
-            el.textContent = '';
-            var msg = document.createElement('div');
-            msg.style.cssText = 'font-size:1.1rem;color:var(--text-secondary);';
-            msg.textContent = 'Team data is loading... Please check back shortly.';
-            el.appendChild(msg);
-        }
-    }
-
-    /* ── Stats & Filters ── */
-    function updateStats(stats) {
-        var totalEl = document.getElementById('statTotal');
-        var deptsEl = document.getElementById('statDepts');
-        if (totalEl) totalEl.textContent = stats.total_members || '--';
-        if (deptsEl) deptsEl.textContent = stats.total_departments || '--';
-    }
-
-    function populateDeptFilter(depts) {
-        var sel = document.getElementById('dirDeptFilter');
-        depts.forEach(function(d) {
-            var opt = document.createElement('option');
-            opt.value = d;
-            opt.textContent = d;
-            sel.appendChild(opt);
-        });
-        sel.addEventListener('change', function() {
-            currentDept = this.value;
-            renderAll();
-        });
-        document.getElementById('dirSearch').addEventListener('input', function() {
-            currentSearch = this.value.toLowerCase();
-            renderAll();
+            });
+            // Update status text on member cards
+            var statusText = el.querySelector('.member-card-status span:last-child');
+            if (statusText) {
+                if (info.is_online) {
+                    statusText.textContent = info.status === 'busy' ? 'Busy' : 'Online';
+                } else {
+                    statusText.textContent = 'Offline';
+                }
+            }
         });
     }
 
-    /* ── Rendering ── */
-    function renderAll() {
-        var filtered = allMembers.filter(function(m) {
-            var matchDept = currentDept === 'all' || m.department === currentDept;
-            if (!matchDept) return false;
-            if (!currentSearch) return true;
-            var s = currentSearch;
-            return (m.full_name || '').toLowerCase().indexOf(s) !== -1 ||
-                   (m.title || '').toLowerCase().indexOf(s) !== -1 ||
-                   (m.department || '').toLowerCase().indexOf(s) !== -1;
-        });
+    // ══════════════════════════════
+    // ── ORG CHART RENDERER ──
+    // ══════════════════════════════
+    function renderOrgTree(data) {
+        var tree = document.getElementById('orgTree');
+        tree.textContent = '';
 
-        // Group by department
-        var groups = {};
-        filtered.forEach(function(m) {
-            var dept = m.department || 'General';
-            if (!groups[dept]) groups[dept] = [];
-            groups[dept].push(m);
-        });
-
-        var content = document.getElementById('dirContent');
-        var countEl = document.getElementById('resultsCount');
-        if (countEl) {
-            countEl.textContent = filtered.length + ' member' + (filtered.length !== 1 ? 's' : '');
-        }
-
-        if (filtered.length === 0) {
-            content.textContent = '';
-            var empty = document.createElement('div');
-            empty.className = 'dir-empty';
-            empty.textContent = 'No team members match your search.';
-            content.appendChild(empty);
+        var members = data.members || data.agents || data || [];
+        if (!Array.isArray(members) || members.length === 0) {
+            tree.textContent = 'No organization data available.';
             return;
         }
 
-        // Build DOM elements safely
-        content.textContent = '';
-        var sortedDepts = Object.keys(groups).sort();
-        sortedDepts.forEach(function(dept) {
-            var color = getDeptColor(dept);
-            var members = groups[dept];
+        // Build lookup
+        var byId = {};
+        var childrenOf = {};
+        var ceo = null, archie = null, vigil = null;
 
-            var section = document.createElement('div');
-            section.className = 'dir-dept-section fade-in';
-
-            // Department header
-            var header = document.createElement('div');
-            header.className = 'dir-dept-header';
-
-            var colorBar = document.createElement('div');
-            colorBar.className = 'dir-dept-color';
-            colorBar.style.background = color;
-            header.appendChild(colorBar);
-
-            var nameSpan = document.createElement('span');
-            nameSpan.className = 'dir-dept-name';
-            nameSpan.textContent = dept;
-            header.appendChild(nameSpan);
-
-            var countSpan = document.createElement('span');
-            countSpan.className = 'dir-dept-count';
-            countSpan.textContent = members.length;
-            header.appendChild(countSpan);
-
-            section.appendChild(header);
-
-            // Cards grid
-            var grid = document.createElement('div');
-            grid.className = 'dir-grid';
-            members.forEach(function(m) {
-                grid.appendChild(renderCard(m));
-            });
-            section.appendChild(grid);
-            content.appendChild(section);
+        members.forEach(function(m) {
+            byId[m.id] = m;
+            if (!childrenOf[m.id]) childrenOf[m.id] = [];
+            if (m.reports_to) {
+                if (!childrenOf[m.reports_to]) childrenOf[m.reports_to] = [];
+                childrenOf[m.reports_to].push(m);
+            }
+            if (m.is_head || (!m.reports_to && m.title && /CEO|Founder/i.test(m.title))) ceo = m;
+            if (m.full_name && /ARCHIE|A\.R\.C\.H\.I\.E/i.test(m.full_name)) archie = m;
+            if (m.full_name && /^Vigil$/i.test(m.full_name)) vigil = m;
         });
 
-        // Re-observe fade-in elements
-        var observer = new IntersectionObserver(function(entries) {
-            entries.forEach(function(e) {
-                if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
-            });
-        }, { threshold: 0.12 });
-        content.querySelectorAll('.fade-in').forEach(function(el) { observer.observe(el); });
+        if (!ceo) {
+            members.forEach(function(m) { if (!m.reports_to && !ceo) ceo = m; });
+        }
+        if (!ceo) { tree.textContent = 'Unable to build org chart.'; return; }
+
+        // ── CEO ──
+        var ceoCol = el('div', 'org-col');
+        var ceoKidsId = 'ceo-kids-' + ceo.id;
+        ceoCol.appendChild(createOrgNode(ceo, ceoKidsId, 'ceo-node', (childrenOf[ceo.id] || []).length));
+        tree.appendChild(ceoCol);
+
+        var ceoDirectReports = childrenOf[ceo.id] || [];
+        if (ceoDirectReports.length === 0) return;
+
+        var ceoKids = el('div', 'org-children open');
+        ceoKids.id = ceoKidsId;
+        ceoKids.appendChild(el('div', 'org-vline org-vline-24'));
+
+        var splitRow = el('div', 'org-split');
+
+        // ── ARCHIE Branch ──
+        if (archie) {
+            var archieBranch = el('div', 'archie-branch');
+            var archieKidsId = 'archie-kids-' + archie.id;
+            var archieChildren = childrenOf[archie.id] || [];
+            archieBranch.appendChild(createOrgNode(archie, archieKidsId, '', archieChildren.length));
+
+            if (archieChildren.length > 0) {
+                var archieKids = el('div', 'org-children open');
+                archieKids.id = archieKidsId;
+                archieKids.appendChild(el('div', 'org-vline org-vline-24'));
+
+                var half = Math.ceil(archieChildren.length / 2);
+                var row1 = archieChildren.slice(0, half);
+                var row2 = archieChildren.slice(half);
+
+                // Row 1
+                var hbar1 = el('div', 'org-hbar');
+                hbar1.style.width = Math.max(300, row1.length * 190) + 'px';
+                archieKids.appendChild(hbar1);
+                archieKids.appendChild(buildLeadRow(row1, childrenOf));
+
+                // Row 2
+                if (row2.length > 0) {
+                    var sp = el('div', '');
+                    sp.style.marginTop = '16px';
+                    archieKids.appendChild(sp);
+                    var hbar2 = el('div', 'org-hbar');
+                    hbar2.style.width = Math.max(300, row2.length * 190) + 'px';
+                    archieKids.appendChild(hbar2);
+                    archieKids.appendChild(buildLeadRow(row2, childrenOf));
+                }
+                archieBranch.appendChild(archieKids);
+            }
+            splitRow.appendChild(archieBranch);
+        }
+
+        // ── Vigil Branch ──
+        if (vigil) {
+            var vigilBranch = el('div', 'vigil-branch');
+            vigilBranch.appendChild(el('div', 'vigil-hconn'));
+
+            var vigilInner = el('div', 'vigil-inner');
+            var vigilKidsId = 'vigil-kids-' + vigil.id;
+            var vigilChildren = childrenOf[vigil.id] || [];
+            vigilInner.appendChild(createOrgNode(vigil, vigilKidsId, 'vigil-node', vigilChildren.length));
+
+            if (vigilChildren.length > 0) {
+                var vigilKids = el('div', 'vigil-children open');
+                vigilKids.id = vigilKidsId;
+
+                // Group into 3 sub-groups
+                var secGroup = [], privGroup = [], devGroup = [];
+                vigilChildren.forEach(function(c) {
+                    var t = ((c.title || '') + ' ' + (c.department || '') + ' ' + ((c.top_skills || []).join(' '))).toLowerCase();
+                    if (/security|threat|pen\s*test|firewall|network\s*sec|sentinel|watchdog|phantom|monitor/i.test(t)) {
+                        secGroup.push(c);
+                    } else if (/privacy|risk|crypto|cipher|compliance|audit|ethics|governance|trust/i.test(t)) {
+                        privGroup.push(c);
+                    } else {
+                        devGroup.push(c);
+                    }
+                });
+
+                var groups = [
+                    { label: 'Security & Compliance', items: secGroup },
+                    { label: 'Privacy & Risk', items: privGroup },
+                    { label: 'DevOps & IT', items: devGroup }
+                ].filter(function(g) { return g.items.length > 0; });
+
+                if (groups.length === 0) groups = [{ label: 'Team', items: vigilChildren }];
+
+                var wrapOuter = el('div', '');
+                wrapOuter.style.display = 'flex';
+
+                var vbar = el('div', '');
+                vbar.style.cssText = 'width:2px;background:var(--line);';
+
+                var wrapItems = el('div', '');
+                wrapItems.style.cssText = 'display:flex;flex-direction:column;gap:0;';
+
+                groups.forEach(function(group) {
+                    var lbl = el('div', 'vigil-group-label');
+                    lbl.textContent = group.label;
+                    wrapItems.appendChild(lbl);
+                    group.items.forEach(function(child) {
+                        var row = el('div', 'vigil-child-row');
+                        row.style.paddingBottom = '8px';
+                        row.appendChild(el('div', 'vigil-child-hline'));
+                        row.appendChild(createOrgNode(child, null, '', 0));
+                        wrapItems.appendChild(row);
+                    });
+                });
+
+                wrapOuter.appendChild(vbar);
+                wrapOuter.appendChild(wrapItems);
+                vigilKids.appendChild(wrapOuter);
+                vigilInner.appendChild(vigilKids);
+            }
+            vigilBranch.appendChild(vigilInner);
+            splitRow.appendChild(vigilBranch);
+        }
+
+        ceoKids.appendChild(splitRow);
+        tree.appendChild(ceoKids);
     }
 
-    function renderCard(m) {
-        var status = getStatus(m.id);
-        var statusClass = status.is_online ? (status.status === 'Busy' ? 'busy' : 'online') : 'offline';
-        var initials = getInitials(m.full_name || m.name);
+    function buildLeadRow(leads, childrenOf) {
+        var rowEl = el('div', 'org-row');
+        leads.forEach(function(lead) {
+            var col = el('div', 'org-col');
+            col.appendChild(el('div', 'org-vline org-vline-20'));
+            var leadChildren = childrenOf[lead.id] || [];
+            var kidsId = 'lead-kids-' + lead.id;
+            col.appendChild(createOrgNode(lead, leadChildren.length > 0 ? kidsId : null, '', leadChildren.length));
 
-        var card = document.createElement('div');
-        card.className = 'dir-card';
-        card.dataset.id = m.id;
-        card.addEventListener('click', function() { openProfile(parseInt(this.dataset.id)); });
+            if (leadChildren.length > 0) {
+                var kidsEl = el('div', 'org-children');
+                kidsEl.id = kidsId;
+                kidsEl.appendChild(el('div', 'org-vline org-vline-20'));
+                var lhbar = el('div', 'org-hbar');
+                lhbar.style.width = Math.max(160, Math.min(leadChildren.length, 3) * 180) + 'px';
+                kidsEl.appendChild(lhbar);
 
-        var dot = document.createElement('div');
-        dot.className = 'dir-card-status ' + statusClass;
-        card.appendChild(dot);
+                for (var i = 0; i < leadChildren.length; i += 3) {
+                    if (i > 0) {
+                        var spacer = el('div', '');
+                        spacer.style.marginTop = '12px';
+                        kidsEl.appendChild(spacer);
+                        var subHbar = el('div', 'org-hbar');
+                        subHbar.style.width = Math.max(160, Math.min(leadChildren.length - i, 3) * 180) + 'px';
+                        kidsEl.appendChild(subHbar);
+                    }
+                    var chunk = leadChildren.slice(i, i + 3);
+                    var subRow = el('div', 'org-row');
+                    chunk.forEach(function(child) {
+                        var childCol = el('div', 'org-col');
+                        childCol.appendChild(el('div', 'org-vline org-vline-20'));
+                        childCol.appendChild(createOrgNode(child, null, '', 0));
+                        subRow.appendChild(childCol);
+                    });
+                    kidsEl.appendChild(subRow);
+                }
+                col.appendChild(kidsEl);
+            }
+            rowEl.appendChild(col);
+        });
+        return rowEl;
+    }
 
-        var avatar = document.createElement('div');
-        avatar.className = 'dir-card-avatar';
-        if (m.avatar_url) {
-            var img = document.createElement('img');
-            img.src = m.avatar_url.startsWith('http') ? m.avatar_url : API_BASE + m.avatar_url;
-            img.alt = '';
-            avatar.appendChild(img);
+    function createOrgNode(member, toggleId, extraClass, childCount) {
+        var node = el('div', 'org-node' + (extraClass ? ' ' + extraClass : ''));
+        node.setAttribute('data-agent-id', member.id);
+        node.setAttribute('role', 'treeitem');
+        node.setAttribute('tabindex', '0');
+
+        if (toggleId) {
+            node.classList.add('expanded');
+            node.setAttribute('aria-expanded', 'true');
+            node.addEventListener('click', function(e) {
+                e.stopPropagation();
+                toggleOrgChildren(node, toggleId);
+            });
+            node.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleOrgChildren(node, toggleId); }
+            });
         } else {
-            avatar.textContent = initials;
+            node.addEventListener('click', function(e) { e.stopPropagation(); openProfile(member.id); });
+            node.addEventListener('keydown', function(e) { if (e.key === 'Enter') openProfile(member.id); });
         }
-        card.appendChild(avatar);
 
-        var nameDiv = document.createElement('div');
-        nameDiv.className = 'dir-card-name';
-        nameDiv.textContent = m.full_name || m.name || '';
-        card.appendChild(nameDiv);
+        // Status dot
+        node.appendChild(el('div', 'status-dot status-offline'));
 
-        var titleDiv = document.createElement('div');
-        titleDiv.className = 'dir-card-title';
-        titleDiv.textContent = m.title || '';
-        card.appendChild(titleDiv);
+        // Avatar
+        var av = el('div', 'org-avatar ' + deptClass(member.department));
+        var imgSrc = avatarUrl(member.avatar_url);
+        if (imgSrc) {
+            var img = el('img', '');
+            img.src = imgSrc;
+            img.alt = member.full_name || '';
+            img.onerror = function() { this.remove(); av.textContent = getInitials(member.full_name); };
+            av.appendChild(img);
+        } else {
+            av.textContent = getInitials(member.full_name);
+        }
+        node.appendChild(av);
 
-        var deptDiv = document.createElement('div');
-        deptDiv.className = 'dir-card-dept';
-        deptDiv.textContent = m.department || '';
-        card.appendChild(deptDiv);
+        // Info
+        var info = el('div', '');
+        var nm = el('div', 'org-name');
+        nm.textContent = member.full_name || 'Unknown';
+        info.appendChild(nm);
+        var tl = el('div', 'org-title');
+        tl.textContent = member.title || member.department || '';
+        info.appendChild(tl);
+        node.appendChild(info);
+
+        if (toggleId && childCount > 0) {
+            var ct = el('div', 'org-count');
+            ct.textContent = childCount;
+            node.appendChild(ct);
+            var ch = el('div', 'org-chevron');
+            ch.textContent = '\u203A';
+            node.appendChild(ch);
+        }
+
+        return node;
+    }
+
+    function toggleOrgChildren(nodeEl, kidsId) {
+        var kids = document.getElementById(kidsId);
+        if (!kids) return;
+        var isOpen = kids.classList.contains('open');
+        if (isOpen) {
+            kids.classList.remove('open');
+            nodeEl.classList.remove('expanded');
+            nodeEl.setAttribute('aria-expanded', 'false');
+        } else {
+            kids.classList.add('open');
+            nodeEl.classList.add('expanded');
+            nodeEl.setAttribute('aria-expanded', 'true');
+        }
+    }
+
+    // ══════════════════════════════
+    // ── DIRECTORY GRID ──
+    // ══════════════════════════════
+    function renderDirectory(members) {
+        var container = document.getElementById('directoryGrid');
+        container.textContent = '';
+
+        var groups = {};
+        var deptOrder = [];
+        members.forEach(function(m) {
+            var dept = m.department || 'Other';
+            if (!groups[dept]) { groups[dept] = []; deptOrder.push(dept); }
+            groups[dept].push(m);
+        });
+
+        if (deptOrder.length === 0) {
+            container.textContent = 'No team members found.';
+            return;
+        }
+
+        deptOrder.forEach(function(dept) {
+            var section = el('div', 'dept-section');
+            section.setAttribute('data-dept', dept);
+
+            var header = el('div', 'dept-header');
+            header.style.borderLeftColor = DEPT_COLORS[dept] || '#00d4ff';
+            var h3 = el('h3', '');
+            h3.textContent = dept;
+            header.appendChild(h3);
+            var countBadge = el('span', 'dept-count');
+            countBadge.textContent = groups[dept].length + ' members';
+            header.appendChild(countBadge);
+            section.appendChild(header);
+
+            var grid = el('div', 'member-grid');
+            groups[dept].forEach(function(m) { grid.appendChild(createMemberCard(m)); });
+            section.appendChild(grid);
+            container.appendChild(section);
+        });
+
+        updateStatusDots();
+    }
+
+    function createMemberCard(member) {
+        var card = el('div', 'member-card');
+        card.setAttribute('data-agent-id', member.id);
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('role', 'button');
+        card.setAttribute('aria-label', 'View profile of ' + (member.full_name || 'team member'));
+        card.addEventListener('click', function() { openProfile(member.id); });
+        card.addEventListener('keydown', function(e) { if (e.key === 'Enter') openProfile(member.id); });
+
+        var av = el('div', 'member-avatar ' + deptClass(member.department));
+        var imgSrc = avatarUrl(member.avatar_url);
+        if (imgSrc) {
+            var img = el('img', '');
+            img.src = imgSrc;
+            img.alt = member.full_name || '';
+            img.onerror = function() { this.remove(); av.textContent = getInitials(member.full_name); };
+            av.appendChild(img);
+        } else {
+            av.textContent = getInitials(member.full_name);
+        }
+        card.appendChild(av);
+
+        var name = el('div', 'member-card-name');
+        name.textContent = member.full_name || 'Unknown';
+        card.appendChild(name);
+
+        var title = el('div', 'member-card-title');
+        title.textContent = member.title || '';
+        card.appendChild(title);
+
+        var status = el('div', 'member-card-status');
+        var statusDot = el('span', 'status-dot status-offline');
+        status.appendChild(statusDot);
+        var statusText = el('span', '');
+        statusText.textContent = 'Offline';
+        status.appendChild(statusText);
+        card.appendChild(status);
 
         return card;
     }
 
-    function updateStatusDots() {
-        document.querySelectorAll('.dir-card').forEach(function(card) {
-            var id = card.dataset.id;
-            var status = getStatus(id);
-            var dot = card.querySelector('.dir-card-status');
-            if (dot) {
-                dot.className = 'dir-card-status ' +
-                    (status.is_online ? (status.status === 'Busy' ? 'busy' : 'online') : 'offline');
-            }
+    // ── Dept filter ──
+    function populateDeptFilter() {
+        var select = document.getElementById('deptFilter');
+        var depts = {};
+        allMembers.forEach(function(m) { if (m.department) depts[m.department] = true; });
+        Object.keys(depts).sort().forEach(function(d) {
+            var opt = el('option', '');
+            opt.value = d;
+            opt.textContent = d;
+            select.appendChild(opt);
         });
     }
 
-    /* ── Profile ── */
+    function applyFilters() {
+        var query = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+        var dept = document.getElementById('deptFilter').value;
+        var filtered = allMembers.filter(function(m) {
+            var matchDept = !dept || m.department === dept;
+            var matchQuery = !query ||
+                (m.full_name || '').toLowerCase().indexOf(query) !== -1 ||
+                (m.title || '').toLowerCase().indexOf(query) !== -1 ||
+                (m.department || '').toLowerCase().indexOf(query) !== -1;
+            return matchDept && matchQuery;
+        });
+        renderDirectory(filtered);
+    }
+
+    // ══════════════════════════════
+    // ── PROFILE PANEL ──
+    // ══════════════════════════════
     function openProfile(id) {
-        var panel = document.getElementById('profilePanel');
         var overlay = document.getElementById('profileOverlay');
-        var body = document.getElementById('profileBody');
-        panel.classList.add('active');
-        overlay.classList.add('active');
-        document.body.style.overflow = 'hidden';
+        var panel = document.getElementById('profilePanel');
+        var content = document.getElementById('profileContent');
 
-        // Show loading
-        body.textContent = '';
-        var loadWrap = document.createElement('div');
-        loadWrap.className = 'dir-loading';
-        loadWrap.style.padding = '40px';
-        var spinner = document.createElement('div');
-        spinner.className = 'dir-loading-spinner';
-        loadWrap.appendChild(spinner);
-        var loadText = document.createElement('div');
-        loadText.textContent = 'Loading profile...';
-        loadWrap.appendChild(loadText);
-        body.appendChild(loadWrap);
+        overlay.classList.add('open');
+        overlay.setAttribute('aria-hidden', 'false');
+        panel.classList.add('open');
+        panel.setAttribute('aria-hidden', 'false');
 
-        fetch(API_BASE + '/api/directory/' + id)
-            .then(function(r) {
-                if (!r.ok) throw new Error('Not found');
-                return r.json();
-            })
-            .then(function(data) {
-                if (!data.success) throw new Error(data.error || 'Unknown error');
-                renderProfile(data.employee);
-            })
-            .catch(function() {
-                body.textContent = '';
-                var err = document.createElement('div');
-                err.className = 'dir-empty';
-                err.textContent = 'Could not load profile.';
-                body.appendChild(err);
-            });
+        content.textContent = '';
+        var loading = el('div', 'profile-loading');
+        loading.textContent = 'Loading profile...';
+        content.appendChild(loading);
+
+        document.getElementById('profileClose').focus();
+
+        apiFetch('/api/directory/' + id).then(function(member) {
+            renderProfile(member);
+        }).catch(function() {
+            content.textContent = '';
+            var err = el('div', 'profile-loading');
+            err.textContent = 'Unable to load profile.';
+            content.appendChild(err);
+        });
     }
 
-    function renderProfile(emp) {
-        var body = document.getElementById('profileBody');
-        body.textContent = '';
-        var status = getStatus(emp.id);
-        var statusClass = status.is_online ? (status.status === 'Busy' ? 'busy' : 'online') : 'offline';
-        var statusLabel = status.status || 'Off Duty';
-        var initials = getInitials(emp.full_name || emp.name);
+    function renderProfile(m) {
+        var content = document.getElementById('profileContent');
+        content.textContent = '';
 
-        // Portrait
-        var portrait = document.createElement('div');
-        portrait.className = 'dir-profile-portrait';
-        if (emp.avatar_url) {
-            var pImg = document.createElement('img');
-            pImg.src = emp.avatar_url.startsWith('http') ? emp.avatar_url : API_BASE + emp.avatar_url;
-            pImg.alt = '';
-            portrait.appendChild(pImg);
+        // Header
+        var header = el('div', 'profile-header');
+
+        var portrait = el('div', 'profile-portrait ' + deptClass(m.department));
+        var imgSrc = avatarUrl(m.avatar_url);
+        if (imgSrc) {
+            var img = el('img', '');
+            img.src = imgSrc;
+            img.alt = m.full_name || '';
+            img.onerror = function() { this.remove(); portrait.textContent = getInitials(m.full_name); };
+            portrait.appendChild(img);
         } else {
-            portrait.textContent = initials;
+            portrait.textContent = getInitials(m.full_name);
         }
-        body.appendChild(portrait);
+        header.appendChild(portrait);
 
-        // Name
-        var nameEl = document.createElement('div');
-        nameEl.className = 'dir-profile-name';
-        nameEl.textContent = emp.full_name || emp.name || '';
-        body.appendChild(nameEl);
+        var name = el('div', 'profile-name');
+        name.textContent = m.full_name || 'Unknown';
+        header.appendChild(name);
 
-        // Title
-        var titleEl = document.createElement('div');
-        titleEl.className = 'dir-profile-title';
-        titleEl.textContent = emp.title || '';
-        body.appendChild(titleEl);
+        var titleEl = el('div', 'profile-title-text');
+        titleEl.textContent = m.title || '';
+        header.appendChild(titleEl);
 
-        // Pronouns
-        if (emp.pronouns) {
-            var pronounsEl = document.createElement('div');
-            pronounsEl.className = 'dir-profile-pronouns';
-            pronounsEl.textContent = emp.pronouns;
-            body.appendChild(pronounsEl);
+        if (m.department) {
+            var deptBadge = el('div', 'profile-dept-badge');
+            deptBadge.textContent = m.department;
+            var dColor = DEPT_COLORS[m.department] || '#00d4ff';
+            deptBadge.style.background = hexToRgba(dColor, 0.12);
+            deptBadge.style.border = '1px solid ' + hexToRgba(dColor, 0.3);
+            deptBadge.style.color = dColor;
+            header.appendChild(deptBadge);
         }
 
-        // Status badge
-        var badge = document.createElement('div');
-        badge.className = 'dir-profile-status-badge ' + statusClass;
-        var badgeDot = document.createElement('span');
-        badgeDot.className = 'dir-profile-status-dot';
-        badge.appendChild(badgeDot);
-        var badgeText = document.createTextNode(statusLabel);
-        badge.appendChild(badgeText);
-        body.appendChild(badge);
-
-        // Contact
-        if (emp.email || emp.phone || emp.extension) {
-            var contactSec = createSection('Contact');
-            if (emp.email) {
-                var emailRow = document.createElement('div');
-                emailRow.className = 'dir-profile-contact-item';
-                emailRow.insertAdjacentHTML('beforeend', '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22,7 12,14 2,7"/></svg>');
-                var emailLink = document.createElement('a');
-                emailLink.href = 'mailto:' + emp.email;
-                emailLink.textContent = emp.email;
-                emailRow.appendChild(emailLink);
-                contactSec.appendChild(emailRow);
-            }
-            if (emp.phone) {
-                var phoneRow = document.createElement('div');
-                phoneRow.className = 'dir-profile-contact-item';
-                phoneRow.insertAdjacentHTML('beforeend', '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.13.81.36 1.6.68 2.34a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.74.32 1.53.55 2.34.68A2 2 0 0122 16.92z"/></svg>');
-                var phoneTxt = document.createTextNode(emp.phone);
-                phoneRow.appendChild(phoneTxt);
-                contactSec.appendChild(phoneRow);
-            }
-            if (emp.extension) {
-                var extRow = document.createElement('div');
-                extRow.className = 'dir-profile-contact-item';
-                extRow.insertAdjacentHTML('beforeend', '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>');
-                var extTxt = document.createTextNode('Ext. ' + emp.extension);
-                extRow.appendChild(extTxt);
-                contactSec.appendChild(extRow);
-            }
-            body.appendChild(contactSec);
+        if (m.pronouns) {
+            var pronouns = el('div', 'profile-pronouns');
+            pronouns.textContent = m.pronouns;
+            header.appendChild(pronouns);
         }
 
-        // Bio
-        if (emp.bio) {
-            var bioSec = createSection('About');
-            var bioText = document.createElement('div');
-            bioText.className = 'dir-profile-bio';
-            bioText.textContent = emp.bio;
-            bioSec.appendChild(bioText);
-            body.appendChild(bioSec);
+        var statusInfo = liveStatuses[m.id] || liveStatuses[String(m.id)] || {};
+        var badge = el('div', 'profile-status-badge');
+        if (statusInfo.is_online) {
+            badge.classList.add(statusInfo.status === 'busy' ? 'busy' : 'online');
+            badge.textContent = statusInfo.status === 'busy' ? 'Busy' : 'Online';
+        } else {
+            badge.classList.add('offline-badge');
+            badge.textContent = 'Offline';
+        }
+        header.appendChild(badge);
+        content.appendChild(header);
+
+        // Body
+        var body = el('div', 'profile-body');
+
+        if (m.bio) {
+            var bioSection = el('div', 'profile-section');
+            var bioTitle = el('div', 'profile-section-title');
+            bioTitle.textContent = 'About';
+            bioSection.appendChild(bioTitle);
+            var bioText = el('div', 'profile-bio');
+            bioText.textContent = m.bio;
+            bioSection.appendChild(bioText);
+            body.appendChild(bioSection);
         }
 
-        // Skills
-        var skills = emp.skills || emp.specialties || [];
+        var skills = m.specialties || m.top_skills || m.skills || [];
         if (skills.length > 0) {
-            var skillSec = createSection('Expertise & Skills');
-            var skillWrap = document.createElement('div');
-            skillWrap.className = 'dir-profile-skills';
+            var skillSection = el('div', 'profile-section');
+            var skillTitle = el('div', 'profile-section-title');
+            skillTitle.textContent = 'Specialties';
+            skillSection.appendChild(skillTitle);
+            var skillWrap = el('div', 'profile-skills');
             skills.forEach(function(s) {
-                var tag = document.createElement('span');
-                tag.className = 'dir-profile-skill';
-                tag.textContent = typeof s === 'string' ? s : (s.skill_name || s.skill || String(s));
-                skillWrap.appendChild(tag);
+                var pill = el('span', 'profile-skill');
+                pill.textContent = typeof s === 'string' ? s : (s.name || s.skill || '');
+                skillWrap.appendChild(pill);
             });
-            skillSec.appendChild(skillWrap);
-            body.appendChild(skillSec);
+            skillSection.appendChild(skillWrap);
+            body.appendChild(skillSection);
         }
 
-        // Department
-        if (emp.department) {
-            var deptSec = createSection('Department');
-            var deptRow = document.createElement('span');
-            deptRow.style.cssText = 'display:inline-flex;align-items:center;gap:8px;font-size:0.9rem;color:var(--text-secondary);';
-            var deptDot = document.createElement('span');
-            deptDot.style.cssText = 'width:10px;height:10px;border-radius:50%;background:' + getDeptColor(emp.department) + ';';
-            deptRow.appendChild(deptDot);
-            var deptName = document.createTextNode(emp.department);
-            deptRow.appendChild(deptName);
-            deptSec.appendChild(deptRow);
-            body.appendChild(deptSec);
-        }
-    }
+        if (m.email || m.extension) {
+            var contactSection = el('div', 'profile-section');
+            var contactTitle = el('div', 'profile-section-title');
+            contactTitle.textContent = 'Contact';
+            contactSection.appendChild(contactTitle);
 
-    function createSection(label) {
-        var sec = document.createElement('div');
-        sec.className = 'dir-profile-section';
-        var lbl = document.createElement('div');
-        lbl.className = 'dir-profile-section-label';
-        lbl.textContent = label;
-        sec.appendChild(lbl);
-        return sec;
+            if (m.email) {
+                var emailRow = el('div', 'profile-contact-row');
+                var emailIcon = el('span', 'profile-contact-icon');
+                emailIcon.textContent = '\u2709';
+                emailRow.appendChild(emailIcon);
+                var emailLink = document.createElement('a');
+                emailLink.href = 'mailto:' + m.email;
+                emailLink.textContent = m.email;
+                emailLink.style.color = 'var(--accent-cyan)';
+                emailLink.style.textDecoration = 'none';
+                emailRow.appendChild(emailLink);
+                contactSection.appendChild(emailRow);
+            }
+            if (m.extension) {
+                var extRow = el('div', 'profile-contact-row');
+                var extIcon = el('span', 'profile-contact-icon');
+                extIcon.textContent = '\u260E';
+                extRow.appendChild(extIcon);
+                var extText = el('span', '');
+                extText.textContent = 'Ext. ' + m.extension;
+                extRow.appendChild(extText);
+                contactSection.appendChild(extRow);
+            }
+            body.appendChild(contactSection);
+        }
+
+        content.appendChild(body);
     }
 
     function closeProfile() {
-        document.getElementById('profilePanel').classList.remove('active');
-        document.getElementById('profileOverlay').classList.remove('active');
-        document.body.style.overflow = '';
+        document.getElementById('profileOverlay').classList.remove('open');
+        document.getElementById('profileOverlay').setAttribute('aria-hidden', 'true');
+        document.getElementById('profilePanel').classList.remove('open');
+        document.getElementById('profilePanel').setAttribute('aria-hidden', 'true');
     }
 
-    document.getElementById('profileClose').addEventListener('click', closeProfile);
-    document.getElementById('profileOverlay').addEventListener('click', closeProfile);
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') closeProfile();
-    });
-
-    /* ── Helpers ── */
-    function getStatus(id) {
-        return liveStatus[String(id)] || { status: 'Off Duty', is_online: false };
+    // ── Helpers ──
+    function el(tag, className) {
+        var e = document.createElement(tag);
+        if (className) e.className = className;
+        return e;
     }
 
-    function getDeptColor(dept) {
-        if (DEPT_COLORS[dept]) return DEPT_COLORS[dept];
-        var hash = 0;
-        for (var i = 0; i < dept.length; i++) {
-            hash = dept.charCodeAt(i) + ((hash << 5) - hash);
-        }
-        return 'hsl(' + (Math.abs(hash) % 360) + ', 60%, 55%)';
+    function hexToRgba(hex, alpha) {
+        if (!hex) return 'rgba(0,212,255,' + alpha + ')';
+        hex = hex.replace('#', '');
+        var r = parseInt(hex.substring(0, 2), 16);
+        var g = parseInt(hex.substring(2, 4), 16);
+        var b = parseInt(hex.substring(4, 6), 16);
+        return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
     }
 
-    function getInitials(name) {
-        if (!name) return '?';
-        var parts = name.trim().split(/\s+/);
-        if (parts.length >= 2) return parts[0][0] + parts[parts.length - 1][0];
-        return parts[0][0] || '?';
-    }
 })();
 </script>
+
 </body>
 </html>
