@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ARCHIE vs The Competition — Kytran Empowerment</title>
     <meta name="description" content="See how A.R.C.H.I.E. compares to 35+ competitors across orchestration frameworks, coding agents, workflow builders, and enterprise platforms.">
+    <meta property="og:title" content="ARCHIE vs The Competition — Kytran Empowerment">
+    <meta property="og:description" content="See how A.R.C.H.I.E. compares to 35+ competitors across orchestration frameworks, coding agents, workflow builders, and enterprise platforms.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.kytranempowerment.com/competitors.html">
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,11 +25,14 @@
             --accent-gold: #f0c040;
             --accent-green: #00ff65;
             --accent-amber: #f59e0b;
+            --accent-purple: #8b5cf6;
             --text-primary: #e8ecf4;
             --text-secondary: #8892a4;
             --text-muted: #5a6478;
             --border-subtle: rgba(0, 153, 255, 0.12);
             --glow-blue: 0 0 30px rgba(0, 153, 255, 0.3);
+            --glass-bg: rgba(15, 20, 35, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.08);
             --font-heading: 'Outfit', sans-serif;
             --font-body: 'Inter', sans-serif;
         }
@@ -52,7 +59,44 @@
 
         h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 700; line-height: 1.15; }
 
-        /* ── Nav ── */
+        /* ── Aurora Background ── */
+        .aurora-bg {
+            position: fixed; inset: 0; z-index: -1; overflow: hidden;
+        }
+        .aurora-blob {
+            position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.4;
+            animation: auroraFloat 20s ease-in-out infinite alternate;
+        }
+        .aurora-blob:nth-child(1) {
+            width: 600px; height: 600px; top: -10%; left: 10%;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.3), transparent 70%);
+        }
+        .aurora-blob:nth-child(2) {
+            width: 500px; height: 500px; top: 30%; right: -5%;
+            background: radial-gradient(circle, rgba(0, 212, 255, 0.25), transparent 70%);
+            animation-delay: -7s; animation-duration: 25s;
+        }
+        .aurora-blob:nth-child(3) {
+            width: 450px; height: 450px; bottom: 10%; left: 20%;
+            background: radial-gradient(circle, rgba(0, 153, 255, 0.2), transparent 70%);
+            animation-delay: -14s; animation-duration: 22s;
+        }
+        @keyframes auroraFloat {
+            0% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(40px, -30px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.95); }
+            100% { transform: translate(30px, 10px) scale(1.05); }
+        }
+
+        /* Film grain */
+        .film-grain {
+            position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+            background-repeat: repeat; background-size: 256px 256px;
+        }
+
+        /* ── Nav (frosted glass) ── */
         .nav {
             position: fixed; top: 0; left: 0; right: 0; z-index: 100;
             padding: 0 24px;
@@ -77,7 +121,7 @@
             color: var(--text-secondary); text-decoration: none; font-size: 0.9rem;
             font-weight: 500; letter-spacing: 0.5px; transition: color 0.25s;
         }
-        .nav-links a:hover { color: var(--accent-blue); }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent-cyan); }
         .btn-cta {
             display: inline-flex; align-items: center; gap: 8px;
             padding: 10px 24px; border-radius: 8px;
@@ -100,6 +144,7 @@
         }
         .btn-lg { padding: 14px 36px; font-size: 1rem; }
 
+        /* Hamburger */
         .nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 8px; }
         .nav-toggle span {
             display: block; width: 24px; height: 2px; background: var(--text-primary);
@@ -110,7 +155,7 @@
         .lang-selector { position: relative; }
         .lang-btn { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 6px 10px; cursor: pointer; color: inherit; display: flex; align-items: center; }
         .lang-btn:hover { background: rgba(0,153,255,0.15); border-color: rgba(0,153,255,0.3); }
-        .lang-menu { position: absolute; right: 0; top: 100%; margin-top: 8px; background: #141824; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 6px; z-index: 1000; min-width: 160px; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+        .lang-menu { position: absolute; right: 0; top: 100%; margin-top: 8px; background: rgba(15, 20, 35, 0.95); border: 1px solid var(--glass-border); border-radius: 10px; padding: 6px; z-index: 1000; min-width: 160px; box-shadow: 0 8px 32px rgba(0,0,0,0.4); backdrop-filter: blur(20px); }
         .lang-menu button { display: block; width: 100%; text-align: left; padding: 8px 14px; background: none; border: none; color: #ccc; cursor: pointer; border-radius: 6px; font-size: 0.85rem; }
         .lang-menu button:hover { background: rgba(0,153,255,0.15); color: #fff; }
         .lang-menu button.active { color: var(--accent-cyan); font-weight: 600; }
@@ -119,35 +164,13 @@
         .hero {
             position: relative; min-height: 60vh;
             display: flex; align-items: center; justify-content: center;
-            padding: 140px 24px 80px; overflow: hidden;
-        }
-        .hero-bg {
-            position: absolute; inset: 0; z-index: 0;
-            background:
-                radial-gradient(ellipse 80% 60% at 20% 40%, rgba(0, 153, 255, 0.08) 0%, transparent 60%),
-                radial-gradient(ellipse 60% 50% at 80% 30%, rgba(0, 212, 255, 0.06) 0%, transparent 50%),
-                radial-gradient(ellipse 50% 40% at 50% 80%, rgba(240, 192, 64, 0.03) 0%, transparent 50%),
-                var(--bg-primary);
-            animation: meshShift 20s ease-in-out infinite alternate;
-        }
-        @keyframes meshShift {
-            0% { background-position: 0% 0%; }
-            25% { filter: hue-rotate(5deg); }
-            50% { filter: hue-rotate(-3deg); }
-            100% { background-position: 100% 100%; }
-        }
-        .hero-grid {
-            position: absolute; inset: 0; z-index: 0; opacity: 0.03;
-            background-image:
-                linear-gradient(rgba(0, 153, 255, 0.5) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 153, 255, 0.5) 1px, transparent 1px);
-            background-size: 60px 60px;
+            padding: 160px 24px 80px; overflow: hidden;
         }
         .hero-content { position: relative; z-index: 1; text-align: center; max-width: 820px; }
         .hero-badge {
             display: inline-flex; align-items: center; gap: 8px;
             padding: 6px 16px; border-radius: 50px; margin-bottom: 28px;
-            background: rgba(0, 153, 255, 0.08); border: 1px solid rgba(0, 153, 255, 0.2);
+            background: rgba(0, 212, 255, 0.08); border: 1px solid rgba(0, 212, 255, 0.2);
             font-size: 0.8rem; color: var(--accent-cyan); font-weight: 500; letter-spacing: 1px; text-transform: uppercase;
         }
         .hero-badge .dot {
@@ -215,31 +238,33 @@
             flex: 1; height: 1px; background: var(--border-subtle);
         }
 
-        /* ── Feature Matrix ── */
+        /* ── Feature Matrix (glassmorphism) ── */
         .matrix-wrap {
-            overflow-x: auto; border: 1px solid var(--border-subtle);
-            border-radius: 16px; background: var(--bg-card);
-            backdrop-filter: blur(12px);
+            overflow-x: auto; border: 1px solid var(--glass-border);
+            border-radius: 16px; background: var(--glass-bg);
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
         .matrix-table {
             width: 100%; border-collapse: collapse;
             font-size: 0.85rem; white-space: nowrap;
         }
         .matrix-table thead th {
-            background: rgba(15, 20, 35, 0.95);
+            background: rgba(10, 14, 23, 0.9);
             font-family: var(--font-heading); font-size: 0.85rem;
             font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
-            padding: 14px 16px; border-bottom: 2px solid var(--border-subtle);
+            padding: 14px 16px; border-bottom: 2px solid rgba(0, 212, 255, 0.15);
             color: var(--text-secondary); position: sticky; top: 0; z-index: 2;
         }
         .matrix-table thead th:first-child {
             text-align: left; min-width: 220px;
             position: sticky; left: 0; z-index: 3;
-            background: rgba(15, 20, 35, 0.95);
+            background: rgba(10, 14, 23, 0.95);
         }
         .matrix-table thead th.archie-col {
             color: var(--accent-cyan);
             border-bottom-color: var(--accent-cyan);
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
         }
         .matrix-table tbody td {
             padding: 10px 16px; text-align: center;
@@ -247,17 +272,17 @@
         }
         .matrix-table tbody td:first-child {
             text-align: left; font-weight: 500; color: var(--text-primary);
-            position: sticky; left: 0; background: rgba(15, 20, 35, 0.9); z-index: 1;
+            position: sticky; left: 0; background: rgba(10, 14, 23, 0.85); z-index: 1;
         }
-        .matrix-table tbody tr:hover td { background: rgba(0, 153, 255, 0.03); }
-        .matrix-table tbody tr:hover td:first-child { background: rgba(0, 153, 255, 0.06); }
+        .matrix-table tbody tr:hover td { background: rgba(0, 212, 255, 0.03); }
+        .matrix-table tbody tr:hover td:first-child { background: rgba(0, 212, 255, 0.06); }
         .check { color: var(--accent-green); font-size: 1.1rem; }
         .cross { color: var(--text-muted); font-size: 1.1rem; }
-        .archie-check { color: var(--accent-cyan); font-size: 1.2rem; font-weight: bold; }
+        .archie-check { color: var(--accent-cyan); font-size: 1.2rem; font-weight: bold; text-shadow: 0 0 12px rgba(0, 212, 255, 0.4); }
         .matrix-group {
             font-family: var(--font-heading); font-size: 0.75rem; font-weight: 600;
             letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent-cyan);
-            background: rgba(0, 153, 255, 0.04); border-left: 3px solid var(--accent-cyan);
+            background: rgba(0, 212, 255, 0.04); border-left: 3px solid var(--accent-cyan);
             padding: 10px 16px;
         }
         .matrix-group-gap {
@@ -265,23 +290,26 @@
             border-left-color: var(--accent-amber);
         }
 
-        /* ── Trending Cards ── */
+        /* ── Trending Cards (glassmorphism) ── */
         .trending-grid {
             display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;
         }
         .trending-card {
-            background: var(--bg-card); border: 1px solid var(--border-subtle);
-            border-radius: 16px; padding: 28px; backdrop-filter: blur(12px);
-            transition: transform 0.3s ease, border-color 0.3s ease;
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            border-radius: 16px; padding: 28px;
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
         }
         .trending-card:hover {
-            transform: translateY(-4px); border-color: rgba(0, 153, 255, 0.25);
+            transform: translateY(-4px); border-color: rgba(0, 212, 255, 0.25);
+            box-shadow: 0 8px 40px rgba(0, 212, 255, 0.1);
         }
         .trending-card-watch {
-            border-color: rgba(245, 158, 11, 0.25);
-            background: linear-gradient(135deg, var(--bg-card) 0%, rgba(245, 158, 11, 0.03) 100%);
+            border-color: rgba(245, 158, 11, 0.2);
+            background: linear-gradient(135deg, var(--glass-bg) 0%, rgba(245, 158, 11, 0.03) 100%);
         }
-        .trending-card-watch:hover { border-color: rgba(245, 158, 11, 0.4); }
+        .trending-card-watch:hover { border-color: rgba(245, 158, 11, 0.4); box-shadow: 0 8px 40px rgba(245, 158, 11, 0.08); }
         .trending-header {
             display: flex; justify-content: space-between; align-items: center;
             margin-bottom: 8px;
@@ -316,14 +344,14 @@
             background: linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
         }
         .trending-vs-bar.archie .trending-bar-fill {
-            background: linear-gradient(90deg, rgba(0,153,255,0.25), rgba(0,212,255,0.15));
+            background: linear-gradient(90deg, rgba(0,212,255,0.25), rgba(0,153,255,0.15));
         }
         .trending-bar-text {
             font-size: 0.7rem; color: rgba(255,255,255,0.6); white-space: nowrap;
         }
         .trending-verdict {
             font-size: 0.85rem; color: var(--accent-blue);
-            border-top: 1px solid var(--border-subtle); padding-top: 12px;
+            border-top: 1px solid var(--glass-border); padding-top: 12px;
             line-height: 1.6;
         }
         .trending-card-watch .trending-verdict { color: var(--accent-amber); }
@@ -338,17 +366,20 @@
             font-size: 0.75rem; color: var(--text-muted); margin-top: 8px;
         }
 
-        /* ── Category Cards ── */
+        /* ── Category Cards (glassmorphism) ── */
         .category-grid {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 24px;
         }
         .cat-card {
-            background: var(--bg-card); border: 1px solid var(--border-subtle);
-            border-radius: 16px; padding: 32px; backdrop-filter: blur(12px);
-            transition: transform 0.3s ease, border-color 0.3s ease;
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            border-radius: 16px; padding: 32px;
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
         }
         .cat-card:hover {
-            transform: translateY(-4px); border-color: rgba(0, 153, 255, 0.25);
+            transform: translateY(-4px); border-color: rgba(0, 212, 255, 0.2);
+            box-shadow: 0 8px 40px rgba(0, 212, 255, 0.08);
         }
         .cat-card h3 { font-size: 1.15rem; margin-bottom: 8px; }
         .cat-card h3.orch { color: var(--accent-blue); }
@@ -363,7 +394,7 @@
         .cat-card p { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7; margin-bottom: 12px; }
         .cat-card .archie-edge {
             font-size: 0.85rem; color: var(--accent-cyan);
-            border-top: 1px solid var(--border-subtle); padding-top: 12px; margin-top: 8px;
+            border-top: 1px solid var(--glass-border); padding-top: 12px; margin-top: 8px;
         }
         .cat-card .archie-edge strong { color: var(--accent-blue); }
         .cat-card .archie-gap {
@@ -372,7 +403,7 @@
         }
         .cat-card .archie-gap strong { color: #d97706; }
 
-        /* ── Stack Comparison ── */
+        /* ── Stack Comparison (glassmorphism) ── */
         .stack-section { text-align: center; }
         .stack-intro {
             font-family: var(--font-heading); font-size: 1.1rem; font-weight: 600;
@@ -384,13 +415,16 @@
             gap: 32px; flex-wrap: wrap; margin-bottom: 32px;
         }
         .stack-archie {
-            background: rgba(0, 153, 255, 0.06);
+            background: rgba(0, 212, 255, 0.06);
             border: 2px solid var(--accent-cyan); border-radius: 16px;
             padding: 32px 40px; text-align: center; min-width: 200px;
+            box-shadow: 0 0 40px rgba(0, 212, 255, 0.1);
+            backdrop-filter: blur(12px);
         }
         .stack-archie .name {
             font-family: var(--font-heading); font-size: 1.4rem; font-weight: 800;
             color: var(--accent-cyan); margin-bottom: 4px;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
         }
         .stack-archie .desc { font-size: 0.85rem; color: var(--text-secondary); }
         .vs-badge {
@@ -402,8 +436,9 @@
             gap: 10px; max-width: 700px;
         }
         .stack-tool {
-            background: var(--bg-card); border: 1px solid var(--border-subtle);
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
             border-radius: 10px; padding: 14px 10px; text-align: center;
+            backdrop-filter: blur(8px);
         }
         .stack-tool .tool-name {
             font-weight: 600; color: var(--text-primary); display: block;
@@ -415,17 +450,20 @@
             margin: 0 auto; line-height: 1.7;
         }
 
-        /* ── Building Section ── */
+        /* ── Building Section (glassmorphism) ── */
         .building-grid {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px;
         }
         .building-card {
-            background: var(--bg-card); border: 1px solid rgba(245, 158, 11, 0.12);
-            border-radius: 16px; padding: 28px; backdrop-filter: blur(12px);
-            transition: transform 0.3s ease, border-color 0.3s ease;
+            background: var(--glass-bg); border: 1px solid rgba(245, 158, 11, 0.12);
+            border-radius: 16px; padding: 28px;
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
         }
         .building-card:hover {
             transform: translateY(-4px); border-color: rgba(245, 158, 11, 0.3);
+            box-shadow: 0 8px 40px rgba(245, 158, 11, 0.08);
         }
         .building-icon { font-size: 1.6rem; margin-bottom: 12px; }
         .building-card h4 {
@@ -436,11 +474,11 @@
         }
         .building-who {
             font-size: 0.8rem; color: var(--text-muted); font-style: italic;
-            border-top: 1px solid var(--border-subtle); padding-top: 10px; margin-top: 4px;
+            border-top: 1px solid var(--glass-border); padding-top: 10px; margin-top: 4px;
         }
 
         /* ── CTA ── */
-        .cta-section { background: var(--bg-secondary); text-align: center; }
+        .cta-section { text-align: center; }
         .cta-section h2 { font-size: clamp(1.8rem, 3.5vw, 2.8rem); margin-bottom: 12px; }
         .cta-subtitle {
             font-size: 0.9rem; color: var(--accent-cyan); letter-spacing: 1.5px;
@@ -453,7 +491,7 @@
         /* ── Footer ── */
         .footer {
             border-top: 1px solid var(--border-subtle);
-            padding: 60px 0 32px; background: var(--bg-primary);
+            padding: 60px 0 32px; background: rgba(10, 14, 23, 0.9);
         }
         .footer-inner {
             display: flex; justify-content: space-between; align-items: flex-start;
@@ -494,6 +532,14 @@
         [dir="rtl"] .matrix-table tbody td:first-child,
         [dir="rtl"] .matrix-table thead th:first-child { text-align: right; }
 
+        /* ── Reduced Motion ── */
+        @media (prefers-reduced-motion: reduce) {
+            .aurora-blob { animation: none !important; }
+            .fade-in { transition: none !important; opacity: 1 !important; transform: none !important; }
+            .hero-badge .dot { animation: none !important; }
+            .trending-card, .cat-card, .building-card, .stack-archie { transition: none !important; }
+        }
+
         /* ── Responsive ── */
         @media (max-width: 768px) {
             .nav-links { display: none; }
@@ -512,7 +558,7 @@
             .stack-vs { flex-direction: column; }
         }
         @media (max-width: 480px) {
-            .hero { padding: 100px 16px 60px; }
+            .hero { padding: 120px 16px 60px; }
             .hero-stats { gap: 24px; }
             .matrix-table { font-size: 0.7rem; }
             .matrix-table thead th, .matrix-table tbody td { padding: 6px 8px; }
@@ -521,6 +567,14 @@
     </style>
 </head>
 <body>
+
+<!-- Aurora Background -->
+<div class="aurora-bg" aria-hidden="true">
+    <div class="aurora-blob"></div>
+    <div class="aurora-blob"></div>
+    <div class="aurora-blob"></div>
+</div>
+<div class="film-grain" aria-hidden="true"></div>
 
 <!-- ── Navigation ── -->
 <nav class="nav">
@@ -554,7 +608,8 @@
             <li><a href="/services.html">Services</a></li>
             <li><a href="/platform.html">Platform</a></li>
             <li><a href="/directory.html">Our Team</a></li>
-            <li><a href="/#mission">About</a></li>
+            <li><a href="/competitors.html" class="active">Competitors</a></li>
+            <li><a href="/about.html">About</a></li>
             <li><a href="/#contact">Contact</a></li>
             <li><a href="https://archie.kytranempowerment.com" class="btn-cta btn-primary">Get Started</a></li>
         </ul>
@@ -563,8 +618,8 @@
 
 <!-- ── Hero ── -->
 <section class="hero">
-    <div class="hero-bg"></div>
-    <div class="hero-grid"></div>
+    
+    
     <div class="hero-content fade-in">
         <div class="hero-badge"><span class="dot"></span> Competitive Analysis</div>
         <h1 data-i18n="comp_hero_title">A.R.C.H.I.E. vs The Competition</h1>
@@ -1214,7 +1269,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            &copy; 2026 Kytran Empowerment Inc. All rights reserved.
+            <span>&copy; 2026 Kytran Empowerment Inc. All rights reserved.</span>
         </div>
     </div>
 </footer>
@@ -1222,22 +1277,48 @@
 <!-- ── i18n ── -->
 <script src="i18n.js"></script>
 
+<!-- ── GSAP ── -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+
 <!-- ── Scripts ── -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Scroll-triggered fade-in
-        var observer = new IntersectionObserver(function(entries) {
-            entries.forEach(function(entry) {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+        // GSAP ScrollTrigger animations
+        if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+            gsap.registerPlugin(ScrollTrigger);
 
-        document.querySelectorAll('.fade-in').forEach(function(el) {
-            observer.observe(el);
-        });
+            gsap.utils.toArray('.fade-in').forEach(function(el) {
+                gsap.from(el, {
+                    opacity: 0,
+                    y: 32,
+                    duration: 0.8,
+                    ease: 'power2.out',
+                    scrollTrigger: {
+                        trigger: el,
+                        start: 'top 88%',
+                        once: true
+                    },
+                    onComplete: function() {
+                        el.classList.add('visible');
+                    }
+                });
+            });
+        } else {
+            // Fallback: IntersectionObserver
+            var observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+            document.querySelectorAll('.fade-in').forEach(function(el) {
+                observer.observe(el);
+            });
+        }
 
         // Mobile nav toggle
         var toggle = document.querySelector('.nav-toggle');
@@ -1271,6 +1352,23 @@
         var el = document.getElementById('stardate');
         if (el) el.textContent = 'Stardate ' + stardate;
     });
+
+    // Language switcher
+    function toggleLangMenu() {
+        var menu = document.getElementById('langMenu');
+        menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+    }
+    function switchLang(lang) {
+        document.getElementById('langMenu').style.display = 'none';
+        if (typeof window.setLanguage === 'function') window.setLanguage(lang);
+    }
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.lang-selector')) {
+            var menu = document.getElementById('langMenu');
+            if (menu) menu.style.display = 'none';
+        }
+    });
 </script>
+
 </body>
 </html>
