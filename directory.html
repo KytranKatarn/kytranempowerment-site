@@ -799,7 +799,7 @@
         avatar.className = 'dir-card-avatar';
         if (m.avatar_url) {
             var img = document.createElement('img');
-            img.src = m.avatar_url;
+            img.src = m.avatar_url.startsWith('http') ? m.avatar_url : API_BASE + m.avatar_url;
             img.alt = '';
             avatar.appendChild(img);
         } else {
@@ -890,7 +890,7 @@
         portrait.className = 'dir-profile-portrait';
         if (emp.avatar_url) {
             var pImg = document.createElement('img');
-            pImg.src = emp.avatar_url;
+            pImg.src = emp.avatar_url.startsWith('http') ? emp.avatar_url : API_BASE + emp.avatar_url;
             pImg.alt = '';
             portrait.appendChild(pImg);
         } else {
