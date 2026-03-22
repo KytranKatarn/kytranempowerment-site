@@ -740,7 +740,9 @@
 (function() {
     'use strict';
 
-    var API_BASE = 'https://archie.kytranempowerment.com';
+    // Try same-origin first (works from LAN via NPM proxy), fall back to cross-origin (GitHub Pages)
+    var API_BASE = '';
+    var API_FALLBACK = 'https://archie.kytranempowerment.com';
 
     var DEPT_COLORS = {
         'Command': '#00e5ff', 'Analytics': '#8b5cf6', 'Creative': '#f472b6',
@@ -765,7 +767,10 @@
 
     function avatarUrl(url) {
         if (!url) return null;
-        return url.startsWith('http') ? url : API_BASE + url;
+        if (url.startsWith('http')) return url;
+        // If same-origin (NPM), relative path works. If GitHub Pages, need full URL.
+        var base = API_BASE || API_FALLBACK;
+        return base + url;
     }
 
     var allMembers = [];
@@ -804,11 +809,19 @@
         document.getElementById('deptFilter').addEventListener('change', applyFilters);
     });
 
-    // ── API ──
+    // ── API — try same-origin first (LAN/NPM), fall back to cross-origin (GitHub Pages) ──
     function apiFetch(path) {
         return fetch(API_BASE + path).then(function(r) {
             if (!r.ok) throw new Error('API error ' + r.status);
             return r.json();
+        }).catch(function(err) {
+            if (API_BASE === '' && API_FALLBACK) {
+                return fetch(API_FALLBACK + path).then(function(r) {
+                    if (!r.ok) throw new Error('API error ' + r.status);
+                    return r.json();
+                });
+            }
+            throw err;
         });
     }
 
