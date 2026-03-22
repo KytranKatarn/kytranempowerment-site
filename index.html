@@ -4,17 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KYTRAN EMPOWERMENT — AI-Powered SaaS & Consulting Platform</title>
-<meta name="description" content="107 specialized agents using AI technology built by A.R.C.H.I.E. 10 stations, enterprise-grade orchestration. Self-hosted platform for consulting, SaaS, and creative production. Profits support men's mental health.">
+<meta name="description" content="107 specialized agents using AI technology built by A.R.C.H.I.E. 16 departments, enterprise-grade orchestration. Self-hosted platform for consulting, SaaS, and creative production. Profits support men's mental health.">
 <link rel="canonical" href="https://www.kytranempowerment.com">
 <link rel="icon" type="image/png" href="logo.png">
 <meta property="og:title" content="KYTRAN EMPOWERMENT — AI-Powered Platform">
-<meta property="og:description" content="107 agents. 10 stations. One unified platform.">
+<meta property="og:description" content="107 agents. 16 departments. One unified platform.">
 <meta property="og:image" content="https://www.kytranempowerment.com/logo.png">
 <meta property="og:url" content="https://www.kytranempowerment.com">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="KYTRAN EMPOWERMENT — AI-Powered Platform">
-<meta name="twitter:description" content="107 agents. 10 stations. One unified platform.">
+<meta name="twitter:description" content="107 agents. 16 departments. One unified platform.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -78,8 +78,10 @@ h1,h2,h3{font-family:var(--font-h);line-height:1.15}
 .svc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
 .svc-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:16px}
 .svc-icon svg{width:24px;height:24px;stroke-width:1.5}
+.glass{text-align:center}
 .glass h3{font-size:18px;font-weight:600;margin-bottom:8px}
 .glass p{font-size:14px;color:var(--text2);line-height:1.6}
+.svc-icon{margin:0 auto 16px}
 .tab-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;justify-content:center}
 .tab-btn{padding:10px 20px;border-radius:8px;border:1px solid var(--glass-border);background:var(--glass-bg);color:var(--text2);font-size:13px;font-weight:500;cursor:pointer;transition:all .2s}.tab-btn:hover{border-color:rgba(0,212,255,.2);color:var(--text)}.tab-btn.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,212,255,.06)}
 .tab-btn:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
@@ -143,6 +145,21 @@ footer{position:relative;z-index:2;border-top:1px solid var(--glass-border);padd
 .sec-title{font-size:clamp(28px,4vw,40px);font-weight:700;text-align:center;margin-bottom:12px}
 .sec-sub{text-align:center;color:var(--text2);font-size:16px;margin-bottom:48px;max-width:600px;margin-left:auto;margin-right:auto}
 .gsap-fade{opacity:0;transform:translateY(30px)}
+/* ── Extra WOW Effects ── */
+.glass::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;border-radius:16px;padding:1px;background:linear-gradient(135deg,rgba(0,212,255,.2),rgba(139,92,246,.2),rgba(0,153,255,.2));-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .4s;pointer-events:none}
+.glass:hover::before{opacity:1}
+.glass{position:relative;overflow:hidden}
+.glass::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(0,212,255,.04) 0%,transparent 60%);opacity:0;transition:opacity .4s;pointer-events:none}
+.glass:hover::after{opacity:1}
+.hero h1{text-shadow:0 0 80px rgba(0,212,255,.15)}
+.btn-p{position:relative;overflow:hidden}.btn-p::after{content:'';position:absolute;top:50%;left:50%;width:0;height:0;border-radius:50%;background:rgba(255,255,255,.1);transition:width .6s,height .6s,top .6s,left .6s;pointer-events:none}.btn-p:hover::after{width:300px;height:300px;top:calc(50% - 150px);left:calc(50% - 150px)}
+.comp-table tr{transition:background .2s}.comp-table tr:hover{background:rgba(0,212,255,.03)}
+.feat-card{transition:transform .3s,border-color .3s}.feat-card:hover{transform:translateY(-2px);border-color:rgba(0,212,255,.2)}
+.test-card .test-quote::before{content:'"';font-size:48px;font-family:Georgia,serif;color:var(--cyan);opacity:.3;position:absolute;top:12px;left:16px}
+.test-card{position:relative}
+.faq-q::after{content:'';position:absolute;bottom:0;left:0;width:0;height:2px;background:var(--cyan);transition:width .3s}.faq-q{position:relative}.faq-q:hover::after{width:100%}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.h-stat{animation:float 6s ease-in-out infinite;animation-delay:calc(var(--i,0) * .5s)}
 @media(max-width:768px){.nav-links{display:none}.hamburger{display:block}.hero h1{letter-spacing:-1px}.hero-stats{gap:12px}.h-stat{min-width:80px;padding:12px 16px}.h-stat-v{font-size:22px}.team-row{flex-direction:column;align-items:center}.team-hbar{display:none}.comp-table{display:block;overflow-x:auto}}
 @media(prefers-reduced-motion:reduce){.aurora-b,.marquee,.scroll-arrow,.pulse-dot,.cursor-blink{animation:none!important}.gsap-fade{opacity:1!important;transform:none!important}.glass,.btn-p,.btn-s,.nav-cta,.tab-btn{transition:none!important}}
 </style>
@@ -167,13 +184,13 @@ footer{position:relative;z-index:2;border-top:1px solid var(--glass-border);padd
 <section class="hero" id="hero">
   <div class="hero-badge"><span class="pulse-dot"></span><span>Platform Online — <span id="badgeOnline">25</span> Agents Active</span></div>
   <h1>Build the Future with<br><span class="grad-text">AI-Powered Intelligence</span><span class="cursor-blink"></span></h1>
-  <p class="hero-sub">107 specialized agents. 10 stations. One unified platform built with A.R.C.H.I.E. Enterprise-grade orchestration that scales with your ambition.</p>
+  <p class="hero-sub">107 specialized agents. 16 departments. One unified platform built with A.R.C.H.I.E. Enterprise-grade orchestration that scales with your ambition.</p>
   <div class="hero-btns"><a href="https://archie.kytranempowerment.com" class="btn-p">Explore the Platform</a><a href="https://archie.kytranempowerment.com/directory" class="btn-s">Meet Our Team &rarr;</a></div>
   <div class="hero-stats">
-    <div class="h-stat"><div class="h-stat-v"><span class="counter-val" data-target="107">0</span></div><div class="h-stat-l">Agents</div></div>
-    <div class="h-stat"><div class="h-stat-v"><span class="live-dot"></span><span id="onlineCount">25</span></div><div class="h-stat-l">Online Now</div></div>
-    <div class="h-stat"><div class="h-stat-v"><span class="counter-val" data-target="10">0</span></div><div class="h-stat-l">Stations</div></div>
-    <div class="h-stat"><div class="h-stat-v"><span class="counter-val" data-target="2">0</span></div><div class="h-stat-l">Fleet Nodes</div></div>
+    <div class="h-stat" style="--i:0"><div class="h-stat-v"><span class="counter-val" data-target="107">0</span></div><div class="h-stat-l">Agents</div></div>
+    <div class="h-stat" style="--i:1"><div class="h-stat-v"><span class="live-dot"></span><span id="onlineCount">25</span></div><div class="h-stat-l">Online Now</div></div>
+    <div class="h-stat" style="--i:2"><div class="h-stat-v"><span class="counter-val" data-target="16">0</span></div><div class="h-stat-l">Departments</div></div>
+    <div class="h-stat" style="--i:3"><div class="h-stat-v"><span class="counter-val" data-target="18">0</span></div><div class="h-stat-l">Connected Services</div></div>
   </div>
   <div class="scroll-hint"><span>Scroll</span><div class="scroll-arrow"></div></div>
 </section>
@@ -204,7 +221,7 @@ footer{position:relative;z-index:2;border-top:1px solid var(--glass-border);padd
     <p class="sec-sub gsap-fade">Four command centers powering your AI operations.</p>
     <div class="tab-bar"><button class="tab-btn active" onclick="switchTab('bridge')" data-tab="bridge">Bridge Command</button><button class="tab-btn" onclick="switchTab('roster')" data-tab="roster">Agent Roster</button><button class="tab-btn" onclick="switchTab('fleet')" data-tab="fleet">Starship Fleet</button><button class="tab-btn" onclick="switchTab('devhq')" data-tab="devhq">Dev HQ</button></div>
     <div class="tab-content active" id="tab-bridge"><h3>Bridge Command</h3><p>The nerve center. Real-time dispatch monitoring, station status, model management, and task orchestration. Watch your 107 agents route tasks through the 4-tier escalation chain.</p></div>
-    <div class="tab-content" id="tab-roster"><h3>Agent Roster</h3><p>107 specialized agents across 10 stations. Each has unique skills, personality, and model assignments. Manage shifts, training, skills, and workload — like a real team because they are one.</p></div>
+    <div class="tab-content" id="tab-roster"><h3>Agent Roster</h3><p>107 specialized agents across 16 departments. Each has unique skills, personality, and model assignments. Manage shifts, training, skills, and workload — like a real team because they are one.</p></div>
     <div class="tab-content" id="tab-fleet"><h3>Starship Fleet</h3><p>Multi-node GPU fleet management. Monitor hardware health, model distribution, VRAM allocation, and dispatch routing across your entire infrastructure.</p></div>
     <div class="tab-content" id="tab-devhq"><h3>Dev HQ</h3><p>Your development command center. Project tracking, task management, knowledge base, architectural decisions, and code health metrics.</p></div>
   </div>
@@ -285,10 +302,10 @@ footer{position:relative;z-index:2;border-top:1px solid var(--glass-border);padd
   <div class="container">
     <h2 class="sec-title gsap-fade">Frequently Asked Questions</h2>
     <div class="faq-list" style="margin-top:48px">
-      <div class="faq-item"><button class="faq-q" aria-expanded="false" onclick="toggleFaq(this)">What is A.R.C.H.I.E.?<span class="faq-chevron">&#9662;</span></button><div class="faq-a"><p>A.R.C.H.I.E. (Autonomous Reasoning, Coordination & Hierarchical Intelligence Engine) is the AI technology platform built by Kytran Empowerment. It powers 107 specialized agents organized into 10 stations, handling everything from data analysis to creative generation to security monitoring — all orchestrated through a unified dispatch system.</p></div></div>
-      <div class="faq-item"><button class="faq-q" aria-expanded="false" onclick="toggleFaq(this)">How does AI orchestration work?<span class="faq-chevron">&#9662;</span></button><div class="faq-a"><p>The Bridge dispatcher routes tasks through a 4-tier escalation chain: home station agent, capability match, cross-station, fleet node, then cloud fallback. Each of the 107 agents has specialized models and skills assigned to their station.</p></div></div>
-      <div class="faq-item"><button class="faq-q" aria-expanded="false" onclick="toggleFaq(this)">Is ARCHIE self-hosted?<span class="faq-chevron">&#9662;</span></button><div class="faq-a"><p>Yes. ARCHIE runs entirely on your infrastructure. Your data never leaves your servers. The platform supports GPU fleet nodes for distributed processing across multiple machines.</p></div></div>
-      <div class="faq-item"><button class="faq-q" aria-expanded="false" onclick="toggleFaq(this)">How many agents does Kytran Empowerment have?<span class="faq-chevron">&#9662;</span></button><div class="faq-a"><p>107 specialized agents across 10 stations at Kytran Empowerment: Command, Analytics, Creative, Engineering, Communications, Research, Security, Logistics, Diplomatic, and Operations. Each agent uses AI technology designed and built with A.R.C.H.I.E. to deliver specialized expertise.</p></div></div>
+      <div class="faq-item"><button class="faq-q" aria-expanded="false" onclick="toggleFaq(this)">What is A.R.C.H.I.E.?<span class="faq-chevron">&#9662;</span></button><div class="faq-a"><p>A.R.C.H.I.E. (Autonomous Reasoning, Coordination & Hierarchical Intelligence Engine) is the AI technology platform built by Kytran Empowerment. It powers 107 specialized agents organized across 16 departments, handling everything from data analysis to creative generation to security monitoring — all orchestrated through a unified dispatch system.</p></div></div>
+      <div class="faq-item"><button class="faq-q" aria-expanded="false" onclick="toggleFaq(this)">How does AI orchestration work?<span class="faq-chevron">&#9662;</span></button><div class="faq-a"><p>The Bridge dispatcher routes tasks through a 4-tier escalation chain: department lead, capability match, cross-department, connected service, then cloud fallback. Each of the 107 agents has specialized skills assigned to their department.</p></div></div>
+      <div class="faq-item"><button class="faq-q" aria-expanded="false" onclick="toggleFaq(this)">Is ARCHIE self-hosted?<span class="faq-chevron">&#9662;</span></button><div class="faq-a"><p>Yes. ARCHIE runs entirely on your infrastructure. Your data never leaves your servers. The platform supports GPU connected services for distributed processing across multiple machines.</p></div></div>
+      <div class="faq-item"><button class="faq-q" aria-expanded="false" onclick="toggleFaq(this)">How many agents does Kytran Empowerment have?<span class="faq-chevron">&#9662;</span></button><div class="faq-a"><p>107 specialized agents across 16 departments at Kytran Empowerment including Analytics, Creative, Engineering, Communications, Research, Security, Logistics, Operations, and more. Each agent uses AI technology designed and built with A.R.C.H.I.E. to deliver specialized expertise.</p></div></div>
       <div class="faq-item"><button class="faq-q" aria-expanded="false" onclick="toggleFaq(this)">What about data privacy?<span class="faq-chevron">&#9662;</span></button><div class="faq-a"><p>All data is scoped per-user with strict isolation. Vigil, the Ethics & Governance officer, enforces IAAE transparency constraints across all operations. No data is sent to external services without explicit Tier 2 human approval.</p></div></div>
       <div class="faq-item"><button class="faq-q" aria-expanded="false" onclick="toggleFaq(this)">How is ARCHIE different from ChatGPT?<span class="faq-chevron">&#9662;</span></button><div class="faq-a"><p>ChatGPT is a single model chatbot. A.R.C.H.I.E. is the orchestration platform built by Kytran Empowerment, powering 107 specialized agents each with their own skills and station assignments. It's self-hosted, multi-GPU, and includes image generation, fleet management, SaaS tools, and enterprise governance.</p></div></div>
     </div>
@@ -321,7 +338,7 @@ footer{position:relative;z-index:2;border-top:1px solid var(--glass-border);padd
 </footer>
 
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Kytran Empowerment Inc.","url":"https://www.kytranempowerment.com","logo":"https://www.kytranempowerment.com/logo.png","description":"Kytran Empowerment — SaaS and consulting platform with 107 specialized agents powered by A.R.C.H.I.E. technology.","contactPoint":{"@type":"ContactPoint","email":"contact@kytranempowerment.com","contactType":"customer service"}}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is A.R.C.H.I.E.?","acceptedAnswer":{"@type":"Answer","text":"A.R.C.H.I.E. is Kytran Empowerment's self-hosted platform powering 107 specialized agents organized into 10 stations."}},{"@type":"Question","name":"How does AI orchestration work?","acceptedAnswer":{"@type":"Answer","text":"The Bridge dispatcher routes tasks through a 4-tier escalation chain: home station, capability match, cross-station, fleet node, cloud fallback."}},{"@type":"Question","name":"Is ARCHIE self-hosted?","acceptedAnswer":{"@type":"Answer","text":"Yes. ARCHIE runs entirely on your infrastructure. Your data never leaves your servers."}},{"@type":"Question","name":"How many agents does Kytran Empowerment have?","acceptedAnswer":{"@type":"Answer","text":"107 specialized agents across 10 stations, powered by A.R.C.H.I.E. technology."}},{"@type":"Question","name":"What about data privacy?","acceptedAnswer":{"@type":"Answer","text":"All data is scoped per-user with strict isolation. Vigil enforces IAAE transparency constraints."}},{"@type":"Question","name":"How is ARCHIE different from ChatGPT?","acceptedAnswer":{"@type":"Answer","text":"A.R.C.H.I.E. is Kytran Empowerment's orchestration platform powering 107 specialized agents. Self-hosted, multi-GPU, with image generation, fleet management, and enterprise tools."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is A.R.C.H.I.E.?","acceptedAnswer":{"@type":"Answer","text":"A.R.C.H.I.E. is Kytran Empowerment's self-hosted platform powering 107 specialized agents organized across 16 departments."}},{"@type":"Question","name":"How does AI orchestration work?","acceptedAnswer":{"@type":"Answer","text":"The Bridge dispatcher routes tasks through a 4-tier escalation chain: home station, capability match, cross-station, connected service, cloud fallback."}},{"@type":"Question","name":"Is ARCHIE self-hosted?","acceptedAnswer":{"@type":"Answer","text":"Yes. ARCHIE runs entirely on your infrastructure. Your data never leaves your servers."}},{"@type":"Question","name":"How many agents does Kytran Empowerment have?","acceptedAnswer":{"@type":"Answer","text":"107 specialized agents across 16 departments, powered by A.R.C.H.I.E. technology."}},{"@type":"Question","name":"What about data privacy?","acceptedAnswer":{"@type":"Answer","text":"All data is scoped per-user with strict isolation. Vigil enforces IAAE transparency constraints."}},{"@type":"Question","name":"How is ARCHIE different from ChatGPT?","acceptedAnswer":{"@type":"Answer","text":"A.R.C.H.I.E. is Kytran Empowerment's orchestration platform powering 107 specialized agents. Self-hosted, multi-GPU, with image generation, fleet management, and enterprise tools."}}]}</script>
 
 <script>
 function switchTab(id){document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active')});document.querySelectorAll('.tab-content').forEach(function(c){c.classList.remove('active')});document.querySelector('[data-tab="'+id+'"]').classList.add('active');document.getElementById('tab-'+id).classList.add('active')}
