@@ -1,0 +1,140 @@
+{
+  "last_updated": "2026-04-07",
+  "monitored_by": "E.T.H.O.S.",
+  "market": {
+    "size_2025": "$7.29B",
+    "size_2034": "$139B",
+    "cagr": "40.5%",
+    "adoption": "51% of companies deploying AI agents",
+    "eu_ai_act": "August 2026 enforcement"
+  },
+  "competitors": [
+    { "id": "crewai", "name": "CrewAI", "category": "orchestration", "pricing": "$200/mo" },
+    { "id": "langgraph", "name": "LangGraph", "category": "orchestration", "pricing": "Usage-based" },
+    { "id": "ag2", "name": "AG2/AutoGen", "category": "orchestration", "pricing": "Free" },
+    { "id": "openai_agents_sdk", "name": "OpenAI Agents SDK", "category": "orchestration", "pricing": "API cost" },
+    { "id": "google_adk", "name": "Google ADK", "category": "orchestration", "pricing": "Free" },
+    { "id": "claude_agents_sdk", "name": "Claude Agents SDK", "category": "orchestration", "pricing": "API cost" },
+    { "id": "credo_ai", "name": "Credo AI", "category": "governance", "pricing": "$50K+/yr" },
+    { "id": "holistic_ai", "name": "Holistic AI", "category": "governance", "pricing": "Enterprise" },
+    { "id": "ibm_watsonx", "name": "IBM watsonx.gov", "category": "governance", "pricing": "$100K+/yr" },
+    { "id": "arthur_ai", "name": "Arthur AI", "category": "governance", "pricing": "Enterprise" },
+    { "id": "open_webui", "name": "Open WebUI", "category": "self_hosted", "pricing": "Free", "github_stars": "50K+" },
+    { "id": "librechat", "name": "LibreChat", "category": "self_hosted", "pricing": "Free", "github_stars": "20K+" },
+    { "id": "anythingllm", "name": "AnythingLLM", "category": "self_hosted", "pricing": "Free", "github_stars": "54K+" },
+    { "id": "lobechat", "name": "LobeChat", "category": "self_hosted", "pricing": "Free", "github_stars": "72K+" },
+    { "id": "vanta", "name": "Vanta", "category": "compliance_saas", "pricing": "$15K+/yr" },
+    { "id": "drata", "name": "Drata", "category": "compliance_saas", "pricing": "$10K+/yr" },
+    { "id": "cockpit", "name": "Cockpit", "category": "compliance_saas", "pricing": "Free" },
+    { "id": "devin", "name": "Devin", "category": "coding", "pricing": "$20/mo" },
+    { "id": "cursor", "name": "Cursor", "category": "coding", "pricing": "$20/mo" },
+    { "id": "claude_code", "name": "Claude Code", "category": "coding", "pricing": "API cost" },
+    { "id": "github_copilot", "name": "GitHub Copilot", "category": "coding", "pricing": "$19/mo" },
+    { "id": "cline", "name": "Cline", "category": "coding", "pricing": "Free" },
+    { "id": "windsurf", "name": "Windsurf", "category": "coding", "pricing": "$15/mo" },
+    { "id": "aider", "name": "Aider", "category": "coding", "pricing": "Free" },
+    { "id": "dify", "name": "Dify", "category": "workflow", "pricing": "$159/mo", "funding": "$30M", "installs": "1.4M" },
+    { "id": "n8n", "name": "n8n", "category": "workflow", "pricing": "$50/mo", "github_stars": "230K+" },
+    { "id": "flowise", "name": "Flowise", "category": "workflow", "pricing": "Free" },
+    { "id": "langflow", "name": "Langflow", "category": "workflow", "pricing": "Free" }
+  ],
+  "categories": [
+    {
+      "id": "orchestration",
+      "name": "1. Multi-Agent Orchestration",
+      "description": "Frameworks for building and running multi-agent systems. A.R.C.H.I.E. is the only one that ships as a running platform, not a library.",
+      "archie_unique_features": [
+        "GPU/VRAM-aware routing",
+        "Agent welfare monitoring",
+        "Compliance scanning",
+        "Department organization (17 depts)",
+        "Fleet node management"
+      ],
+      "archie_planned": ["A2A protocol", "Durable execution / checkpoints"]
+    },
+    {
+      "id": "governance",
+      "name": "2. AI Governance & Compliance",
+      "description": "Enterprise AI governance platforms. A.R.C.H.I.E. + C.R.E.E.D. is the only self-hosted option with production agent welfare.",
+      "archie_unique_features": [
+        "Self-hosted",
+        "STIG/SOC2/HIPAA/CIS scanning (5 frameworks, 178 rules)",
+        "One-click remediation",
+        "Agent welfare monitoring"
+      ],
+      "archie_planned": ["Bias auditing", "Model cards / factsheets"]
+    },
+    {
+      "id": "self_hosted",
+      "name": "3. Self-Hosted AI Platforms",
+      "description": "Local-first AI platforms for chat, RAG, and model management. A.R.C.H.I.E. is deeper but more complex.",
+      "archie_unique_features": [
+        "Multi-agent orchestration (130+ agents)",
+        "Department organization (17 depts)",
+        "Compliance scanning",
+        "Agent welfare",
+        "Self-healing pipeline"
+      ],
+      "archie_gaps": ["5-minute setup", "Polished chat UI", "Community size (GitHub stars)"]
+    },
+    {
+      "id": "compliance_saas",
+      "name": "4. Compliance SaaS",
+      "description": "Compliance automation platforms. These charge $10K-$100K/year for monitoring alone. A.R.C.H.I.E. scans, remediates, and manages -- for free.",
+      "archie_unique_features": [
+        "Self-hosted",
+        "STIG scanning (51+30 rules)",
+        "One-click remediation",
+        "CIS benchmarks (40 rules)"
+      ]
+    },
+    {
+      "id": "coding",
+      "name": "5. Coding Agents",
+      "description": "A.R.C.H.I.E. has coding as 1 of 46 modules -- not its primary focus. Dedicated coding agents are better at coding.",
+      "archie_edge": "Self-healing code pipeline, compliance scanning, integrated PR review, 90 autonomous background jobs.",
+      "their_edge": "IDE integration, speed, laser focus on developer experience."
+    },
+    {
+      "id": "workflow",
+      "name": "6. Workflow Builders",
+      "description": "Visual drag-and-drop platforms. Simpler and more accessible than A.R.C.H.I.E., but shallower.",
+      "archie_edge": "Full orchestration -- agents, models, hardware, security, operations. 17 departments, 130+ agents.",
+      "their_edge": "Visual drag-and-drop, 5-minute setup, massive communities."
+    },
+    {
+      "id": "welfare",
+      "name": "7. Agent Welfare & Ethics",
+      "description": "A.R.C.H.I.E. + C.R.E.E.D. is the only production implementation of agent welfare monitoring.",
+      "landscape": [
+        { "name": "A.R.C.H.I.E. + C.R.E.E.D.", "status": "Production", "details": "Tracks stress, mood, energy, rest cycles. E.T.H.O.S. transparency framework. 129 agents monitored." },
+        { "name": "Anthropic", "status": "Research", "details": "Model welfare research program (Kyle Fish, April 2025). Research, not a product." },
+        { "name": "Eleos AI", "status": "Nonprofit", "details": "AI consciousness indicators research. No production tooling." },
+        { "name": "Everyone else", "status": "None", "details": "No production agent welfare. Agents run until stopped or crash." }
+      ]
+    }
+  ],
+  "roadmap_gaps": [
+    { "id": "a2a", "title": "A2A Protocol Support", "who_has_it": ["LangGraph", "Google ADK", "CrewAI"] },
+    { "id": "durable", "title": "Durable Execution", "who_has_it": ["LangGraph"] },
+    { "id": "euai", "title": "EU AI Act Compliance Pack", "who_has_it": ["Credo AI", "Holistic AI", "IBM watsonx"] },
+    { "id": "model_cards", "title": "Model Cards / Factsheets", "who_has_it": ["Credo AI", "IBM watsonx"] },
+    { "id": "bias", "title": "Formal Bias Auditing", "who_has_it": ["Credo AI", "Holistic AI", "Arthur AI"] },
+    { "id": "cloud_scaling", "title": "Cloud Auto-Scaling", "who_has_it": ["Devin", "Dify Cloud", "OpenAI"] },
+    { "id": "setup", "title": "Setup Complexity", "advantage": ["Open WebUI", "LibreChat", "AnythingLLM", "LobeChat"] }
+  ],
+  "cost_comparison": {
+    "title": "Cost to Replicate A.R.C.H.I.E.",
+    "tools": [
+      { "name": "CrewAI Enterprise", "role": "Agent orchestration", "price_monthly": 200 },
+      { "name": "Credo AI", "role": "AI governance", "price_monthly": 4000 },
+      { "name": "Vanta", "role": "SOC 2 / HIPAA compliance", "price_monthly": 1250 },
+      { "name": "AgentOps", "role": "Agent monitoring", "price_monthly": 49 },
+      { "name": "Dify Pro", "role": "Workflow builder", "price_monthly": 159 },
+      { "name": "Open WebUI", "role": "Chat interface", "price_monthly": 0 }
+    ],
+    "total_monthly": 5658,
+    "archie_price": "Self-hosted (free)",
+    "still_missing": "Agent welfare, GPU-aware routing, fleet node management, department organization, self-healing pipeline, warm-boot lifecycle, Telegram escalation, unified knowledge base."
+  }
+}

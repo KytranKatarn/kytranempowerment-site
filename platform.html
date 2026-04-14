@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en" data-barba="wrapper">
+<head>
+    <!-- Google Analytics (fires only after consent) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-259QFNHSSN"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('consent', 'default', { analytics_storage: 'denied' });
+      if (localStorage.getItem('ke-cookie-consent') === 'accepted') {
+        gtag('consent', 'update', { analytics_storage: 'granted' });
+        gtag('config', 'G-259QFNHSSN', { anonymize_ip: true });
+      }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Platform — Kytran Empowerment</title>
+    <meta name="description" content="A.R.C.H.I.E. Platform by Kytran Empowerment — autonomous AI engine with 16 departments, fleet dispatch, and self-healing infrastructure.">
+    <meta name="theme-color" content="#0a0a1a">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="favicon.ico" sizes="32x32">
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+    <link rel="manifest" href="site.webmanifest">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Antonio:wght@400;700&family=Orbitron:wght@400;500;700;900&family=IBM+Plex+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/base.css?v=20260407q">
+    <link rel="stylesheet" href="css/components.css?v=20260407q">
+    <link rel="stylesheet" href="css/responsive.css?v=20260407q">
+    <link rel="stylesheet" href="css/reduced-motion.css?v=20260407q">
+    <style>
+        /* Stats grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .stat-card {
+            text-align: center;
+            padding: 1.5rem 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        .stat-card__number {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2rem, 4vw, 2.8rem);
+            font-weight: 700;
+            line-height: 1.1;
+        }
+        .stat-card__label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-secondary, #8892a4);
+        }
+
+        /* Floor sections */
+        .floor-section { margin-bottom: 3rem; }
+        .floor-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .floor-header__bar {
+            width: 6px;
+            height: 36px;
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+        .floor-header__title {
+            font-family: 'Antonio', sans-serif;
+            font-size: 1.4rem;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+        .floor-header__count {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-secondary, #8892a4);
+            margin-left: auto;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        /* Department cards grid */
+        .dept-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.25rem;
+        }
+        .dept-grid--single { grid-template-columns: 1fr; max-width: 480px; }
+
+        .dept-card {
+            padding: 1.75rem;
+            border-left: 4px solid var(--dept-accent, #8892a4);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .dept-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        .dept-card__acronym {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            color: var(--dept-accent, #00e5ff);
+        }
+        .dept-card__expansion {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--text-secondary, #8892a4);
+            letter-spacing: 0.03em;
+            line-height: 1.4;
+        }
+        .dept-card__dept {
+            font-family: 'Antonio', sans-serif;
+            font-size: 1.05rem;
+            letter-spacing: 0.02em;
+            margin-top: 0.25rem;
+        }
+        .dept-card__floor-badge {
+            display: inline-block;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: var(--dept-accent, #8892a4);
+            width: fit-content;
+        }
+        .dept-card__text {
+            color: var(--text-secondary, #8892a4);
+            font-size: 0.88rem;
+            line-height: 1.6;
+            margin-top: 0.25rem;
+        }
+
+        /* Floor accent colors */
+        .floor--bridge    { --dept-accent: #00e5ff; }
+        .floor--ops       { --dept-accent: #a3e635; }
+        .floor--eng       { --dept-accent: #fbbf24; }
+        .floor--creative  { --dept-accent: #f472b6; }
+        .floor--services  { --dept-accent: #8b5cf6; }
+
+        /* Architecture grid */
+        .arch-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.25rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .arch-grid--2col {
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        }
+        .arch-card {
+            padding: 2rem;
+            position: relative;
+        }
+        .arch-card__step {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            background: rgba(0, 229, 255, 0.1);
+            border: 1px solid rgba(0, 229, 255, 0.25);
+            color: var(--accent-primary, #00e5ff);
+        }
+        .arch-card__title {
+            font-family: 'Antonio', sans-serif;
+            font-size: 1.15rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.02em;
+        }
+        .arch-card__text {
+            color: var(--text-secondary, #8892a4);
+            font-size: 0.92rem;
+            line-height: 1.65;
+        }
+
+        /* Capabilities grid */
+        .cap-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .cap-card {
+            padding: 1.5rem;
+            text-align: center;
+        }
+        .cap-card__icon {
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+            display: block;
+        }
+        .cap-card__title {
+            font-family: 'Antonio', sans-serif;
+            font-size: 1rem;
+            margin-bottom: 0.4rem;
+            letter-spacing: 0.02em;
+        }
+        .cap-card__text {
+            color: var(--text-secondary, #8892a4);
+            font-size: 0.82rem;
+            line-height: 1.55;
+        }
+
+        /* CTA section */
+        .cta-row {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+        .cta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.9rem 2rem;
+            border-radius: 8px;
+            font-family: 'Antonio', sans-serif;
+            font-size: 1.05rem;
+            letter-spacing: 0.04em;
+            text-decoration: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            text-transform: uppercase;
+        }
+        .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(0,0,0,0.4); }
+        .cta-btn--primary {
+            background: linear-gradient(135deg, #00e5ff 0%, #00b8d4 100%);
+            color: #0a0a1a;
+            font-weight: 700;
+        }
+        .cta-btn--secondary {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(0,229,255,0.25);
+            color: #00e5ff;
+        }
+
+        @media (max-width: 768px) {
+            .dept-grid { grid-template-columns: repeat(2, 1fr); }
+            .arch-grid--2col { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .dept-grid, .dept-grid--single { grid-template-columns: 1fr; max-width: none; }
+            .arch-grid, .arch-grid--2col { grid-template-columns: 1fr; }
+            .cap-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+    <link rel="canonical" href="https://kytranempowerment.com/platform.html">
+    <meta property="og:title" content="Platform — Kytran Empowerment">
+    <meta property="og:description" content="A.R.C.H.I.E. Platform by Kytran Empowerment — autonomous AI engine with 16 departments, fleet dispatch, and self-healing infrastructure.">
+    <meta property="og:url" content="https://kytranempowerment.com/platform.html">
+    <meta property="og:image" content="https://kytranempowerment.com/assets/og-default.png">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+    <!-- Global background layers -->
+    <div class="aurora"></div>
+    <div class="dot-grid"></div>
+    <div class="noise-overlay"></div>
+    <div class="cursor-glow" id="cursorGlow"></div>
+
+
+
+
+
+
+
+
+
+
+    <!-- Navigation -->
+    <nav class="nav" role="navigation" aria-label="Main navigation">
+      <div class="nav__inner">
+        <a href="/" class="nav__brand">
+          <img src="assets/logo-sm.png" alt="Kytran Empowerment logo" class="nav__logo-img">
+          <span class="nav__brand-text">Kytran Empowerment</span>
+        </a>
+
+        <div class="nav__links">
+          <div class="nav__dropdown">
+            <button class="nav__link nav__dropdown-trigger" aria-expanded="false" aria-haspopup="true">
+              <span data-i18n="nav.products">Products</span>
+              <svg class="nav__chevron" width="12" height="12" viewBox="0 0 12 12"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+            </button>
+            <div class="nav__dropdown-menu">
+              <a href="platform.html" class="nav__dropdown-item" data-i18n="nav.platform">Platform (A.R.C.H.I.E.)</a>
+              <a href="ai-directors.html" class="nav__dropdown-item" data-i18n="nav.ai_directors">AI Directors</a>
+              <a href="archie-code.html" class="nav__dropdown-item" data-i18n="nav.archie_code">ARCHIE Code CLI</a>
+              <div class="nav__dropdown-divider"></div>
+              <a href="market-watch.html" class="nav__dropdown-item" data-i18n="nav.market_watch">Market Watch</a>
+              <a href="civic-watch.html" class="nav__dropdown-item" data-i18n="nav.civic_watch">Civic Watch</a>
+              <a href="legal-watch.html" class="nav__dropdown-item" data-i18n="nav.legal_watch">Legal Watch</a>
+              <a href="gov-watch.html" class="nav__dropdown-item" data-i18n="nav.gov_watch">Gov Watch</a>
+              <div class="nav__dropdown-divider"></div>
+              <a href="business-suite.html" class="nav__dropdown-item" data-i18n="nav.business_suite">Business Suite</a>
+              <a href="system-operations.html" class="nav__dropdown-item" data-i18n="nav.sysops">System Operations</a>
+            </div>
+          </div>
+
+          <div class="nav__dropdown">
+            <button class="nav__link nav__dropdown-trigger" aria-expanded="false" aria-haspopup="true">
+              <span data-i18n="nav.services">Services</span>
+              <svg class="nav__chevron" width="12" height="12" viewBox="0 0 12 12"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+            </button>
+            <div class="nav__dropdown-menu">
+              <a href="services.html" class="nav__dropdown-item" data-i18n="nav.all_services">All Services</a>
+              <div class="nav__dropdown-divider"></div>
+              <a href="website-services.html" class="nav__dropdown-item">Website Design &amp; Hosting</a>
+              <a href="security-services.html" class="nav__dropdown-item">Security Testing</a>
+              <a href="ai-services.html" class="nav__dropdown-item">AI Automation</a>
+              <a href="compliance-services.html" class="nav__dropdown-item" data-i18n="nav.compliance_scanning">Compliance Scanning</a>
+              <div class="nav__dropdown-divider"></div>
+              <a href="membership.html" class="nav__dropdown-item" data-i18n="nav.pricing">Membership &amp; Pricing</a>
+            </div>
+          </div>
+
+          <div class="nav__dropdown">
+            <button class="nav__link nav__dropdown-trigger" aria-expanded="false" aria-haspopup="true">
+              <span data-i18n="nav.trust">Trust</span>
+              <svg class="nav__chevron" width="12" height="12" viewBox="0 0 12 12"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+            </button>
+            <div class="nav__dropdown-menu">
+              <a href="compliance.html" class="nav__dropdown-item" data-i18n="nav.trust_center">Trust Center</a>
+              <a href="competitors.html" class="nav__dropdown-item" data-i18n="nav.competitors">Why A.R.C.H.I.E.</a>
+              <a href="creed.html" class="nav__dropdown-item" data-i18n="nav.creed">C.R.E.E.D.</a>
+            </div>
+          </div>
+
+          <div class="nav__dropdown">
+            <button class="nav__link nav__dropdown-trigger" aria-expanded="false" aria-haspopup="true">
+              <span data-i18n="nav.company">Company</span>
+              <svg class="nav__chevron" width="12" height="12" viewBox="0 0 12 12"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+            </button>
+            <div class="nav__dropdown-menu">
+              <a href="about.html" class="nav__dropdown-item" data-i18n="nav.about">About</a>
+              <a href="vision.html" class="nav__dropdown-item" data-i18n="nav.vision">Vision</a>
+              <a href="directory.html" class="nav__dropdown-item" data-i18n="nav.directory">Directory</a>
+              <a href="tips.html" class="nav__dropdown-item" data-i18n="nav.tips">Tips &amp; Tricks</a>
+              <a href="links.html" class="nav__dropdown-item" data-i18n="nav.links">Programs &amp; Resources</a>
+              <a href="submit-story.html" class="nav__dropdown-item" data-i18n="nav.submit_story">Submit Your Story</a>
+            </div>
+          </div>
+
+          <a href="store.html" class="nav__link" data-i18n="nav.store">Store</a>
+          <a href="contact.html" class="nav__link" data-i18n="nav.contact">Contact</a>
+        </div>
+
+        <div class="nav__actions">
+          <button class="nav__lang-btn" aria-label="Change language" title="Change language">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M2 10h16M10 2c-2.5 3-2.5 13 0 16M10 2c2.5 3 2.5 13 0 16" stroke="currentColor" stroke-width="1.5"/></svg>
+          </button>
+          <a href="membership.html" class="nav__link nav__link--cta" data-i18n="nav.get_started">Get Started</a>
+          <button class="nav__menu-btn" aria-label="Toggle menu" aria-expanded="false">
+            <span class="nav__menu-icon"></span>
+          </button>
+        </div>
+      </div>
+
+
+    </nav>
+
+    <div class="lang-overlay" hidden>
+      <div class="lang-overlay__panel">
+        <button class="lang-overlay__close" aria-label="Close language selector">&times;</button>
+        <h3 class="lang-overlay__title" data-i18n="lang.choose">Choose Language</h3>
+        <div class="lang-overlay__grid">
+          <button class="lang-overlay__btn" data-lang="en">English</button>
+          <button class="lang-overlay__btn" data-lang="fr">Fran&ccedil;ais (QC)</button>
+          <button class="lang-overlay__btn" data-lang="es">Espa&ntilde;ol</button>
+          <button class="lang-overlay__btn" data-lang="pt">Portugu&ecirc;s</button>
+          <button class="lang-overlay__btn" data-lang="de">Deutsch</button>
+          <button class="lang-overlay__btn" data-lang="zh">&#20013;&#25991;</button>
+          <button class="lang-overlay__btn" data-lang="ar" dir="rtl">&#1575;&#1604;&#1593;&#1585;&#1576;&#1610;&#1577;</button>
+          <button class="lang-overlay__btn" data-lang="he" dir="rtl">&#1506;&#1489;&#1512;&#1497;&#1514;</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-mobile" id="navMobile" aria-hidden="true">
+      <div class="nav-mobile__inner">
+        <div class="nav-mobile__group">
+          <button class="nav-mobile__trigger" aria-expanded="false">
+            <span data-i18n="nav.products">Products</span>
+            <svg class="nav-mobile__chevron" width="16" height="16" viewBox="0 0 12 12"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+          </button>
+          <div class="nav-mobile__items">
+            <a href="platform.html" data-i18n="nav.platform">Platform (A.R.C.H.I.E.)</a>
+            <a href="ai-directors.html" data-i18n="nav.ai_directors">AI Directors</a>
+            <a href="archie-code.html" data-i18n="nav.archie_code">ARCHIE Code CLI</a>
+            <a href="market-watch.html" data-i18n="nav.market_watch">Market Watch</a>
+            <a href="civic-watch.html" data-i18n="nav.civic_watch">Civic Watch</a>
+            <a href="legal-watch.html" data-i18n="nav.legal_watch">Legal Watch</a>
+            <a href="gov-watch.html" data-i18n="nav.gov_watch">Gov Watch</a>
+            <a href="business-suite.html" data-i18n="nav.business_suite">Business Suite</a>
+            <a href="system-operations.html" data-i18n="nav.sysops">System Operations</a>
+          </div>
+        </div>
+        <div class="nav-mobile__group">
+          <button class="nav-mobile__trigger" aria-expanded="false">
+            <span data-i18n="nav.services">Services</span>
+            <svg class="nav-mobile__chevron" width="16" height="16" viewBox="0 0 12 12"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+          </button>
+          <div class="nav-mobile__items">
+            <a href="services.html" data-i18n="nav.all_services">All Services</a>
+            <a href="website-services.html">Website Design &amp; Hosting</a>
+            <a href="security-services.html">Security Testing</a>
+            <a href="ai-services.html">AI Automation</a>
+            <a href="compliance-services.html" data-i18n="nav.compliance_scanning">Compliance Scanning</a>
+            <a href="membership.html" data-i18n="nav.pricing">Membership &amp; Pricing</a>
+          </div>
+        </div>
+        <div class="nav-mobile__group">
+          <button class="nav-mobile__trigger" aria-expanded="false">
+            <span data-i18n="nav.trust">Trust</span>
+            <svg class="nav-mobile__chevron" width="16" height="16" viewBox="0 0 12 12"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+          </button>
+          <div class="nav-mobile__items">
+            <a href="compliance.html" data-i18n="nav.trust_center">Trust Center</a>
+            <a href="competitors.html" data-i18n="nav.competitors">Why A.R.C.H.I.E.</a>
+            <a href="creed.html" data-i18n="nav.creed">C.R.E.E.D.</a>
+          </div>
+        </div>
+        <div class="nav-mobile__group">
+          <button class="nav-mobile__trigger" aria-expanded="false">
+            <span data-i18n="nav.company">Company</span>
+            <svg class="nav-mobile__chevron" width="16" height="16" viewBox="0 0 12 12"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+          </button>
+          <div class="nav-mobile__items">
+            <a href="about.html" data-i18n="nav.about">About</a>
+            <a href="vision.html" data-i18n="nav.vision">Vision</a>
+            <a href="directory.html" data-i18n="nav.directory">Directory</a>
+            <a href="tips.html" data-i18n="nav.tips">Tips &amp; Tricks</a>
+            <a href="links.html" data-i18n="nav.links">Programs &amp; Resources</a>
+            <a href="submit-story.html" data-i18n="nav.submit_story">Submit Your Story</a>
+          </div>
+        </div>
+        <a href="store.html" class="nav-mobile__direct" data-i18n="nav.store">Store</a>
+        <a href="contact.html" class="nav-mobile__direct" data-i18n="nav.contact">Contact</a>
+        <a href="membership.html" class="nav-mobile__cta" data-i18n="nav.get_started">Get Started</a>
+      </div>
+    </div>
+
+
+    <!-- Page content -->
+    <main data-barba="container" data-barba-namespace="platform">
+
+        <!-- Hero -->
+        <section class="hero">
+            <div class="hero__content container">
+                <h1 class="hero__title gradient-text" data-i18n="platform-hero-title">Meet A.R.C.H.I.E.</h1>
+                <p class="hero__tagline" data-i18n="platform-hero-subtitle">Autonomous Resource &amp; Cognitive Hyperintelligence Engine</p>
+            </div>
+        </section>
+
+        <!-- Platform at a Glance -->
+        <section class="section">
+            <div class="container">
+                <div class="stats-grid" data-stagger>
+                    <div class="glass-panel stat-card">
+                        <span class="stat-card__number gradient-text">16</span>
+                        <span class="stat-card__label" data-i18n="platform-stat-depts">Departments</span>
+                    </div>
+                    <div class="glass-panel stat-card">
+                        <span class="stat-card__number gradient-text">129</span>
+                        <span class="stat-card__label" data-i18n="platform-stat-agents">Agents</span>
+                    </div>
+                    <div class="glass-panel stat-card">
+                        <span class="stat-card__number gradient-text">25K+</span>
+                        <span class="stat-card__label" data-i18n="platform-stat-kb">Knowledge Entries</span>
+                    </div>
+                    <div class="glass-panel stat-card">
+                        <span class="stat-card__number gradient-text">46+</span>
+                        <span class="stat-card__label" data-i18n="platform-stat-modules">Modules</span>
+                    </div>
+                    <div class="glass-panel stat-card">
+                        <span class="stat-card__number gradient-text">90</span>
+                        <span class="stat-card__label" data-i18n="platform-stat-jobs">Autonomous Jobs</span>
+                    </div>
+                    <div class="glass-panel stat-card">
+                        <span class="stat-card__number gradient-text">8</span>
+                        <span class="stat-card__label" data-i18n="platform-stat-langs">Languages</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- What is A.R.C.H.I.E.? -->
+        <section class="section">
+            <div class="container">
+                <h2 class="section__title" data-split data-i18n="platform-what-title">What is A.R.C.H.I.E.?</h2>
+                <div class="glass-panel" style="padding:2rem;max-width:800px;margin:0 auto 2rem;">
+                    <p style="margin-bottom:1rem;">A.R.C.H.I.E. is a self-orchestrating AI operations platform that coordinates 129 autonomous agents across 16 specialized departments. Each agent has a defined role, a home department, and a skill set ranging from code generation and financial analysis to creative design and compliance scanning.</p>
+                    <p style="margin-bottom:1rem;">Unlike traditional automation that waits for human direction, A.R.C.H.I.E. agents collaborate, escalate tasks across departments, and continuously self-improve. The platform audits its own codebase, detects security vulnerabilities, and proposes fixes — all governed by ethical oversight through the C.R.E.E.D. institute.</p>
+                    <p>Fully self-hosted and privacy-first, A.R.C.H.I.E. runs on your infrastructure. No data leaves your network unless you explicitly enable cloud escalation. Every decision is logged, every action is auditable, and every agent operates within clearly defined ethical boundaries.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 16 Departments by Floor -->
+        <section class="section">
+            <div class="container">
+                <h2 class="section__title gradient-text" data-split data-i18n="platform-depts-title">16 Departments &amp; AI Directors</h2>
+                <p style="text-align:center;color:var(--text-secondary,#8892a4);max-width:620px;margin:0 auto 2.5rem;font-size:1.05rem;" data-i18n="platform-depts-subtitle">Organized across five operational floors, each department is led by a dedicated AI Director with specialized staff agents.</p>
+
+                <!-- BRIDGE -->
+                <div class="floor-section floor--bridge">
+                    <div class="floor-header">
+                        <div class="floor-header__bar" style="background:#00e5ff;"></div>
+                        <span class="floor-header__title" style="color:#00e5ff;">Bridge</span>
+                        <span class="floor-header__count">1 Department</span>
+                    </div>
+                    <div class="dept-grid dept-grid--single" data-stagger>
+                        <div class="glass-panel dept-card" style="--dept-accent:#00e5ff;">
+                            <span class="dept-card__acronym">A.R.C.H.I.E.</span>
+                            <span class="dept-card__expansion">Autonomous Resource &amp; Cognitive Hyperintelligence Engine</span>
+                            <span class="dept-card__dept">Executive Office</span>
+                            <span class="dept-card__floor-badge">Bridge</span>
+                            <p class="dept-card__text">The command center of the entire platform. A.R.C.H.I.E. provides strategic oversight, coordinates cross-department operations, and serves as the primary decision-making intelligence for the organization.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- OPERATIONS -->
+                <div class="floor-section floor--ops">
+                    <div class="floor-header">
+                        <div class="floor-header__bar" style="background:#a3e635;"></div>
+                        <span class="floor-header__title" style="color:#a3e635;">Operations</span>
+                        <span class="floor-header__count">3 Departments</span>
+                    </div>
+                    <div class="dept-grid" data-stagger>
+                        <div class="glass-panel dept-card" style="--dept-accent:#a3e635;">
+                            <span class="dept-card__acronym">B.A.S.E.</span>
+                            <span class="dept-card__expansion">Backbone Administration &amp; Systems Engineering</span>
+                            <span class="dept-card__dept">Operations &amp; Infrastructure</span>
+                            <span class="dept-card__floor-badge">Operations</span>
+                            <p class="dept-card__text">Manages servers, deployment pipelines, container orchestration, and system reliability. B.A.S.E. ensures the platform stays online and performs optimally across all nodes.</p>
+                        </div>
+                        <div class="glass-panel dept-card" style="--dept-accent:#a3e635;">
+                            <span class="dept-card__acronym">C.A.R.G.O.</span>
+                            <span class="dept-card__expansion">Coordinated Allocation &amp; Resource Governance Operations</span>
+                            <span class="dept-card__dept">Logistics &amp; Supply Chain</span>
+                            <span class="dept-card__floor-badge">Operations</span>
+                            <p class="dept-card__text">Handles resource allocation, capacity planning, and scheduling across the fleet. C.A.R.G.O. optimizes compute distribution so every task gets the resources it needs.</p>
+                        </div>
+                        <div class="glass-panel dept-card" style="--dept-accent:#a3e635;">
+                            <span class="dept-card__acronym">L.E.D.G.E.R.</span>
+                            <span class="dept-card__expansion">Ledger Engine for Digital Governance, Economics &amp; Reporting</span>
+                            <span class="dept-card__dept">Finance &amp; Accounting</span>
+                            <span class="dept-card__floor-badge">Operations</span>
+                            <p class="dept-card__text">Oversees invoicing, billing, subscription management, and financial analytics. L.E.D.G.E.R. tracks costs across services and generates financial reports.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ENGINEERING -->
+                <div class="floor-section floor--eng">
+                    <div class="floor-header">
+                        <div class="floor-header__bar" style="background:#fbbf24;"></div>
+                        <span class="floor-header__title" style="color:#fbbf24;">Engineering</span>
+                        <span class="floor-header__count">3 Departments</span>
+                    </div>
+                    <div class="dept-grid" data-stagger>
+                        <div class="glass-panel dept-card" style="--dept-accent:#fbbf24;">
+                            <span class="dept-card__acronym">F.O.R.G.E.</span>
+                            <span class="dept-card__expansion">Full-cycle Optimization &amp; Regenerative GitHub Engine</span>
+                            <span class="dept-card__dept">Engineering &amp; Technology</span>
+                            <span class="dept-card__floor-badge">Engineering</span>
+                            <p class="dept-card__text">Drives code generation, self-healing repair pipelines, and continuous integration. F.O.R.G.E. identifies code issues, generates fixes, tests them in sandboxes, and deploys verified patches.</p>
+                        </div>
+                        <div class="glass-panel dept-card" style="--dept-accent:#fbbf24;">
+                            <span class="dept-card__acronym">V.I.G.I.L.</span>
+                            <span class="dept-card__expansion">Vigilant Intelligence for Governance, Integrity &amp; Liability</span>
+                            <span class="dept-card__dept">Security &amp; Compliance</span>
+                            <span class="dept-card__floor-badge">Engineering</span>
+                            <p class="dept-card__text">Runs automated vulnerability scans, enforces compliance rule packs (STIG, SOC 2, HIPAA, CIS), and monitors security events. V.I.G.I.L. never sleeps — scanning every six hours.</p>
+                        </div>
+                        <div class="glass-panel dept-card" style="--dept-accent:#fbbf24;">
+                            <span class="dept-card__acronym">D.A.R.W.I.N.</span>
+                            <span class="dept-card__expansion">Directed Autonomous Research &amp; Weighted Intelligence Network</span>
+                            <span class="dept-card__dept">Research &amp; Development</span>
+                            <span class="dept-card__floor-badge">Engineering</span>
+                            <p class="dept-card__text">Explores new AI capabilities, evaluates emerging models, and benchmarks experimental features. D.A.R.W.I.N. pushes the boundaries of what the platform can do.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CREATIVE -->
+                <div class="floor-section floor--creative">
+                    <div class="floor-header">
+                        <div class="floor-header__bar" style="background:#f472b6;"></div>
+                        <span class="floor-header__title" style="color:#f472b6;">Creative</span>
+                        <span class="floor-header__count">3 Departments</span>
+                    </div>
+                    <div class="dept-grid" data-stagger>
+                        <div class="glass-panel dept-card" style="--dept-accent:#f472b6;">
+                            <span class="dept-card__acronym">M.U.S.E.</span>
+                            <span class="dept-card__expansion">Multimodal Unified Studio Engine</span>
+                            <span class="dept-card__dept">Creative &amp; Design</span>
+                            <span class="dept-card__floor-badge">Creative</span>
+                            <p class="dept-card__text">Produces images, UI components, and creative assets using GPU-accelerated generation. M.U.S.E. handles everything from LCARS interface design to SDXL art generation.</p>
+                        </div>
+                        <div class="glass-panel dept-card" style="--dept-accent:#f472b6;">
+                            <span class="dept-card__acronym">S.I.G.N.A.L.</span>
+                            <span class="dept-card__expansion">Strategic Intelligence for Growth, Narrative &amp; Audience Leverage</span>
+                            <span class="dept-card__dept">Marketing &amp; Communications</span>
+                            <span class="dept-card__floor-badge">Creative</span>
+                            <p class="dept-card__text">Crafts content strategy, manages social media presence, and delivers brand messaging. S.I.G.N.A.L. ensures consistent voice across all eight supported languages.</p>
+                        </div>
+                        <div class="glass-panel dept-card" style="--dept-accent:#f472b6;">
+                            <span class="dept-card__acronym">C.O.D.E.X.</span>
+                            <span class="dept-card__expansion">Comprehensive Operational Documentation &amp; Exchange</span>
+                            <span class="dept-card__dept">Documentation &amp; Knowledge</span>
+                            <span class="dept-card__floor-badge">Creative</span>
+                            <p class="dept-card__text">Curates and maintains the 22,000+ entry knowledge base with semantic search, automated quality scoring, and embedding coverage tracking.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SERVICES -->
+                <div class="floor-section floor--services">
+                    <div class="floor-header">
+                        <div class="floor-header__bar" style="background:#8b5cf6;"></div>
+                        <span class="floor-header__title" style="color:#8b5cf6;">Services</span>
+                        <span class="floor-header__count">6 Departments</span>
+                    </div>
+                    <div class="dept-grid" data-stagger>
+                        <div class="glass-panel dept-card" style="--dept-accent:#8b5cf6;">
+                            <span class="dept-card__acronym">R.E.S.O.L.V.E.</span>
+                            <span class="dept-card__expansion">Responsive Engagement &amp; Solutions for Optimized Lifecycle Value Exchange</span>
+                            <span class="dept-card__dept">Customer Success &amp; Support</span>
+                            <span class="dept-card__floor-badge">Services</span>
+                            <p class="dept-card__text">Handles user onboarding, issue resolution, and satisfaction tracking. R.E.S.O.L.V.E. ensures every customer interaction drives value and retention.</p>
+                        </div>
+                        <div class="glass-panel dept-card" style="--dept-accent:#8b5cf6;">
+                            <span class="dept-card__acronym">K.I.N.</span>
+                            <span class="dept-card__expansion">Knowledge, Inclusion &amp; Nurture</span>
+                            <span class="dept-card__dept">Human Resources &amp; Culture</span>
+                            <span class="dept-card__floor-badge">Services</span>
+                            <p class="dept-card__text">Manages agent welfare, training programs, proficiency benchmarks, and workforce development. K.I.N. nurtures agents from onboarding through career progression.</p>
+                        </div>
+                        <div class="glass-panel dept-card" style="--dept-accent:#8b5cf6;">
+                            <span class="dept-card__acronym">V.I.T.A.L.</span>
+                            <span class="dept-card__expansion">Versatile Intelligence for Therapy, Assessment &amp; Lifestyle</span>
+                            <span class="dept-card__dept">Medical &amp; Wellness</span>
+                            <span class="dept-card__floor-badge">Services</span>
+                            <p class="dept-card__text">Powers health-focused applications, wellness tracking, and therapeutic tools. V.I.T.A.L. brings AI-assisted care and lifestyle management to the platform.</p>
+                        </div>
+                        <div class="glass-panel dept-card" style="--dept-accent:#8b5cf6;">
+                            <span class="dept-card__acronym">G.A.V.E.L.</span>
+                            <span class="dept-card__expansion">Governance, Accountability, Verification, Ethics &amp; Law</span>
+                            <span class="dept-card__dept">Legal &amp; Regulatory</span>
+                            <span class="dept-card__floor-badge">Services</span>
+                            <p class="dept-card__text">Enforces policy, monitors regulatory compliance, and manages governance frameworks. G.A.V.E.L. works alongside V.I.G.I.L. to keep the platform legally sound.</p>
+                        </div>
+                        <div class="glass-panel dept-card" style="--dept-accent:#8b5cf6;">
+                            <span class="dept-card__acronym">A.C.C.O.R.D.</span>
+                            <span class="dept-card__expansion">Alliance Coordination &amp; Cooperative Operations for Relational Diplomacy</span>
+                            <span class="dept-card__dept">Diplomatic &amp; External Relations</span>
+                            <span class="dept-card__floor-badge">Services</span>
+                            <p class="dept-card__text">Coordinates partnerships, external integrations, and cross-platform collaboration. A.C.C.O.R.D. manages relationships with third-party services and APIs.</p>
+                        </div>
+                        <div class="glass-panel dept-card" style="--dept-accent:#8b5cf6;">
+                            <span class="dept-card__acronym">S.P.E.C.T.R.A.</span>
+                            <span class="dept-card__expansion">Statistical Processing Engine for Comprehensive Trend &amp; Risk Analysis</span>
+                            <span class="dept-card__dept">Analytics &amp; Intelligence</span>
+                            <span class="dept-card__floor-badge">Services</span>
+                            <p class="dept-card__text">Runs data analysis, trend detection, and business intelligence. S.P.E.C.T.R.A. transforms raw platform data into actionable dashboards and strategic insights.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Core Architecture -->
+        <section class="section">
+            <div class="container">
+                <h2 class="section__title gradient-text" data-split data-i18n="platform-arch-title">Core Architecture</h2>
+                <p style="text-align:center;color:var(--text-secondary,#8892a4);max-width:560px;margin:0 auto 2rem;font-size:1.05rem;" data-i18n="platform-arch-subtitle">Four interlocking systems power the entire platform.</p>
+                <div class="arch-grid arch-grid--2col" data-stagger>
+                    <div class="glass-panel arch-card">
+                        <span class="arch-card__step">1</span>
+                        <h3 class="arch-card__title">Autonomy Module</h3>
+                        <p class="arch-card__text">90 scheduled jobs run continuously — training agents, scanning for vulnerabilities, syncing fleet nodes, and maintaining the knowledge base. Tiered approval ensures sensitive actions always get human sign-off.</p>
+                    </div>
+                    <div class="glass-panel arch-card">
+                        <span class="arch-card__step">2</span>
+                        <h3 class="arch-card__title">Department HQ</h3>
+                        <p class="arch-card__text">Manages all 125+ agents across 16 departments and 5 floors. Handles agent lifecycle, skill assignments, shift scheduling, and welfare monitoring through a centralized service layer.</p>
+                    </div>
+                    <div class="glass-panel arch-card">
+                        <span class="arch-card__step">3</span>
+                        <h3 class="arch-card__title">AI Bridge &amp; Dispatcher</h3>
+                        <p class="arch-card__text">Every AI request flows through one central dispatcher with GPU-aware routing, automatic model warm-up, 11-tier escalation from local to cloud, and full audit logging on every call.</p>
+                    </div>
+                    <div class="glass-panel arch-card">
+                        <span class="arch-card__step">4</span>
+                        <h3 class="arch-card__title">Starbase Command</h3>
+                        <p class="arch-card__text">A distributed compute mesh that extends processing across multiple GPU nodes. OTA updates, remote deployment, and mesh sync let you add capacity to the fleet with a single command.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Key Capabilities -->
+        <section class="section">
+            <div class="container">
+                <h2 class="section__title gradient-text" data-split data-i18n="platform-cap-title">Key Capabilities</h2>
+                <div class="cap-grid" data-stagger>
+                    <div class="glass-panel cap-card">
+                        <span class="cap-card__icon">&#9881;</span>
+                        <h3 class="cap-card__title" data-i18n="platform-cap-heal">Self-Healing</h3>
+                        <p class="cap-card__text">Scans its own codebase, generates fixes, tests in sandboxes, and deploys verified patches automatically.</p>
+                    </div>
+                    <div class="glass-panel cap-card">
+                        <span class="cap-card__icon">&#9729;</span>
+                        <h3 class="cap-card__title" data-i18n="platform-cap-fleet">Fleet Compute</h3>
+                        <p class="cap-card__text">Extends GPU capacity across networked nodes with automatic load balancing and mesh synchronization.</p>
+                    </div>
+                    <div class="glass-panel cap-card">
+                        <span class="cap-card__icon">&#9878;</span>
+                        <h3 class="cap-card__title" data-i18n="platform-cap-ethics">Ethics Governance</h3>
+                        <p class="cap-card__text">C.R.E.E.D. enforces ethical boundaries, audit logging, and compliance scanning across all operations.</p>
+                    </div>
+                    <div class="glass-panel cap-card">
+                        <span class="cap-card__icon">&#9670;</span>
+                        <h3 class="cap-card__title" data-i18n="platform-cap-multi">Multi-Model AI</h3>
+                        <p class="cap-card__text">Routes requests to the best available model — local or cloud — with automatic warm-up and VRAM management.</p>
+                    </div>
+                    <div class="glass-panel cap-card">
+                        <span class="cap-card__icon">&#127760;</span>
+                        <h3 class="cap-card__title" data-i18n="platform-cap-i18n">8-Language Support</h3>
+                        <p class="cap-card__text">Full i18n across English, French, Spanish, Portuguese, German, Chinese, Arabic, and Hebrew with RTL support.</p>
+                    </div>
+                    <div class="glass-panel cap-card">
+                        <span class="cap-card__icon">&#127795;</span>
+                        <h3 class="cap-card__title" data-i18n="platform-cap-genealogy">AI Genealogy</h3>
+                        <p class="cap-card__text">5 specialized agents search 8 public archives, OCR documents, colorize photos, generate biographies, estimate DNA ethnicity, and build interactive family trees with D3.js fan charts and Leaflet.js migration maps.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <section class="section" style="padding-bottom:4rem;">
+            <div class="container" style="text-align:center;">
+                <h2 class="section__title gradient-text" data-split data-i18n="platform-cta-title">Ready to Explore?</h2>
+                <p style="color:var(--text-secondary,#8892a4);max-width:480px;margin:0 auto;font-size:1.05rem;" data-i18n="platform-cta-text">Discover the AI Directors that lead each department, or get started with a membership.</p>
+                <div class="cta-row">
+                    <a href="ai-directors.html" class="cta-btn cta-btn--primary" data-i18n="platform-cta-directors">Meet the AI Directors</a>
+                    <a href="membership.html" class="cta-btn cta-btn--secondary" data-i18n="platform-cta-start">Get Started</a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer__inner container">
+            <div class="footer__brand">
+                <span class="footer__logo">KYTRAN EMPOWERMENT</span>
+                <p class="footer__tagline">Montreal, Canada</p>
+            </div>
+            <div class="footer__links">
+                <a href="about.html" data-i18n="nav.about">About</a>
+                <a href="services.html" data-i18n="nav.all_services">Services</a>
+                <a href="compliance.html" data-i18n="nav.trust_center">Trust Center</a>
+                <a href="contact.html" data-i18n="nav.contact">Contact</a>
+                <a href="membership.html" data-i18n="nav.pricing">Pricing</a>
+            </div>
+            <div class="footer__contact">
+                <a href="tel:+18774633352" data-i18n="common.phone">1-877-463-3352</a>
+            </div>
+            <div class="footer__copyright" data-i18n="footer.copyright">&copy; 2026 Kytran Empowerment Inc. All rights reserved.</div>
+        </div>
+    </footer>
+    <!-- Scripts -->
+    <script defer src="js/lib/gsap.min.js?v=20260407q"></script>
+    <script defer src="js/lib/ScrollTrigger.min.js?v=20260407q"></script>
+    <script defer src="js/lib/lenis.min.js?v=20260407q"></script>
+    <script defer src="js/lib/splitting.min.js?v=20260407q"></script>
+    <script defer src="js/lib/barba.min.js?v=20260407q"></script>
+    <script defer src="js/effects.js?v=20260407q"></script>
+    <script defer src="js/nav.js?v=20260407q"></script>
+    <script defer src="js/transitions.js?v=20260407q"></script>
+    <script defer src="js/i18n.js?v=20260407q"></script>
+    <script defer src="js/app.js?v=20260407q"></script>
+    <!-- Cookie Consent -->
+    <div id="cookieConsent" class="cookie-consent" style="display:none;">
+      <div class="cookie-consent__inner">
+        <p class="cookie-consent__text" data-i18n="cookie.text">We use cookies to improve your experience and analyze site traffic. By continuing, you agree to our use of cookies.</p>
+        <div class="cookie-consent__actions">
+          <button class="cookie-consent__btn cookie-consent__btn--accept" onclick="acceptCookies()" data-i18n="cookie.accept">Accept</button>
+          <button class="cookie-consent__btn cookie-consent__btn--decline" onclick="declineCookies()" data-i18n="cookie.decline">Decline</button>
+        </div>
+      </div>
+    </div>
+    <script>
+    (function() {
+      var consent = localStorage.getItem('ke-cookie-consent');
+      if (!consent) {
+        document.getElementById('cookieConsent').style.display = 'block';
+      }
+    })();
+    function acceptCookies() {
+      localStorage.setItem('ke-cookie-consent', 'accepted');
+      document.getElementById('cookieConsent').style.display = 'none';
+      if (typeof gtag === 'function') {
+        gtag('consent', 'update', { analytics_storage: 'granted' });
+        gtag('config', 'G-259QFNHSSN', { anonymize_ip: true });
+      }
+    }
+    function declineCookies() {
+      localStorage.setItem('ke-cookie-consent', 'declined');
+      document.getElementById('cookieConsent').style.display = 'none';
+    }
+    </script>
+</body>
+</html>
